@@ -59,9 +59,9 @@ public class StrafeDrive extends OpMode {
             rightBPower = Range.clip(drive - turn, -1.0, 1.0);
         } else if (strafe != 0) {
             // Strafing
-            leftFPower = -strafe;
+            leftFPower = strafe;
             rightFPower = strafe;
-            leftBPower = strafe;
+            leftBPower = -strafe;
             rightBPower = -strafe;
         } else {
             leftFPower = 0;
