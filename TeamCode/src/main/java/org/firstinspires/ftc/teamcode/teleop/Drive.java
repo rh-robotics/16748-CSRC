@@ -1,10 +1,19 @@
 //
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.teleop;
+import androidx.annotation.NonNull;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Hardware;
 
-public class DriveClass {
+public class Drive {
 
     private Hardware robot;
 
@@ -14,7 +23,7 @@ public class DriveClass {
 
     private Telemetry telemetry;
     public boolean drivestate;
-    public DriveClass(Hardware robot) {
+    public Drive(Hardware robot) {
         super();
         this.robot = robot;
     }

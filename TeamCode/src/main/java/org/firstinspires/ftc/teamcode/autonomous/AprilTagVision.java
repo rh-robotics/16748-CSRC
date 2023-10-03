@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -186,4 +186,8 @@ public class AprilTagVision extends LinearOpMode {
 
     }   // end method telemetryAprilTag()
 
+//<<<<<<< HEAD
 }   // end class
+//=======
+   // end class
+//>>>>>>> master
