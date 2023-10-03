@@ -38,9 +38,9 @@ public class HWC {
 
         // Set the direction of motors
         // TODO: UPDATE VALUES WITH NEW BOT
-        leftFront.setDirection(DcMotorEx.Direction.REVERSE);
+        leftFront.setDirection(DcMotorEx.Direction.FORWARD);
         rightFront.setDirection(DcMotorEx.Direction.FORWARD);
-        leftRear.setDirection(DcMotorEx.Direction.FORWARD);
+        leftRear.setDirection(DcMotorEx.Direction.REVERSE);
         rightRear.setDirection(DcMotorEx.Direction.FORWARD);
 
         // Set motors to break when power = 0
