@@ -6,14 +6,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware;
-import org.firstinspires.ftc.teamcode.teleop.DriveClass;
 
 @TeleOp (name="IterativeOpMode", group="Iterative OpMode")
 public class IterativeOpMode extends OpMode{
     private ElapsedTime runTime = new ElapsedTime();
 
     private Hardware robot = new Hardware();
-    private DriveClass drive = new DriveClass(robot);
     //private Tower tower = new Tower(robot);
     //private intake intake = new intake(robot);
     private DcMotor leftDrive = null;
@@ -42,7 +40,7 @@ public class IterativeOpMode extends OpMode{
     @Override public void loop(){
 
 
-        drive.manualDrive(gamepad1);
+
 
     }
 }

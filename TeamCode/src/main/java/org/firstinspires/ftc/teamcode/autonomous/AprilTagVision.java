@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -186,8 +187,6 @@ public class AprilTagVision extends LinearOpMode {
 
     }   // end method telemetryAprilTag()
 
-//<<<<<<< HEAD
+
 }   // end class
-//=======
-   // end class
-//>>>>>>> master
+
