@@ -75,5 +75,11 @@ public class StrafeDrive extends OpMode {
         robot.leftRear.setPower(leftBPower);
         robot.rightFront.setPower(rightFPower);
         robot.rightRear.setPower(rightBPower);
+
+        //telemetry
+        telemetry.addData("leftFPower: ", leftFPower);
+        telemetry.addData("leftBPower: ", leftFPower);
+        telemetry.addData("rightFPower: ", leftFPower);
+        telemetry.addData("rightBPower: ", leftFPower);
     }
 }
