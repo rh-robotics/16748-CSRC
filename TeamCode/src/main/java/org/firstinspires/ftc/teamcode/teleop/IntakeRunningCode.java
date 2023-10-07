@@ -16,8 +16,6 @@ public class IntakeRunningCode extends OpMode{
 
     @Override
     public void loop() {
-        /** While the button a is pressed the motor will run a 0.5 and
-        will add telemetry that the intake motor is running. */
         while (gamepad1.a) {
             intakeMotor.setPower(0.5);
             telemetry.addData("Intake Motor", "Running");
