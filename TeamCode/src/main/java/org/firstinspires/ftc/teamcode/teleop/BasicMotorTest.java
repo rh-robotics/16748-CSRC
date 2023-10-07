@@ -40,7 +40,7 @@ public class BasicMotorTest extends OpMode {
     @Override
     public void loop() {
         if (gamepad1.a) {
-            robot.leftFront.setPower(1.0); // set motor power
+            robot.leftFront.setPower(1.0); // Sets motor power.
             robot.leftRear.setPower(1.0);
             robot.rightFront.setPower(1.0);
             robot.rightRear.setPower(1.0);
