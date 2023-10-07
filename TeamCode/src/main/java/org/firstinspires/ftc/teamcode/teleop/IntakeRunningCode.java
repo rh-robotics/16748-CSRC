@@ -12,6 +12,7 @@ public class IntakeRunningCode extends OpMode{
     public void loop(){
         while (gamepad1.a) {
             intakeMotor.setPower(0.5);
+            telemetry.addData("Intake Motor", "Running");
         }
     }
 }
