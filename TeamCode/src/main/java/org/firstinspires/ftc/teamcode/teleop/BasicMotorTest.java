@@ -22,7 +22,9 @@ public class BasicMotorTest extends OpMode {
     public void init() {
         telemetry.addData("Status", "Initializing");
         // Telemetry.addData stores data in a hashmap-like data set.
-        robot = new HWC(hardwareMap, telemetry); // Assigns robot value.
+        robot = new HWC(hardwareMap, telemetry); // Initialize robot motors (stolen from 19922).
+        // Update HWC code to include more init sequences as needed.
+
         telemetry.addData("Status", "Initialized"); // Updates "Status" key's value.
     }
 
