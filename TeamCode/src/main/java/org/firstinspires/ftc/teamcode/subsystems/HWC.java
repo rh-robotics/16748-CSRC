@@ -16,6 +16,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class HWC {
     // Declare empty variables for robot hardware
     public DcMotorEx leftFront, rightFront, leftRear, rightRear;
+    public DcMotor intakeMotor;
 
     // Other Variables
     Telemetry telemetry;
@@ -35,6 +36,7 @@ public class HWC {
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
         leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
+        intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
 
         // Set the direction of motors
         // TODO: UPDATE VALUES WITH NEW BOT

@@ -2,23 +2,38 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-/** Defines Class IntakeRunningCode. */
+import org.firstinspires.ftc.teamcode.subsystems.HWC;
+
 public class IntakeRunningCode extends OpMode{
-    /** Defines a Motor called intakeMotor. */
-    DcMotor intakeMotor;
+    private final ElapsedTime time = new ElapsedTime();
+    HWC robot;
 
-    /** Adds intakeMotor to the HardwareMap. */
     @Override
     public void init() {
-        intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
+        telemetry.addData("Status", "Initializing");
+        robot = new HWC(hardwareMap, telemetry);
+        telemetry.addData("Status", "Initialized");
+    }
+
+    @Override
+    public void init_loop() {
+    }
+
+    @Override
+    public void start() {
+        time.reset();
     }
 
     @Override
     public void loop() {
-        while (gamepad1.a) {
-            intakeMotor.setPower(0.5);
+        if (gamepad1.a) {
+            robot.intakeMotor.setPower(0.5);
             telemetry.addData("Intake Motor", "Running");
+        } else {
+            robot.intakeMotor.setPower(0);
+            telemetry.addData("Intake Motor", "At rest");
         }
     }
 }
