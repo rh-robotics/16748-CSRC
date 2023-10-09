@@ -2,10 +2,12 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.HWC;
 
 public class IntakeRunningCode extends OpMode{
+    private final ElapsedTime time = new ElapsedTime();
     HWC robot;
 
     @Override
