@@ -27,7 +27,7 @@ public class IntakeRunningCode extends OpMode{
     }
 
     @Override
-    public void loop(){
+    public void loop() {
         if (gamepad1.a) {
             robot.intakeMotor.setPower(0.5);
             telemetry.addData("Intake Motor", "Running");
