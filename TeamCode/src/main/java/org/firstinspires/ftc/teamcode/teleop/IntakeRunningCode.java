@@ -31,8 +31,7 @@ public class IntakeRunningCode extends OpMode{
         if (gamepad1.a) {
             robot.intakeMotor.setPower(0.5);
             telemetry.addData("Intake Motor", "Running");
-        }
-        else {
+        } else {
             robot.intakeMotor.setPower(0);
             telemetry.addData("Intake Motor", "At rest");
         }

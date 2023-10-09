@@ -15,8 +15,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  */
 public class HWC {
     // Declare empty variables for robot hardware
-    public DcMotorEx leftFront, rightFront, leftRear, rightRear; // Wheel motors.
-    public DcMotor intakeMotor; // Intake motor.
+    public DcMotorEx leftFront, rightFront, leftRear, rightRear;
+    public DcMotor intakeMotor;
 
     // Other Variables
     Telemetry telemetry;
