@@ -37,7 +37,7 @@ public class Hardware {
 
     /** Adds hardwareElement to hardwareElements arrayList in entry:hardwareElement format.*/
     public void introduce(HardwareElement hardwareElement){
-        this.hardwareElements.put(hardwareElement.entry, hardwareElement);
+        this.hardwareElements.put(hardwareElement.name, hardwareElement);
     }
 
     public void init(){
@@ -46,18 +46,18 @@ public class Hardware {
             java.lang.Class<HardwareDevice> hardwareType = currentElement.type;
             HashMap<String,String> initsHashMap = currentElement.initializers;
 
-            /** Initializers should be added as needed to the conditional with their corresponding class. */
+            /* Initializers should be added as needed to the conditional with their corresponding class. */
             if (hardwareType.getName().equals("DcMotor")) {
                 /* Casting a separate deviceDcMotor object as a DcMotor type allows us
                  * run type-specific methods. (eg. deviceDcMotor.setDirection()) */
                 DcMotor deviceDcMotor = (DcMotor) currentElement.device;
 
                 if (initsHashMap.get("setDirection").equals("FORWARD")) {
-                    deviceDcMotor.setDirection(DcMotorEx.Direction.FORWARD);
+                    deviceDcMotor.setDirection(DcMotor.Direction.FORWARD);
                 } else if (initsHashMap.get("setDirection").equals("REVERSE")) {
                     deviceDcMotor.setDirection(DcMotor.Direction.REVERSE);
                 } else {
-                    InitValueRuntimeException("setDirection", initsHashMap.get("setDirection"));
+                    initValueRuntimeException("setDirection", initsHashMap.get("setDirection"));
                 }
 
                 if (initsHashMap.get("setZeroPowerBehavior").equals("BRAKE")) {
@@ -65,16 +65,16 @@ public class Hardware {
                 } else if (initsHashMap.get("setZeroPowerBehavior").equals("FLOAT")) {
                     deviceDcMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                 } else {
-                    InitValueRuntimeException("setZeroPowerBehavior",
+                    initValueRuntimeException("setZeroPowerBehavior",
                             initsHashMap.get("setZeroPowerBehavior"));
                 }
 
                 if (initsHashMap.get("setMode").equals("RUN_USING_ENCODER")) {
                     deviceDcMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 } else {
-                    InitValueRuntimeException("setMode", initsHashMap.get("setMode"));
+                    initValueRuntimeException("setMode", initsHashMap.get("setMode"));
                 }
-            } else if (hardwareType.getName().equals("DcMotor")) {
+            } else if (hardwareType.getName().equals("DcMotorEx")) {
                 DcMotorEx deviceDcMotorEx = (DcMotorEx) currentElement.device;
 
                 if (initsHashMap.get("setDirection").equals("FORWARD")) {
@@ -82,7 +82,7 @@ public class Hardware {
                 } else if (initsHashMap.get("setDirection").equals("REVERSE")) {
                     deviceDcMotorEx.setDirection(DcMotorEx.Direction.REVERSE);
                 } else {
-                    InitValueRuntimeException("setDirection", initsHashMap.get("setDirection"));
+                    initValueRuntimeException("setDirection", initsHashMap.get("setDirection"));
                 }
 
                 if (initsHashMap.get("setZeroPowerBehavior").equals("BRAKE")) {
@@ -90,14 +90,14 @@ public class Hardware {
                 } else if (initsHashMap.get("setZeroPowerBehavior").equals("FLOAT")) {
                     deviceDcMotorEx.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
                 } else {
-                    InitValueRuntimeException("setZeroPowerBehavior",
+                    initValueRuntimeException("setZeroPowerBehavior",
                             initsHashMap.get("setZeroPowerBehavior"));
                 }
 
                 if (initsHashMap.get("setMode").equals("RUN_USING_ENCODER")) {
                     deviceDcMotorEx.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
                 } else {
-                    InitValueRuntimeException("setMode", initsHashMap.get("setMode"));
+                    initValueRuntimeException("setMode", initsHashMap.get("setMode"));
                 }
             } else {
                 throw new RuntimeException("Unimplemented hardware element: " +
@@ -106,7 +106,7 @@ public class Hardware {
         }
     }
 
-    private static void InitValueRuntimeException(String key, String value) {
+    private static void initValueRuntimeException(String key, String value) {
         throw new RuntimeException("Unimplemented hardware element method '" +
                 key + ":" + value + "' encountered.");
     }

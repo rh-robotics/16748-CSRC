@@ -8,36 +8,38 @@ import com.qualcomm.robotcore.hardware.HardwareDevice;
  * HardwareElement's are essentially HardwareDevices plus initializers. */
 public class HardwareElement {
     /** Stores value that is expected to be in the hardware map.
-     * Expected to be the same as the object name in init conditionals. */
-    public String entry;
+     * Assumed to be both the entry and key values. */
+    public String name;
+    /** Stores type of device as a HardwareDevice Class. */
     public java.lang.Class<HardwareDevice> type;
+    /** Stores Hardware device from hardwareMap.
+     * Use this to run commands (eg. HardwareElement.device.setPower(0.5)) */
     public HardwareDevice device;
+    /** Hashmap to store element's initializers in feature:initValue format. */
     public HashMap<String, String> initializers = new HashMap<>();
 
     /** Constructs a HardwareElement.
      * @param deviceType The type of the device.
-     * @param entry The value that is expected to be in the hardware map.
-     *      Assumes Key and Entry are the same.
+     * @param name Represents value of both Key and Entry.
      * @param hardwareMap The FTC SDK hardware map.
      * */
-    public HardwareElement(HardwareMap hardwareMap, java.lang.Class<HardwareDevice> deviceType, String entry) {
-        this.entry = entry;
-        this.device = hardwareMap.get(type, entry);
+    public HardwareElement(HardwareMap hardwareMap, java.lang.Class<HardwareDevice> deviceType, String name) {
+        this.name = name;
+        this.device = hardwareMap.get(type, name);
         this.type = deviceType;
         setDefaultInitializers(deviceType);
     }
 
     /** /** Constructs a HardwareElement.
      * @param deviceType The type of the device.
-     * @param entry The value that is expected to be in the hardware map.
-     *      Assumes Key and Entry are the same.
+     * @param name Represents value of both Key and Entry.
      * @param hardwareMap The FTC SDK hardware map.
      * @param initializers: key:value,key:value
      *      eg. "setDirection:REVERSE,setZeroPowerBehavior:BRAKE"
      *      Only necessary to list non-default pairs. */
-    public HardwareElement(HardwareMap hardwareMap, java.lang.Class<HardwareDevice> deviceType, String entry, String initializers) {
-        this.entry = entry;
-        this.device = hardwareMap.get(deviceType, entry);
+    public HardwareElement(HardwareMap hardwareMap, java.lang.Class<HardwareDevice> deviceType, String name, String initializers) {
+        this.name = name;
+        this.device = hardwareMap.get(deviceType, name);
         this.type = deviceType;
         this.initializers = createHashMap(initializers);
     }
