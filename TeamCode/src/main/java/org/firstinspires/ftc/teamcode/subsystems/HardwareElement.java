@@ -30,7 +30,7 @@ public class HardwareElement {
         setDefaultInitializers(deviceType);
     }
 
-    /** /** Constructs a HardwareElement.
+    /** Constructs a HardwareElement.
      * @param deviceType The type of the device.
      * @param name Represents value of both Key and Entry.
      * @param hardwareMap The FTC SDK hardware map.
