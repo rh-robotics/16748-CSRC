@@ -15,8 +15,7 @@ public class IntakeRunningCode extends OpMode{
 
         robot = new Hardware(hardwareMap, telemetry);
 
-        /** DcMotorEx is a child class of DcMotor, so for now we just introduce them as DcMotors.
-         * This means we cannot currently call any of the DcMotorEx class-specific methods. */
+        /** DcMotorEx is a child class of DcMotor, so for now we just introduce them as DcMotors.*/
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "intakeMotor"));
 
         telemetry.addData("Status", "Initialized");
