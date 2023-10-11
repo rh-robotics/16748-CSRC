@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems.Hardware;
+package org.firstinspires.ftc.teamcode.subsystems.hardware;
 
 import java.util.HashMap;
 

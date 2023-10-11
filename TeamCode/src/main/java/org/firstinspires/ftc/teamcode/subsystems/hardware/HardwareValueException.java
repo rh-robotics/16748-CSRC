@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems.Hardware;
+package org.firstinspires.ftc.teamcode.subsystems.hardware;
 
 public class HardwareValueException extends RuntimeException {
     public HardwareValueException(String key, String value) {
