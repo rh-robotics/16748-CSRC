@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.subsystems.Hardware.*;
+import org.firstinspires.ftc.teamcode.subsystems.hardware.*;
 
 /**
  * TeleOp OpMode for testing motors.
@@ -23,6 +23,9 @@ public class BasicMotorTest extends OpMode {
         telemetry.addData("Status", "Initializing");
 
         robot = new Hardware(hardwareMap, telemetry);
+
+        /** DcMotorEx is a child class of DcMotor, so for now we just introduce them as DcMotors.
+         * This means we cannot currently call any of the DcMotorEx class-specific methods. */
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront"));
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear", "setDirection:REVERSE"));
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront"));
