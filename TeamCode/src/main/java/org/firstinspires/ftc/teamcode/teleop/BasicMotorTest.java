@@ -5,7 +5,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.subsystems.HWC;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+
+import org.firstinspires.ftc.teamcode.subsystems.Hardware.*;
 
 // "BasicMotorTest" is the name of OpMode in Driver Station.
 /**
@@ -15,15 +18,27 @@ import org.firstinspires.ftc.teamcode.subsystems.HWC;
 public class BasicMotorTest extends OpMode {
     private final ElapsedTime time = new ElapsedTime();
     // Declares robot as an instance of a hardware class.
-    private HWC robot;
-
+    private Hardware robot;
+    private DcMotorEx leftFront, leftRear, rightFront, rightRear;
+    private DcMotor intakeMotor;
     // Runs once when "INIT" button is pressed.
     @Override
     public void init() {
-        telemetry.addData("Status", "Initializing");
         // Telemetry.addData stores data in a hashmap-like data set.
-        robot = new HWC(hardwareMap, telemetry); // Initialize robot motors (stolen from 19922).
-        // Update HWC code to include more init sequences as needed.
+        telemetry.addData("Status", "Initializing");
+
+        robot = new Hardware();
+        robot.introduce(new HardwareElement(hardwareMap, DcMotorEx.class, "leftFront");
+        robot.introduce(new HardwareElement(hardwareMap, DcMotorEx.class, "leftRear", "setDirection:REVERSE"");
+        robot.introduce(new HardwareElement(hardwareMap, DcMotorEx.class, "rightFront");
+        robot.introduce(new HardwareElement(hardwareMap, DcMotorEx.class, "rightRear");
+        robot.introduce(new HardwareElement(hardwareMap, DcMotor.class, "intakeMotor");
+
+        leftFront = (DcMotorEx) robot.HardwareElements.get("leftFront");
+        leftRear = (DcMotorEx) robot.HardwareElements.get("leftRear");
+        rightFront = (DcMotorEx) robot.HardwareElements.get("rightFront");
+        rightRear = (DcMotorEx) robot.HardwareElements.get("rightRear");
+        intakeMotor = (DcMotor) robot.HardwareElements.get("intakeMotor");
 
         telemetry.addData("Status", "Initialized"); // Updates "Status" key's value.
     }
@@ -42,20 +57,20 @@ public class BasicMotorTest extends OpMode {
     @Override
     public void loop() {
         if (gamepad1.a) {
-            robot.leftFront.setPower(1.0); // Sets motor power.
-            robot.leftRear.setPower(1.0);
-            robot.rightFront.setPower(1.0);
-            robot.rightRear.setPower(1.0);
+            leftFront.setPower(1.0); // Sets motor power.
+            leftRear.setPower(1.0);
+            rightFront.setPower(1.0);
+            rightRear.setPower(1.0);
         } else if (gamepad1.b) {
-            robot.leftFront.setPower(0.5);
-            robot.leftRear.setPower(0.5);
-            robot.rightFront.setPower(0.5);
-            robot.rightRear.setPower(0.5);
+            leftFront.setPower(0.5);
+            leftRear.setPower(0.5);
+            rightFront.setPower(0.5);
+            rightRear.setPower(0.5);
         } else {
-            robot.leftFront.setPower(0.1);
-            robot.leftRear.setPower(0.1);
-            robot.rightFront.setPower(0.1);
-            robot.rightRear.setPower(0.1);
+            leftFront.setPower(0.1);
+            leftRear.setPower(0.1);
+            rightFront.setPower(0.1);
+            rightRear.setPower(0.1);
         }
     }
 }

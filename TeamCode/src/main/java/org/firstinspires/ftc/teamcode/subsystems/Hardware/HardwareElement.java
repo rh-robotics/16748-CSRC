@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.subsystems.Hardware;
 
 import java.util.HashMap;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -37,7 +37,8 @@ public class HardwareElement {
      * @param initializers: key:value,key:value
      *      eg. "setDirection:REVERSE,setZeroPowerBehavior:BRAKE"
      *      Only necessary to list non-default pairs. */
-    public HardwareElement(HardwareMap hardwareMap, java.lang.Class<HardwareDevice> deviceType, String name, String initializers) {
+    public HardwareElement(HardwareMap hardwareMap, java.lang.Class<HardwareDevice> deviceType,
+                           String name, String initializers) {
         this.name = name;
         this.device = hardwareMap.get(deviceType, name);
         this.type = deviceType;
@@ -46,7 +47,7 @@ public class HardwareElement {
 
     /** Sets default initializers given device type.
      * Update this method when implementing new initializers. **/
-    private void setDefaultInitializers(java.lang.Class<HardwareDevice> deviceType) {
+    private void setDefaultInitializers (java.lang.Class<HardwareDevice> deviceType) {
         if (deviceType.getName().equals("DcMotor")) {
             initializers.put("setDirection", "FORWARD");
             initializers.put("setZeroPowerBehavior", "BRAKE");
