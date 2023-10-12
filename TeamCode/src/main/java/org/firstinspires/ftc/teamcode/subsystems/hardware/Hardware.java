@@ -48,7 +48,7 @@ public class Hardware {
     private void init(HardwareElement<?> hardwareElement) {
         /* Initializers should be added as needed to the conditional with their corresponding
          * class. */
-        if (hardwareElement.type.isInstance(DcMotor.class)) {
+        if (hardwareElement.device instanceof DcMotor) {
             initDcMotor(hardwareElement, hardwareElement.initializers);
         } else {
             throw new RuntimeException("Unimplemented hardware element of type '" +
@@ -60,7 +60,7 @@ public class Hardware {
                              HashMap<String, String> initsHashMap) {
         /* Casting a separate deviceDcMotor object as a DcMotor type allows us
          * run type-specific methods. (eg. deviceDcMotor.setDirection()) */
-        DcMotor deviceDcMotor = (DcMotor) hardwareElement;
+        DcMotor deviceDcMotor = (DcMotor) hardwareElement.device;
 
         if (initsHashMap.containsKey("setDirection")) {
             switch (Objects.requireNonNull(initsHashMap.get("setDirection"))) {
@@ -77,7 +77,7 @@ public class Hardware {
 
         if (initsHashMap.containsKey("setZeroPowerBehavior")) {
             switch (Objects.requireNonNull(initsHashMap.get("setZeroPowerBehavior"))) {
-                case "BREAK":
+                case "BRAKE":
                     deviceDcMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                     break;
                 case "FLOAT":
