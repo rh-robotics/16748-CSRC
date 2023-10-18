@@ -44,5 +44,10 @@ public class IntakeDetection extends LinearOpMode {
                 );
             }
         });
+
+        telemetry.addLine("Waiting for start");
+        waitForStart();
+
+        while (opModeIsActive()) {}
     }
 }

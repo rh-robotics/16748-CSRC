@@ -19,7 +19,8 @@ public class TestFrame extends LinearOpMode {
 
     IntakeDetectionPipeline intakeDetection;
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
+
         /* Activating the camera monitor view on robot controller phone. */
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam"), cameraMonitorViewId);
@@ -33,16 +34,21 @@ public class TestFrame extends LinearOpMode {
             public void onOpened() {
                 /* 16:9 aspect ratio.
                  * Streaming over 480p (640x480) limits our FPS to less than 30. */
-                camera.startStreaming(800, 450, OpenCvCameraRotation.UPRIGHT);
+                camera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
             }
 
             /* If camera cannot be opened */
             @Override
             public void onError(int errorCode) {
-                throw new RuntimeException(
+                throw new RuntimeException (
                         "Camera could not be opened."
                 );
             }
         });
+
+        telemetry.addLine("Waiting for start");
+        waitForStart();
+
+        while (opModeIsActive()){}
     }
 }
