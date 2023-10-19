@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auton.smc;
+package org.firstinspires.ftc.teamcode.auton.stateMachine;
 
 public interface StateInterface {
     /* Run before stateAction() to check to change states. */

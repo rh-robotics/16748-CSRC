@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.auton.smc.states;
+package org.firstinspires.ftc.teamcode.auton.stateMachine.states;
 
-import org.firstinspires.ftc.teamcode.auton.smc.StateInterface;
+import org.firstinspires.ftc.teamcode.auton.stateMachine.StateInterface;
 
 public class IntakeState implements StateInterface {
     @Override

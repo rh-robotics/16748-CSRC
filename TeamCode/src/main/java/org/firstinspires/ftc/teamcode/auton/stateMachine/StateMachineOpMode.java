@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.auton.smc;
+package org.firstinspires.ftc.teamcode.auton.stateMachine;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.auton.smc.states.*;
+import org.firstinspires.ftc.teamcode.auton.stateMachine.states.*;
 
 import java.util.HashMap;
 
