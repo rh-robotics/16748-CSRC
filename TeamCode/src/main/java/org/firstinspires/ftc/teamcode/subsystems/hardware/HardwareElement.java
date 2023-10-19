@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystems.hardware;
 
-import java.util.HashMap;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import java.util.HashMap;
 
 /** Creates Objects to store hardware elements and initializers.
  * HardwareElement's are essentially HardwareDevices plus initializers. */

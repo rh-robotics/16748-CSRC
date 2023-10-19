@@ -1,29 +1,25 @@
 package org.firstinspires.ftc.teamcode.subsystems.vision;
 
-import java.util.ArrayList;
-import java.util.Random;
-
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Rect;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.MatOfPoint2f;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 /* All image processing happens here. */
 public class IntakeDetectionPipeline extends OpenCvPipeline {
-    private Mat srcGray;
+    public Mat srcGray;
     private Mat cannyOutput;
     private Mat hierarchy;
     private Mat contoursPoly;
     private ArrayList<MatOfPoint> contours;
-    private int threshold;
+    public int threshold;
     @Override
     public Mat processFrame(Mat src) {
         int threshold = 255;
@@ -38,7 +34,7 @@ public class IntakeDetectionPipeline extends OpenCvPipeline {
 
         /* Outlines of objects. */
         Mat cannyOutput = new Mat();
-        Imgproc.Canny(srcGray, cannyOutput, threshold/3, threshold);
+        Imgproc.Canny(srcGray, cannyOutput, threshold/3f, threshold);
 
         /* Creates ArrayList and assigns value to hold contours. */
         ArrayList<MatOfPoint> contours = new ArrayList<>();

@@ -2,11 +2,11 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-
-import org.firstinspires.ftc.teamcode.subsystems.hardware.*;
+import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
+import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
 
 /**
  * TeleOp OpMode for testing motors.

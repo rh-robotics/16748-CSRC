@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.subsystems.vision.IntakeDetectionPipeline;
+import org.firstinspires.ftc.teamcode.subsystems.vision.TestFramePipeline;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -17,7 +17,7 @@ public class TestFrame extends LinearOpMode {
     OpenCvCamera camera;
     OpenCvCamera cameraUneditedFootage;
 
-    IntakeDetectionPipeline intakeDetection;
+    TestFramePipeline testFramePipeline;
     @Override
     public void runOpMode() {
 
@@ -26,9 +26,9 @@ public class TestFrame extends LinearOpMode {
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam"), cameraMonitorViewId);
 
         /* All img processing happens within the pipeline. */
-        intakeDetection = new IntakeDetectionPipeline();
+        testFramePipeline = new TestFramePipeline();
 
-        camera.setPipeline(intakeDetection);
+        camera.setPipeline(testFramePipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener(){
             @Override
             public void onOpened() {
