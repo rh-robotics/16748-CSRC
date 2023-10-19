@@ -31,23 +31,24 @@ public class StateMachineOpMode extends OpMode {
 
     public void init() {
         /* Checks if initial state is a valid state. */
-        if (!states.containsKey(initialState)){
+        if (!states.containsKey(initialState)) {
             throw new RuntimeException("Nonexistent initial state: '" + initialState.getSimpleName() + "'.");
-        }
-        else {
+        } else {
             currentState = initialState;
         }
     }
-    public void start() {time.reset();}
+
+    public void start() {
+        time.reset();
+    }
 
     public void loop() {
         /* Checks if current state is a real state before running.
          * No feasible way for this exception to be thrown... */
         if (!states.containsKey(currentState)) {
-            if(currentState != null){
+            if (currentState != null) {
                 throw new RuntimeException("Current state nonexistent: '" + currentState.getSimpleName() + "'.");
-            }
-            else {
+            } else {
                 throw new RuntimeException("Current state is null. Check if currentState was initialized.");
             }
         } else {
@@ -60,19 +61,18 @@ public class StateMachineOpMode extends OpMode {
 
     public void runState(StateInterface state) {
         /* Checks if state we're checking edges of a nonexistent state.
-        *  No feasible way for this exception to be thrown unless called outside of loop. */
+         *  No feasible way for this exception to be thrown unless called outside of loop. */
         if (!states.containsKey(state.getClass())) {
             throw new RuntimeException("Attempting to check edges of nonexistent state: '" +
                     state.getClass().getSimpleName() + "'.");
         }
 
-        Class <? extends StateInterface> newStateType = state.checkEdges();
+        Class<? extends StateInterface> newStateType = state.checkEdges();
         /* Checks if the state returned by checkEdges() is a nonexistent state. */
-        if (!states.containsKey(newStateType)){
-                throw new RuntimeException("Edge directing to nonexistent state: '" +
-                        state.checkEdges() + "'.");
-        }
-        else {
+        if (!states.containsKey(newStateType)) {
+            throw new RuntimeException("Edge directing to nonexistent state: '" +
+                    state.checkEdges() + "'.");
+        } else {
             StateInterface newState = states.get(newStateType);
             /* As defined in StateInterface, state.checkEdges() cannot return null. */
             assert (newState != null);

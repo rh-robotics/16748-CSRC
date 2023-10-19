@@ -17,7 +17,6 @@ public class StateMachineOpModeTest {
             stateMachine.states = new HashMap<>();
             stateMachine.loop();
         });
-        System.out.println("Exception message: " + exception.getMessage());
         Assert.assertTrue(exception.getMessage().contains("Current state nonexistent: "));
     }
 
