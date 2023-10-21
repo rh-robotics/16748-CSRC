@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import java.util.ArrayList;
 
 @Autonomous(name = "SMC Test")
-public class smcTest extends OpMode {
+public class StateMachineControllerTest extends OpMode {
     public static Gamepad gamepad;
     public static Telemetry pTelemetry;
 
@@ -41,7 +41,7 @@ class DrivingState implements State {
     public ArrayList<Edge> getEdges() {
 
         // currentState will switch to ScoringState when gamepad.a is pressed.
-        edges.add(new Edge(ScoringState.class, () -> smcTest.gamepad.a));
+        edges.add(new Edge(ScoringState.class, () -> StateMachineControllerTest.gamepad.a));
 
         return edges;
     }
@@ -55,7 +55,7 @@ class ScoringState implements State {
 
     public ArrayList<Edge> getEdges() {
         // currentState will switch to DrivingState when gamepad.b is pressed.
-        edges.add(new Edge(DrivingState.class, () -> smcTest.gamepad.b));
+        edges.add(new Edge(DrivingState.class, () -> StateMachineControllerTest.gamepad.b));
 
         return edges;
     }
