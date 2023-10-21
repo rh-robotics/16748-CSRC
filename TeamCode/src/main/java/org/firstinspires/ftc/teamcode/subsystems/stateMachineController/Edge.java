@@ -6,7 +6,7 @@ public class Edge {
 
     /* Here's a crash course on Lambdas because I had to learn what they
      * were and I learn things best by explaining things back to people.
-     * (I have no doubt you've noticed this, Isacc)
+     * (I have no doubt you've noticed this, Milo)
      *
      * "EdgeCallback condition = () -> StateMachineTest.gamepad.a;"
      * sets condition to an instance of an anonymous class (never explicitly
