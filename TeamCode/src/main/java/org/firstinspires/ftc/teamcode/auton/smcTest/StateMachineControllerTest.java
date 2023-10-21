@@ -30,6 +30,7 @@ public class StateMachineControllerTest extends OpMode {
 
         stateMachine.currentState = stateMachine.states.get(DrivingState.class);
     }
+
     @Override
     public void loop() {
         stateMachine.loop(telemetry);
@@ -38,6 +39,7 @@ public class StateMachineControllerTest extends OpMode {
 
 class DrivingState implements State {
     ArrayList<Edge> edges = new ArrayList();
+
     public ArrayList<Edge> getEdges() {
 
         // currentState will switch to ScoringState when gamepad.a is pressed.
@@ -45,6 +47,7 @@ class DrivingState implements State {
 
         return edges;
     }
+
     public void loop() {
         telemetry.addData("State", "Driving State");
     }
@@ -59,6 +62,7 @@ class ScoringState implements State {
 
         return edges;
     }
+
     public void loop() {
         telemetry.addData("State", "Driving State");
     }
