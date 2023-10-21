@@ -28,12 +28,12 @@ public class IntakeDetection extends LinearOpMode {
         intakeDetection = new IntakeDetectionPipeline();
 
         camera.setPipeline(intakeDetection);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener(){
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
                 /* 16:9 aspect ratio.
                  * Streaming over 480p (640x480) limits our FPS to less than 30. */
-                camera.startStreaming(800, 450, OpenCvCameraRotation.UPRIGHT);
+                camera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
             }
 
             /* If camera cannot be opened */
