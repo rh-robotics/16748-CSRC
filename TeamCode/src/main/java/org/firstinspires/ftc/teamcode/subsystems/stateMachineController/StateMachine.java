@@ -30,6 +30,7 @@ public class StateMachine {
     public void checkEdges(Telemetry telemetry) {
         ArrayList<Edge> edgeCallbacks = new ArrayList();
 
+        /* Prioritizes edges numerically (edges added first will be run over edges added later). */
         for (Edge edge : currentState.getEdges()) {
             if (edge.getCallback()) {
                 edgeCallbacks.add(edge);
