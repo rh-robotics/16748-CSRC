@@ -1,15 +1,15 @@
-package org.firstinspires.ftc.teamcode.auton.stateMachine;
+package org.firstinspires.ftc.teamcode.auton.stateMachineBackupTest;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.auton.stateMachine.states.*;
+import org.firstinspires.ftc.teamcode.auton.stateMachineBackupTest.states.*;
 
 import java.util.HashMap;
 
-/* Autonomous State Machine */
-@Autonomous(name = "Autonomous State Machine")
+/* Autonomous State Machine Backup (Without Use of Controller).  */
+@Autonomous(name = "State Machine Backup")
 public class StateMachineOpMode extends OpMode {
     private final ElapsedTime time = new ElapsedTime();
 

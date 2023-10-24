@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.auton.stateMachine;
+package org.firstinspires.ftc.teamcode.auton.stateMachineBackupTest;
 
 import org.junit.Test;
 import org.junit.Assert;
 
-import org.firstinspires.ftc.teamcode.auton.stateMachine.states.*;
+import org.firstinspires.ftc.teamcode.auton.stateMachineBackupTest.states.*;
 
 import java.util.HashMap;
 
