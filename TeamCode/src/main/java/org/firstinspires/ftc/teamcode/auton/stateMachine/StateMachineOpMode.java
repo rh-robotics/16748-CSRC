@@ -1,86 +1,321 @@
 package org.firstinspires.ftc.teamcode.auton.stateMachine;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.auton.stateMachine.states.*;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.subsystems.stateMachineController.Edge;
+import org.firstinspires.ftc.teamcode.subsystems.stateMachineController.State;
+import org.firstinspires.ftc.teamcode.subsystems.stateMachineController.StateMachine;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
-/* Autonomous State Machine */
 @Autonomous(name = "Autonomous State Machine")
 public class StateMachineOpMode extends OpMode {
-    private final ElapsedTime time = new ElapsedTime();
-
-    /* Holds the key to the entry of the current state in states HashMap. */
-    Class<? extends StateInterface> currentState;
-    DrivingState drivingState = new DrivingState();
-    ScoringState scoringState = new ScoringState();
-    IntakeState intakeState = new IntakeState();
-    IdleState idleState = new IdleState();
-    Class<? extends StateInterface> initialState = DrivingState.class;
-    public HashMap<Class<? extends StateInterface>, StateInterface> states = new HashMap<>();
-
-    public StateMachineOpMode() {
-        states.put(drivingState.getClass(), drivingState);
-        states.put(scoringState.getClass(), scoringState);
-        states.put(intakeState.getClass(), intakeState);
-        states.put(idleState.getClass(), idleState);
-    }
-
+    public static Gamepad gamepad;
+    public static Telemetry pTelemetry;
+    static ElapsedTime elapsedTime;
+    StateMachine stateMachine;
+    public static Context context;
+    @Override
     public void init() {
-        /* Checks if initial state is a valid state. */
-        if (!states.containsKey(initialState)) {
-            throw new RuntimeException("Nonexistent initial state: '" + initialState.getSimpleName() + "'.");
-        } else {
-            currentState = initialState;
-        }
+        gamepad = gamepad1;
+        pTelemetry = telemetry;
+        elapsedTime = new ElapsedTime();
+
+        context = new Context();
+        context.robotParked = true; /* Changed to false on start(). */
+
+        context.pixelsInControl = 0;
+
+        stateMachine = new StateMachine();
+        stateMachine.addState(new DrivingState());
+        stateMachine.addState(new ScoringState());
+
+        /* Initial state. */
+        stateMachine.currentState = stateMachine.states.get(DrivingState.class);
     }
 
+    @Override
     public void start() {
-        time.reset();
+        context.robotParked = false;
+        elapsedTime.reset();
+    }
+
+    @Override
+    public void loop() {
+        if (context.pixelsInControl > 2) {
+            // TODO: Embed this error/rule-breaking check into stateMachine.loop().
+            /* Figure out if there's any other rules we need to be consistently being careful
+            not to break. */
+            telemetry.addLine("RULE BROKEN: POSSESSION OF MORE THAN 2 PIXELS.");
+        }
+        /* Passing telemetry around. */
+        stateMachine.loop(telemetry);
+    }
+}
+
+/**
+ * "Default" state that most things point back to. This state handles everything to do with
+ * getting from point A to point B. Control flow of Auton plan handled within this state.
+ */
+class DrivingState implements State {
+    ArrayList<Edge> edges;
+
+    public ArrayList<Edge> getEdges() {
+        edges = new ArrayList();
+
+        // Idle state redirects to TeleOp after elapsedTime >= 30.
+        edges.add(new Edge(IdleState.class, () -> StateMachineOpMode.elapsedTime.time() >= 30));
+
+        /* Although theoretically mutually exclusive within the control flow, a message should
+         * occur with Telemetry (no RuntimeException to avoid robot crashing) to limit silent
+         * logic errors if multiple edges are true.
+         */
+
+        edges.add(new Edge(IdleState.class, () -> StateMachineOpMode.context.robotParked));
+        edges.add(new Edge(IntakeState.class, () -> StateMachineOpMode.context.inIntakePosition));
+        edges.add(new Edge(ScoringState.class, () -> StateMachineOpMode.context.inScoringPosition));
+
+        return edges;
     }
 
     public void loop() {
-        /* Checks if current state is a real state before running.
-         * No feasible way for this exception to be thrown... */
-        if (!states.containsKey(currentState)) {
-            if (currentState != null) {
-                throw new RuntimeException("Current state nonexistent: '" + currentState.getSimpleName() + "'.");
+        telemetry.addData("State", "Driving");
+
+        /* Edges are always checked before loop is run. */
+        StateMachineOpMode.context.inScoringPosition = false;
+        StateMachineOpMode.context.inIntakePosition = false;
+        StateMachineOpMode.context.robotParked = false;
+
+        /* Main autonomous state machine control flow here. */
+
+        /* For the sake of clarity within the code, we are grouping these together in an
+        if-statement as the initial "Team Prop" scoring opportunities. */
+        if (!StateMachineOpMode.context.teamPropLineScored || !StateMachineOpMode.context.teamPropBackdropScored) {
+            if (!StateMachineOpMode.context.teamPropLineScored) {
+                driveToTeamPropLine();
             } else {
-                throw new RuntimeException("Current state is null. Check if currentState was initialized.");
+                driveToBackdrop();
             }
-        } else {
-            StateInterface state = states.get(currentState);
-            assert (state != null);
+        } else if (StateMachineOpMode.elapsedTime.time() > 25) {
+            driveToAutonPark();
+        } else if (StateMachineOpMode.context.pixelsInControl < 2) {
+            /* Sets state to scoring. */
+            driveToIntakePixels();
+        } else if (StateMachineOpMode.context.pixelsInControl == 2) {
+            /* Sets state to scoring. */
+            driveToBackdrop();
+        } else if (StateMachineOpMode.context.pixelsInControl > 2) {
+            // TODO: Handle this situation.
+            /*  Theoretically, should never happen, but something weird with hardware
+             *  might make this possible. */
 
-            runState(state);
+            telemetry.addLine("RULE BROKEN: POSSESSION OF MORE THAN 2 PIXELS.");
+        } else {
+            /* Keep this else despite the last else if currently always be true
+             * to catch any potential errors if we complicate the control flow. */
+
+            /* Not throwing RuntimeException to avoid crashing robot. This code should
+            theoretically never be run, but if it is, it does not necessarily indicate a serious
+            error, just something that we should be aware of to avoid silent logic errors.  */
+            telemetry.addLine("Current status unaccounted for in Drive State.");
+            telemetry.addData("time", StateMachineOpMode.elapsedTime);
+            telemetry.addData("teamPropLineScored", StateMachineOpMode.context.teamPropLineScored);
+            telemetry.addData("TeamPropBackdropScored", StateMachineOpMode.context.teamPropBackdropScored);
+            telemetry.addData("controlledPixels", StateMachineOpMode.context.teamPropLineScored);
         }
     }
 
-    public void runState(StateInterface state) {
-        /* Checks if state we're checking edges of a nonexistent state.
-         *  No feasible way for this exception to be thrown unless called outside of loop. */
-        if (!states.containsKey(state.getClass())) {
-            throw new RuntimeException("Attempting to check edges of nonexistent state: '" +
-                    state.getClass().getSimpleName() + "'.");
-        }
+    public void driveToBackdrop() {
+        telemetry.addLine("Driving to Backdrop.");
 
-        Class<? extends StateInterface> newStateType = state.checkEdges();
-        /* Checks if the state returned by checkEdges() is a nonexistent state. */
-        if (!states.containsKey(newStateType)) {
-            throw new RuntimeException("Edge directing to nonexistent state: '" +
-                    state.checkEdges() + "'.");
-        } else {
-            StateInterface newState = states.get(newStateType);
-            /* As defined in StateInterface, state.checkEdges() cannot return null. */
-            assert (newState != null);
-
-            /* Already confirmed that the state directed to from checkEdges() is a real state. */
-            currentState = newState.getClass();
-        }
-
-        state.stateAction();
+        // TODO: Make this method actually make the robot drive to the backdrop...
+        StateMachineOpMode.context.inScoringPosition = true;
     }
+
+    public void driveToTeamPropLine() {
+        telemetry.addLine("Driving to Team Prop Line.");
+
+        // TODO: Make the robot drive to the Team Prop line
+        /* "Scoring" State generalized to handle scoring on the Team Prop Line and on the backdrop. */
+        StateMachineOpMode.context.inScoringPosition = true;
+    }
+
+    public void driveToIntakePixels() {
+        telemetry.addLine("Driving to pixels.");
+
+        // TODO: Make the robot figure out which pixels to go to, and then go to them
+        StateMachineOpMode.context.inIntakePosition = true;
+    }
+
+    public void driveToAutonPark() {
+        telemetry.addLine("Parking.");
+
+        // TODO: Make robot Auton Park
+        StateMachineOpMode.context.robotParked = true;
+    }
+
+}
+
+class ScoringState implements State {
+    ArrayList<Edge> edges;
+
+    public ArrayList<Edge> getEdges() {
+        edges = new ArrayList();
+
+        // Idle state redirects to TeleOp after elapsedTime >= 30.
+        edges.add(new Edge(IdleState.class, () -> StateMachineOpMode.elapsedTime.time() >= 30));
+
+        edges.add(new Edge(DrivingState.class, () -> StateMachineOpMode.context.pixelsInControl <= 0));
+
+        edges.add(new Edge(teamPropLineScoring.class, () -> !StateMachineOpMode.context.teamPropLineScored));
+        edges.add(new Edge(teamPropBackdropScoring.class, () -> StateMachineOpMode.context.teamPropLineScored && !StateMachineOpMode.context.teamPropBackdropScored));
+        edges.add(new Edge(scoringOnBackdrop.class, () -> StateMachineOpMode.context.teamPropLineScored && StateMachineOpMode.context.teamPropBackdropScored));
+
+        return edges;
+    }
+
+    public void loop() {
+        telemetry.addData("State", "Scoring");
+
+        /* State should never run loop. Should always redirect on an edge before looping. */
+        telemetry.addLine("Scoring state failing to redirect.");
+    }
+}
+
+class teamPropLineScoring implements State {
+    ArrayList<Edge> edges;
+
+    public ArrayList<Edge> getEdges() {
+        edges = new ArrayList();
+
+        // Idle state redirects to TeleOp after elapsedTime >= 30.
+        edges.add(new Edge(IdleState.class, () -> StateMachineOpMode.elapsedTime.time() >= 30));
+
+        edges.add(new Edge(DrivingState.class, () -> StateMachineOpMode.context.pixelsInControl <= 0));
+
+        return edges;
+    }
+
+    public void loop() {
+        telemetry.addLine("Scoring Pixel on Line according to Team Prop.");
+
+        // TODO: Robot should detect which line the pixel is on and score accordingly. */
+
+        // TODO: Consider changing how we keep track of pixel possession to a sensor-managed system. */
+        StateMachineOpMode.context.pixelsInControl -= 1;
+    }
+}
+
+class teamPropBackdropScoring implements State {
+    ArrayList<Edge> edges;
+
+    public ArrayList<Edge> getEdges() {
+        edges = new ArrayList();
+
+        // Idle state redirects to TeleOp after elapsedTime >= 30.
+        edges.add(new Edge(IdleState.class, () -> StateMachineOpMode.elapsedTime.time() >= 30));
+
+        edges.add(new Edge(DrivingState.class, () -> StateMachineOpMode.context.pixelsInControl <= 0));
+
+        return edges;
+    }
+
+    public void loop() {
+        telemetry.addLine("Scoring Pixel on Backdrop according to Team Prop.");
+
+        // TODO: Robot should score on backdrop accordingly to previously-stored information.
+
+        // TODO: Consider changing how we keep track of pixel possession to a sensor-managed system. */
+        StateMachineOpMode.context.pixelsInControl -= 1;
+    }
+}
+
+class scoringOnBackdrop implements State {
+    ArrayList<Edge> edges;
+
+    public ArrayList<Edge> getEdges() {
+        edges = new ArrayList();
+
+        // Idle state redirects to TeleOp after elapsedTime >= 30.
+        edges.add(new Edge(IdleState.class, () -> StateMachineOpMode.elapsedTime.time() >= 30));
+
+        edges.add(new Edge(DrivingState.class, () -> StateMachineOpMode.context.pixelsInControl <= 0));
+
+        return edges;
+    }
+
+    public void loop() {
+        telemetry.addLine("Scoring Pixel on Backdrop.");
+
+        // TODO: Robot should analyze board for where to place a pixel and then score on backboard. */
+        /* Consider keeping a list (that resets before we switch to scoring state) of "best moves"
+         *
+         * Could potentially cause problems if allied robot is scoring simultaneously with us to
+         * have "predetermined" moves from when we started scoring, but also would most likely be
+         * the most reasonable and efficient method of scoring. */
+
+        // TODO: Consider changing how we keep track of pixel possession to a sensor-managed system. */
+        StateMachineOpMode.context.pixelsInControl -= 1;
+    }
+}
+
+class IntakeState implements State {
+    ArrayList<Edge> edges;
+
+    public ArrayList<Edge> getEdges() {
+        edges = new ArrayList();
+
+        // Idle state redirects to TeleOp after elapsedTime >= 30.
+        edges.add(new Edge(IdleState.class, () -> StateMachineOpMode.elapsedTime.time() >= 30));
+
+        edges.add(new Edge(DrivingState.class, () -> StateMachineOpMode.context.pixelsInControl == 2));
+
+        return edges;
+    }
+
+    public void loop() {
+        telemetry.addData("State", "Intake");
+
+        intakePixel();
+    }
+
+    public void intakePixel() {
+        telemetry.addLine("Intaking Pixel");
+
+        // TODO: Consider changing how we keep track of pixel possession to a sensor-managed system. */
+        StateMachineOpMode.context.pixelsInControl += 1;
+    }
+}
+
+class IdleState implements State {
+    ArrayList<Edge> edges;
+
+    public ArrayList<Edge> getEdges() {
+        edges = new ArrayList();
+        return edges;
+    }
+
+    public void loop() {
+        telemetry.addData("State", "Idle");
+
+        if (StateMachineOpMode.elapsedTime.time() >= 30) {
+            telemetry.addLine("Switch to Driver Control TeleOp.");
+            /* TODO: Make this redirect this to TeleOp. */
+        }
+    }
+}
+
+class Context {
+    boolean teamPropLineScored = false;
+    boolean teamPropBackdropScored = false;
+    boolean robotParked = false;
+    boolean inScoringPosition = false;
+    boolean inIntakePosition = false;
+    byte pixelsInControl = 0;
 }
