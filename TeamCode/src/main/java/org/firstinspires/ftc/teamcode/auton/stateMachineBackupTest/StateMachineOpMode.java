@@ -13,8 +13,7 @@ import java.util.HashMap;
 public class StateMachineOpMode extends OpMode {
     private final ElapsedTime time = new ElapsedTime();
 
-    /* Holds the key to the entry of the current state in states HashMap. */
-    Class<? extends StateInterface> currentState;
+    /* Holds the key to the entry of the current state in states HashMap. */ Class<? extends StateInterface> currentState;
     DrivingState drivingState = new DrivingState();
     ScoringState scoringState = new ScoringState();
     IntakeState intakeState = new IntakeState();
@@ -63,15 +62,13 @@ public class StateMachineOpMode extends OpMode {
         /* Checks if state we're checking edges of a nonexistent state.
          *  No feasible way for this exception to be thrown unless called outside of loop. */
         if (!states.containsKey(state.getClass())) {
-            throw new RuntimeException("Attempting to check edges of nonexistent state: '" +
-                    state.getClass().getSimpleName() + "'.");
+            throw new RuntimeException("Attempting to check edges of nonexistent state: '" + state.getClass().getSimpleName() + "'.");
         }
 
         Class<? extends StateInterface> newStateType = state.checkEdges();
         /* Checks if the state returned by checkEdges() is a nonexistent state. */
         if (!states.containsKey(newStateType)) {
-            throw new RuntimeException("Edge directing to nonexistent state: '" +
-                    state.checkEdges() + "'.");
+            throw new RuntimeException("Edge directing to nonexistent state: '" + state.checkEdges() + "'.");
         } else {
             StateInterface newState = states.get(newStateType);
             /* As defined in StateInterface, state.checkEdges() cannot return null. */

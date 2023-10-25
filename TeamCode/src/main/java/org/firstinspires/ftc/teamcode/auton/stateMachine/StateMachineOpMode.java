@@ -19,29 +19,18 @@ public class StateMachineOpMode extends OpMode {
     public static Gamepad gamepad;
     public static Telemetry pTelemetry;
     static ElapsedTime elapsedTime;
-
     StateMachine stateMachine;
-
-    static boolean teamPropLineScored;
-    static boolean teamPropBackdropScored;
-    static boolean robotParked;
-    static boolean inScoringPosition;
-    static boolean inIntakePosition;
-    static byte pixelsInControl;
-
+    public static Context context;
     @Override
     public void init() {
         gamepad = gamepad1;
         pTelemetry = telemetry;
         elapsedTime = new ElapsedTime();
 
-        teamPropLineScored = false;
-        teamPropBackdropScored = false;
-        inScoringPosition = false;
-        inIntakePosition = false;
-        robotParked = true; /* Changed to false on start(). */
+        context = new Context();
+        context.robotParked = true; /* Changed to false on start(). */
 
-        pixelsInControl = 0;
+        context.pixelsInControl = 0;
 
         stateMachine = new StateMachine();
         stateMachine.addState(new DrivingState());
@@ -53,13 +42,13 @@ public class StateMachineOpMode extends OpMode {
 
     @Override
     public void start() {
-        robotParked = false;
+        context.robotParked = false;
         elapsedTime.reset();
     }
 
     @Override
     public void loop() {
-        if (pixelsInControl > 2) {
+        if (context.pixelsInControl > 2) {
             // TODO: Embed this error/rule-breaking check into stateMachine.loop().
             /* Figure out if there's any other rules we need to be consistently being careful
             not to break. */
@@ -87,9 +76,10 @@ class DrivingState implements State {
          * occur with Telemetry (no RuntimeException to avoid robot crashing) to limit silent
          * logic errors if multiple edges are true.
          */
-        edges.add(new Edge(IdleState.class, () -> StateMachineOpMode.robotParked));
-        edges.add(new Edge(IntakeState.class, () -> StateMachineOpMode.inIntakePosition));
-        edges.add(new Edge(ScoringState.class, () -> StateMachineOpMode.inScoringPosition));
+
+        edges.add(new Edge(IdleState.class, () -> StateMachineOpMode.context.robotParked));
+        edges.add(new Edge(IntakeState.class, () -> StateMachineOpMode.context.inIntakePosition));
+        edges.add(new Edge(ScoringState.class, () -> StateMachineOpMode.context.inScoringPosition));
 
         return edges;
     }
@@ -98,29 +88,29 @@ class DrivingState implements State {
         telemetry.addData("State", "Driving");
 
         /* Edges are always checked before loop is run. */
-        StateMachineOpMode.inScoringPosition = false;
-        StateMachineOpMode.inIntakePosition = false;
-        StateMachineOpMode.robotParked = false;
+        StateMachineOpMode.context.inScoringPosition = false;
+        StateMachineOpMode.context.inIntakePosition = false;
+        StateMachineOpMode.context.robotParked = false;
 
         /* Main autonomous state machine control flow here. */
 
         /* For the sake of clarity within the code, we are grouping these together in an
         if-statement as the initial "Team Prop" scoring opportunities. */
-        if (!StateMachineOpMode.teamPropLineScored || !StateMachineOpMode.teamPropBackdropScored) {
-            if (!StateMachineOpMode.teamPropLineScored) {
+        if (!StateMachineOpMode.context.teamPropLineScored || !StateMachineOpMode.context.teamPropBackdropScored) {
+            if (!StateMachineOpMode.context.teamPropLineScored) {
                 driveToTeamPropLine();
             } else {
                 driveToBackdrop();
             }
         } else if (StateMachineOpMode.elapsedTime.time() > 25) {
             driveToAutonPark();
-        } else if (StateMachineOpMode.pixelsInControl < 2) {
+        } else if (StateMachineOpMode.context.pixelsInControl < 2) {
             /* Sets state to scoring. */
             driveToIntakePixels();
-        } else if (StateMachineOpMode.pixelsInControl == 2) {
+        } else if (StateMachineOpMode.context.pixelsInControl == 2) {
             /* Sets state to scoring. */
             driveToBackdrop();
-        } else if (StateMachineOpMode.pixelsInControl > 2) {
+        } else if (StateMachineOpMode.context.pixelsInControl > 2) {
             // TODO: Handle this situation.
             /*  Theoretically, should never happen, but something weird with hardware
              *  might make this possible. */
@@ -135,9 +125,9 @@ class DrivingState implements State {
             error, just something that we should be aware of to avoid silent logic errors.  */
             telemetry.addLine("Current status unaccounted for in Drive State.");
             telemetry.addData("time", StateMachineOpMode.elapsedTime);
-            telemetry.addData("teamPropLineScored", StateMachineOpMode.teamPropLineScored);
-            telemetry.addData("TeamPropBackdropScored", StateMachineOpMode.teamPropBackdropScored);
-            telemetry.addData("controlledPixels", StateMachineOpMode.teamPropLineScored);
+            telemetry.addData("teamPropLineScored", StateMachineOpMode.context.teamPropLineScored);
+            telemetry.addData("TeamPropBackdropScored", StateMachineOpMode.context.teamPropBackdropScored);
+            telemetry.addData("controlledPixels", StateMachineOpMode.context.teamPropLineScored);
         }
     }
 
@@ -145,7 +135,7 @@ class DrivingState implements State {
         telemetry.addLine("Driving to Backdrop.");
 
         // TODO: Make this method actually make the robot drive to the backdrop...
-        StateMachineOpMode.inScoringPosition = true;
+        StateMachineOpMode.context.inScoringPosition = true;
     }
 
     public void driveToTeamPropLine() {
@@ -153,21 +143,21 @@ class DrivingState implements State {
 
         // TODO: Make the robot drive to the Team Prop line
         /* "Scoring" State generalized to handle scoring on the Team Prop Line and on the backdrop. */
-        StateMachineOpMode.inScoringPosition = true;
+        StateMachineOpMode.context.inScoringPosition = true;
     }
 
     public void driveToIntakePixels() {
         telemetry.addLine("Driving to pixels.");
 
         // TODO: Make the robot figure out which pixels to go to, and then go to them
-        StateMachineOpMode.inIntakePosition = true;
+        StateMachineOpMode.context.inIntakePosition = true;
     }
 
     public void driveToAutonPark() {
         telemetry.addLine("Parking.");
 
         // TODO: Make robot Auton Park
-        StateMachineOpMode.robotParked = true;
+        StateMachineOpMode.context.robotParked = true;
     }
 
 }
@@ -181,13 +171,11 @@ class ScoringState implements State {
         // Idle state redirects to TeleOp after elapsedTime >= 30.
         edges.add(new Edge(IdleState.class, () -> StateMachineOpMode.elapsedTime.time() >= 30));
 
-        edges.add(new Edge(DrivingState.class, () -> StateMachineOpMode.pixelsInControl <= 0));
+        edges.add(new Edge(DrivingState.class, () -> StateMachineOpMode.context.pixelsInControl <= 0));
 
-        edges.add(new Edge(teamPropLineScoring.class, () -> !StateMachineOpMode.teamPropLineScored));
-        edges.add(new Edge(teamPropBackdropScoring.class, () -> StateMachineOpMode.teamPropLineScored
-                && !StateMachineOpMode.teamPropBackdropScored));
-        edges.add(new Edge(scoringOnBackdrop.class, () -> StateMachineOpMode.teamPropLineScored
-                && StateMachineOpMode.teamPropBackdropScored));
+        edges.add(new Edge(teamPropLineScoring.class, () -> !StateMachineOpMode.context.teamPropLineScored));
+        edges.add(new Edge(teamPropBackdropScoring.class, () -> StateMachineOpMode.context.teamPropLineScored && !StateMachineOpMode.context.teamPropBackdropScored));
+        edges.add(new Edge(scoringOnBackdrop.class, () -> StateMachineOpMode.context.teamPropLineScored && StateMachineOpMode.context.teamPropBackdropScored));
 
         return edges;
     }
@@ -209,7 +197,7 @@ class teamPropLineScoring implements State {
         // Idle state redirects to TeleOp after elapsedTime >= 30.
         edges.add(new Edge(IdleState.class, () -> StateMachineOpMode.elapsedTime.time() >= 30));
 
-        edges.add(new Edge(DrivingState.class, () -> StateMachineOpMode.pixelsInControl <= 0));
+        edges.add(new Edge(DrivingState.class, () -> StateMachineOpMode.context.pixelsInControl <= 0));
 
         return edges;
     }
@@ -220,7 +208,7 @@ class teamPropLineScoring implements State {
         // TODO: Robot should detect which line the pixel is on and score accordingly. */
 
         // TODO: Consider changing how we keep track of pixel possession to a sensor-managed system. */
-        StateMachineOpMode.pixelsInControl -= 1;
+        StateMachineOpMode.context.pixelsInControl -= 1;
     }
 }
 
@@ -233,7 +221,7 @@ class teamPropBackdropScoring implements State {
         // Idle state redirects to TeleOp after elapsedTime >= 30.
         edges.add(new Edge(IdleState.class, () -> StateMachineOpMode.elapsedTime.time() >= 30));
 
-        edges.add(new Edge(DrivingState.class, () -> StateMachineOpMode.pixelsInControl <= 0));
+        edges.add(new Edge(DrivingState.class, () -> StateMachineOpMode.context.pixelsInControl <= 0));
 
         return edges;
     }
@@ -244,7 +232,7 @@ class teamPropBackdropScoring implements State {
         // TODO: Robot should score on backdrop accordingly to previously-stored information.
 
         // TODO: Consider changing how we keep track of pixel possession to a sensor-managed system. */
-        StateMachineOpMode.pixelsInControl -= 1;
+        StateMachineOpMode.context.pixelsInControl -= 1;
     }
 }
 
@@ -257,7 +245,7 @@ class scoringOnBackdrop implements State {
         // Idle state redirects to TeleOp after elapsedTime >= 30.
         edges.add(new Edge(IdleState.class, () -> StateMachineOpMode.elapsedTime.time() >= 30));
 
-        edges.add(new Edge(DrivingState.class, () -> StateMachineOpMode.pixelsInControl <= 0));
+        edges.add(new Edge(DrivingState.class, () -> StateMachineOpMode.context.pixelsInControl <= 0));
 
         return edges;
     }
@@ -273,7 +261,7 @@ class scoringOnBackdrop implements State {
          * the most reasonable and efficient method of scoring. */
 
         // TODO: Consider changing how we keep track of pixel possession to a sensor-managed system. */
-        StateMachineOpMode.pixelsInControl -= 1;
+        StateMachineOpMode.context.pixelsInControl -= 1;
     }
 }
 
@@ -286,7 +274,7 @@ class IntakeState implements State {
         // Idle state redirects to TeleOp after elapsedTime >= 30.
         edges.add(new Edge(IdleState.class, () -> StateMachineOpMode.elapsedTime.time() >= 30));
 
-        edges.add(new Edge(DrivingState.class, () -> StateMachineOpMode.pixelsInControl == 2));
+        edges.add(new Edge(DrivingState.class, () -> StateMachineOpMode.context.pixelsInControl == 2));
 
         return edges;
     }
@@ -301,7 +289,7 @@ class IntakeState implements State {
         telemetry.addLine("Intaking Pixel");
 
         // TODO: Consider changing how we keep track of pixel possession to a sensor-managed system. */
-        StateMachineOpMode.pixelsInControl += 1;
+        StateMachineOpMode.context.pixelsInControl += 1;
     }
 }
 
@@ -321,4 +309,13 @@ class IdleState implements State {
             /* TODO: Make this redirect this to TeleOp. */
         }
     }
+}
+
+class Context {
+    boolean teamPropLineScored = false;
+    boolean teamPropBackdropScored = false;
+    boolean robotParked = false;
+    boolean inScoringPosition = false;
+    boolean inIntakePosition = false;
+    byte pixelsInControl = 0;
 }
