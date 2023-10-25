@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
@@ -19,7 +21,10 @@ public class IntakeRunningCode extends OpMode{
 
         /** DcMotorEx is a child class of DcMotor, so for now we just introduce them as DcMotors.*/
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "intakeMotor"));
-
+        /**Introduced Servos*/
+        robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "geekoWheelServo"));
+        robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "entraptionServo1"));
+        robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "entraptionServo2"));
         telemetry.addData("Status", "Initialized");
     }
 
@@ -34,12 +39,21 @@ public class IntakeRunningCode extends OpMode{
 
     @Override
     public void loop() {
+        double intakePower = 0.5;
+
         if (gamepad1.a) {
-            robot.<DcMotor>get("intakeMotor").setPower(0.5);
-            telemetry.addData("Intake Motor", "Running");
+            /* Setting power of intake motors and servos. */
+            robot.<DcMotor>get("intakeMotor").setPower(intakePower);
+            robot.<CRServo>get("geekoWheelServo").setPower(intakePower);
+            robot.<CRServo>get("entraptionServo1").setPower(intakePower);
+            robot.<CRServo>get("entraptionServo2").setPower(intakePower);
+            telemetry.addData("Intake", "Running");
         } else {
             robot.<DcMotor>get("intakeMotor").setPower(0);
-            telemetry.addData("Intake Motor", "At rest");
+            robot.<CRServo>get("geekoWheelServo").setPower(0);
+            robot.<CRServo>get("entraptionServo1").setPower(0);
+            robot.<CRServo>get("entraptionServo2").setPower(0);
+            telemetry.addData("Intake", "At rest");
         }
     }
 }

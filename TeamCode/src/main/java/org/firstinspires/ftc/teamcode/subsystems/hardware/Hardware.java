@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems.hardware;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -50,6 +51,8 @@ public class Hardware {
          * class. */
         if (hardwareElement.device instanceof DcMotor) {
             initDcMotor(hardwareElement, hardwareElement.initializers);
+        } else if (hardwareElement.device instanceof CRServo) {
+            initServo(hardwareElement, hardwareElement.initializers);
         } else {
             throw new RuntimeException("Unimplemented hardware element of type '" +
                     hardwareElement.getClass().getSimpleName() + "'.");
@@ -94,6 +97,25 @@ public class Hardware {
                 deviceDcMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             } else {
                 throw new HardwareValueException("setMode", initsHashMap.get("setMode"));
+            }
+        }
+    }
+    private void initServo(HardwareElement<?> hardwareElement,
+                           HashMap<String, String> initsHashMap) {
+        /* Casting a separate deviceDcMotor object as a DcMotor type allows us
+         * run type-specific methods. (eg. deviceDcMotor.setDirection()) */
+        CRServo deviceCRServo = (CRServo) hardwareElement.device;
+
+        if (initsHashMap.containsKey("setDirection")) {
+            switch (Objects.requireNonNull(initsHashMap.get("setDirection"))) {
+                case "FORWARD":
+                    deviceCRServo.setDirection(CRServo.Direction.FORWARD);
+                    break;
+                case "REVERSE":
+                    deviceCRServo.setDirection(CRServo.Direction.REVERSE);
+                    break;
+                default:
+                    throw new HardwareValueException("setDirection", initsHashMap.get("setDirection"));
             }
         }
     }
