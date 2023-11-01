@@ -2,10 +2,12 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.subsystems.HWC;
+import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
+import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
 
 /**
  * TeleOp OpMode for simply driving with strafing wheels
@@ -13,7 +15,7 @@ import org.firstinspires.ftc.teamcode.subsystems.HWC;
 @TeleOp(name = "StrafeDriveBasic", group = "Iterative OpMode")
 public class StrafeDrive extends OpMode {
     private final ElapsedTime time = new ElapsedTime();
-    HWC robot; // Declare the object for HWC, will allow us to access all the motors declared there!
+    private Hardware robot;
 
     // init() Runs ONCE after the driver hits initialize
     @Override
@@ -23,9 +25,14 @@ public class StrafeDrive extends OpMode {
 
         // Do all init stuff
         // TODO: ADD INITS THAT YOU NEED
-        robot = new HWC(hardwareMap, telemetry);
+        robot = new Hardware(hardwareMap, telemetry);
 
-        // Tell the driver the robot is ready
+        /** DcMotorEx is a child class of DcMotor, so for now we just introduce them as DcMotors.*/
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightBack"));
+
         telemetry.addData("Status", "Initialized");
     }
 
@@ -71,15 +78,15 @@ public class StrafeDrive extends OpMode {
         }
 
         // Set power to values calculated above
-        robot.leftFront.setPower(leftFPower);
-        robot.leftRear.setPower(leftBPower);
-        robot.rightFront.setPower(rightFPower);
-        robot.rightRear.setPower(rightBPower);
+        robot.<DcMotor>get("leftFront").setPower(leftFPower);
+        robot.<DcMotor>get("leftRear").setPower(leftBPower);
+        robot.<DcMotor>get("rightFront").setPower(rightFPower);
+        robot.<DcMotor>get("rightRear").setPower(rightBPower);
 
         //telemetry
-        telemetry.addData("leftFPower: ", leftFPower);
-        telemetry.addData("leftBPower: ", leftFPower);
-        telemetry.addData("rightFPower: ", leftFPower);
-        telemetry.addData("rightBPower: ", leftFPower);
+        telemetry.addData("leftFPower", leftFPower);
+        telemetry.addData("leftBPower", leftBPower);
+        telemetry.addData("rightFPower", rightFPower);
+        telemetry.addData("rightBPower", rightBPower);
     }
 }
