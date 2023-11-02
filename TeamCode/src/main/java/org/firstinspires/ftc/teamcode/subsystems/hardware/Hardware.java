@@ -53,7 +53,7 @@ public class Hardware {
         if (hardwareElement.device instanceof DcMotor) {
             initDcMotor(hardwareElement, hardwareElement.initializers);
         } else if (hardwareElement.device instanceof CRServo) {
-            initCRServo();Servo(hardwareElement, hardwareElement.initializers);
+            initCRServo(hardwareElement, hardwareElement.initializers);
         } else if (hardwareElement.device instanceof Servo) {
             initServo(hardwareElement, hardwareElement.initializers);
         } else {

@@ -53,9 +53,9 @@ public class StrafeDrive extends OpMode {
         double rightFPower;
         double leftBPower;
         double rightBPower;
-        double drive = -gamepad1.left_stick_y * 0.8;
-        double turn = gamepad1.left_stick_x * 0.6;
-        double strafe = -gamepad1.right_stick_x * 0.8;
+        double drive = gamepad1.left_stick_y * 0.8;
+        double turn = -gamepad1.left_stick_x * 0.6;
+        double strafe = gamepad1.right_stick_x * 0.8;
 
         // Calculate drive power.
         if (drive != 0 || turn != 0) {
