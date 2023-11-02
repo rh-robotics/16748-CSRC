@@ -17,14 +17,13 @@ public class StrafeDrive extends OpMode {
     private final ElapsedTime time = new ElapsedTime();
     private Hardware robot;
 
-    // init() Runs ONCE after the driver hits initialize
+    // init() Runs ONCE after the driver hits initialize.
     @Override
     public void init() {
         // Tell the driver the Op is initializing
         telemetry.addData("Status", "Initializing");
 
-        // Do all init stuff
-        // TODO: ADD INITS THAT YOU NEED
+        // Do all init stuff.
         robot = new Hardware(hardwareMap, telemetry);
 
         /** DcMotorEx is a child class of DcMotor, so for now we just introduce them as DcMotors.*/
@@ -36,18 +35,18 @@ public class StrafeDrive extends OpMode {
         telemetry.addData("Status", "Initialized");
     }
 
-    // init_loop() - Runs continuously until the driver hits play
+    // init_loop() - Runs continuously until the driver hits play.
     @Override
     public void init_loop() {
     }
 
-    // Start() - Runs ONCE when the driver presses play
+    // Start() - Runs ONCE when the driver presses play.
     @Override
     public void start() {
         time.reset();
     }
 
-    // loop() - Runs continuously while the OpMode is active
+    // loop() - Runs continuously while the OpMode is active.
     @Override
     public void loop() {
         double leftFPower;
@@ -58,14 +57,14 @@ public class StrafeDrive extends OpMode {
         double turn = gamepad1.left_stick_x * 0.6;
         double strafe = -gamepad1.right_stick_x * 0.8;
 
-        // Calculate drive power
+        // Calculate drive power.
         if (drive != 0 || turn != 0) {
             leftFPower = Range.clip(drive + turn, -1.0, 1.0);
             rightFPower = Range.clip(drive - turn, -1.0, 1.0);
             leftBPower = Range.clip(drive + turn, -1.0, 1.0);
             rightBPower = Range.clip(drive - turn, -1.0, 1.0);
         } else if (strafe != 0) {
-            // Strafing
+            // Strafing.
             leftFPower = -strafe;
             rightFPower = strafe;
             leftBPower = strafe;
@@ -77,13 +76,12 @@ public class StrafeDrive extends OpMode {
             rightBPower = 0;
         }
 
-        // Set power to values calculated above
+        // Set power to values calculated above.
         robot.<DcMotor>get("leftFront").setPower(leftFPower);
         robot.<DcMotor>get("leftRear").setPower(leftBPower);
         robot.<DcMotor>get("rightFront").setPower(rightFPower);
         robot.<DcMotor>get("rightRear").setPower(rightBPower);
 
-        //telemetry
         telemetry.addData("leftFPower", leftFPower);
         telemetry.addData("leftBPower", leftBPower);
         telemetry.addData("rightFPower", rightFPower);
