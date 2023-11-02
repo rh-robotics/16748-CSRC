@@ -19,17 +19,17 @@ public class ClawCode extends OpMode {
 
         robot = new Hardware(hardwareMap, telemetry);
 
-        /**Introduced Claw Servo*/
-        robot.introduce(new HardwareElement<>(Servo .class, hardwareMap, "clawServo"));
+        robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "clawServo"));
         telemetry.addData("Status", "Initialized");
 
     }
     @Override
     public void loop() {
+        /** Rotating servos based on user input. */
         if (gamepad1.a) {
-            robot.<Servo>get("clawServo").setPosition(-.25);
+            robot.<Servo>get("clawServo").setPosition(-0.25);
         } else if (gamepad1.b) {
-            robot.<Servo>get("clawServo").setPosition(.25);
+            robot.<Servo>get("clawServo").setPosition(0.25);
         }
     }
 }

@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -52,6 +53,8 @@ public class Hardware {
         if (hardwareElement.device instanceof DcMotor) {
             initDcMotor(hardwareElement, hardwareElement.initializers);
         } else if (hardwareElement.device instanceof CRServo) {
+            initCRServo();Servo(hardwareElement, hardwareElement.initializers);
+        } else if (hardwareElement.device instanceof Servo) {
             initServo(hardwareElement, hardwareElement.initializers);
         } else {
             throw new RuntimeException("Unimplemented hardware element of type '" +
@@ -100,7 +103,7 @@ public class Hardware {
             }
         }
     }
-    private void initServo(HardwareElement<?> hardwareElement,
+    private void initCRServo(HardwareElement<?> hardwareElement,
                            HashMap<String, String> initsHashMap) {
         /* Casting a separate deviceDcMotor object as a DcMotor type allows us
          * run type-specific methods. (eg. deviceDcMotor.setDirection()) */
@@ -118,6 +121,10 @@ public class Hardware {
                     throw new HardwareValueException("setDirection", initsHashMap.get("setDirection"));
             }
         }
+    }
+    private void initServo (HardwareElement<?> hardwareElement,
+                            HashMap<String, String> initsHashMap) {
+        Servo deviceServo = (Servo) hardwareElement.device;
     }
 
     /** Gets a hardware element.
