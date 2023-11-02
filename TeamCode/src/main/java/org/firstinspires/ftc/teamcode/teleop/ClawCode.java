@@ -14,14 +14,12 @@ public class ClawCode extends OpMode {
 
     @Override
     public void init() {
-
         telemetry.addData("Status", "Initializing");
 
         robot = new Hardware(hardwareMap, telemetry);
 
         robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "clawServo"));
         telemetry.addData("Status", "Initialized");
-
     }
     @Override
     public void loop() {

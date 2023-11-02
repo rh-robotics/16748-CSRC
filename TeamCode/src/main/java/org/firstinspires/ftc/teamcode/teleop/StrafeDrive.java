@@ -20,13 +20,13 @@ public class StrafeDrive extends OpMode {
     // init() Runs ONCE after the driver hits initialize.
     @Override
     public void init() {
-        // Tell the driver the Op is initializing
+        // Tell the driver the Op is initializing.
         telemetry.addData("Status", "Initializing");
 
         // Do all init stuff.
         robot = new Hardware(hardwareMap, telemetry);
 
-        /** DcMotorEx is a child class of DcMotor, so for now we just introduce them as DcMotors.*/
+        /** DcMotorEx is a child class of DcMotor, so for now we just introduce them as DcMotors. */
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront"));
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear"));
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront"));
@@ -40,8 +40,7 @@ public class StrafeDrive extends OpMode {
     public void init_loop() {
     }
 
-    // Start() - Runs ONCE when the driv
-    // er presses play.
+    // Start() - Runs ONCE when the driver presses play.
     @Override
     public void start() {
         time.reset();
@@ -65,7 +64,6 @@ public class StrafeDrive extends OpMode {
             leftBPower = Range.clip(drive + turn, -1.0, 1.0);
             rightBPower = Range.clip(drive - turn, -1.0, 1.0);
         } else if (strafe != 0) {
-            // Strafing.
             leftFPower = -strafe;
             rightFPower = strafe;
             leftBPower = strafe;
