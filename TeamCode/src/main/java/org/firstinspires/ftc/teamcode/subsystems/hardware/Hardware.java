@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.subsystems.hardware;
 
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
+
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -56,6 +59,10 @@ public class Hardware {
             initCRServo(hardwareElement, hardwareElement.initializers);
         } else if (hardwareElement.device instanceof Servo) {
             initServo(hardwareElement, hardwareElement.initializers);
+        } else if (hardwareElement.device instanceof TouchSensor) {
+            initTouchSensor(hardwareElement, hardwareElement.initializers);
+        } else if (hardwareElement.device instanceof ColorSensor) {
+            initColorSensor(hardwareElement, hardwareElement.initializers);
         } else {
             throw new RuntimeException("Unimplemented hardware element of type '" +
                     hardwareElement.getClass().getSimpleName() + "'.");
@@ -127,9 +134,25 @@ public class Hardware {
         Servo deviceServo = (Servo) hardwareElement.device;
     }
 
-    /** Gets a hardware element.
-     * @param name The name of the element.
-     */
+    private void initTouchSensor(HardwareElement<?> hardwareElement,
+                                 HashMap<String, String> initsHashMap) {
+        if (!initsHashMap.isEmpty()) {
+            throw new RuntimeException("Touch Sensor unnecessary initializers included.");
+        }
+
+        TouchSensor deviceTouchSensor = (TouchSensor) hardwareElement.device;
+
+    }
+
+    private void initColorSensor(HardwareElement<?> hardwareElement,
+                                 HashMap<String, String> initsHashMap) {
+        ColorSensor deviceColorSensor = (ColorSensor) hardwareElement.device;
+
+    }
+
+     /** Gets a hardware element.
+      * @param name The name of the element.
+      */
     public <T> T get(String name) {
         HardwareDevice device = hardwareElements.get(name);
 
