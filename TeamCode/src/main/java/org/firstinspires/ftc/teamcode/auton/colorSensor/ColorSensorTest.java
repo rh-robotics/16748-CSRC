@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.auton.colorSensor;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
+@Autonomous(name = "Color Sensor Test")
 public class ColorSensorTest extends OpMode {
     ColorSensor colorSensor;
     int colorReading;

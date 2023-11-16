@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.auton.vision;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -41,6 +42,7 @@ import java.util.List;
  * https://ftc-docs.firstinspires.org/en/latest/apriltag/understanding_apriltag_detection_values/understanding-apriltag-detection-values.html
  */
 
+@Autonomous(name = "AprilTag Alignment")
 public class AprilTagAlignment extends OpMode {
     AprilTagProcessor aprilTagProcessor;
     VisionPortal visionPortal;
