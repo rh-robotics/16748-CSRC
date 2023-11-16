@@ -105,11 +105,11 @@ public class AprilTagAlignment extends OpMode {
 
                 stopAndResetMotors();
 
-                if (Math.abs(degreesToMM(targetTag.ftcPose.yaw)) > yawTolerance) {
+                if (Math.abs(targetYaw - degreesToMM(targetTag.ftcPose.yaw)) > yawTolerance) {
                     moveYaw();
-                } else if (Math.abs(degreesToMM(targetTag.ftcPose.bearing)) > bearingTolerance) {
+                } else if (targetBearing - Math.abs(degreesToMM(targetTag.ftcPose.bearing)) > bearingTolerance) {
                     moveBearing();
-                } else if (Math.abs(inchesToMM(targetTag.ftcPose.range)) > bearingTolerance) {
+                } else if (targetRange - Math.abs(inchesToMM(targetTag.ftcPose.range)) > rangeTolerance) {
                     moveRange();
                 } else {
                     telemetry.addLine("Robot in Position");
@@ -195,7 +195,7 @@ public class AprilTagAlignment extends OpMode {
     }
 
     public void moveRange() {
-        double distance = inchesToMM(targetTag.ftcPose.range);
+        double distance = inchesToMM(targetTag.ftcPose.range) - targetRange;
 
         setTargetPosition(robot.<DcMotor>get("leftFront"), distance);
         setTargetPosition(robot.<DcMotor>get("rightFront"), distance);
