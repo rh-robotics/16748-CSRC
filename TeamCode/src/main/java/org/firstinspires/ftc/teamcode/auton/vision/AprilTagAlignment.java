@@ -178,19 +178,8 @@ public class AprilTagAlignment extends OpMode {
         setTargetPosition(robot.<DcMotor>get("leftRear"), leftBTarget);
         setTargetPosition(robot.<DcMotor>get("rightRear"), rightBTarget);
 
-        while (robot.<DcMotor>get("leftFront").getTargetPosition() !=
-                robot.<DcMotor>get("leftFront").getCurrentPosition() &&
-                robot.<DcMotor>get("rightFront").getTargetPosition() !=
-                    robot.<DcMotor>get("rightFront").getCurrentPosition() &&
-                robot.<DcMotor>get("leftRear").getTargetPosition() !=
-                    robot.<DcMotor>get("leftRear").getCurrentPosition() &&
-                robot.<DcMotor>get("rightRear").getTargetPosition() !=
-                    robot.<DcMotor>get("rightRear").getCurrentPosition()) {
-
-            showMotorStatus(robot.<DcMotor>get("leftFront")); // Also turns on/off motor power.
-            showMotorStatus(robot.<DcMotor>get("rightFront"));
-            showMotorStatus(robot.<DcMotor>get("leftRear"));
-            showMotorStatus(robot.<DcMotor>get("rightRear"));
+        while (wheelsInPosition()) {
+            updateMotors();
         }
     }
 
@@ -202,35 +191,52 @@ public class AprilTagAlignment extends OpMode {
         setTargetPosition(robot.<DcMotor>get("leftRear"), distance);
         setTargetPosition(robot.<DcMotor>get("rightRear"), distance);
 
-        while (robot.<DcMotor>get("leftFront").getTargetPosition() !=
-                robot.<DcMotor>get("leftFront").getCurrentPosition() &&
-                robot.<DcMotor>get("rightFront").getTargetPosition() !=
-                        robot.<DcMotor>get("rightFront").getCurrentPosition() &&
-                robot.<DcMotor>get("leftRear").getTargetPosition() !=
-                        robot.<DcMotor>get("leftRear").getCurrentPosition() &&
-                robot.<DcMotor>get("rightRear").getTargetPosition() !=
-                        robot.<DcMotor>get("rightRear").getCurrentPosition()) {
-
-            showMotorStatus(robot.<DcMotor>get("leftFront")); // Also turns on/off motor power.
-            showMotorStatus(robot.<DcMotor>get("rightFront"));
-            showMotorStatus(robot.<DcMotor>get("leftRear"));
-            showMotorStatus(robot.<DcMotor>get("rightRear"));
+        while (wheelsInPosition()) {
+            updateMotors();
         }
     }
 
+    public void updateMotors() {
+        showMotorStatus(robot.<DcMotor>get("leftFront"));
+        showMotorStatus(robot.<DcMotor>get("rightFront"));
+        showMotorStatus(robot.<DcMotor>get("leftRear"));
+        showMotorStatus(robot.<DcMotor>get("rightRear"));
+
+        updateMotorPower(robot.<DcMotor>get("leftFront"));
+        updateMotorPower(robot.<DcMotor>get("rightFront"));
+        updateMotorPower(robot.<DcMotor>get("leftRear"));
+        updateMotorPower(robot.<DcMotor>get("rightRear"));
+    }
+
     public void showMotorStatus(DcMotor motor) {
-        if (motor.getTargetPosition() ==
-                motor.getCurrentPosition()) {
-            motor.setPower(0);
+        if (motor.getTargetPosition() == motor.getCurrentPosition()) {
             telemetry.addLine(motor.getDeviceName() + " in Position");
         } else {
-            motor.setPower(motorRunPower);
             telemetry.addLine("Running " + motor.getDeviceName() + " Motor");
             telemetry.addData(motor.getDeviceName() + " Target Position",
                     motor.getTargetPosition());
             telemetry.addData(motor.getDeviceName() + " Current Position",
                     motor.getTargetPosition());
         }
+    }
+
+    public void updateMotorPower(DcMotor motor) {
+        if (motor.getTargetPosition() == motor.getCurrentPosition()) {
+            motor.setPower(0);
+        } else {
+            motor.setPower(motorRunPower);
+        }
+    }
+
+    public boolean wheelsInPosition() {
+        return robot.<DcMotor>get("leftFront").getTargetPosition() !=
+                robot.<DcMotor>get("leftFront").getCurrentPosition() &&
+                robot.<DcMotor>get("rightFront").getTargetPosition() !=
+                        robot.<DcMotor>get("rightFront").getCurrentPosition() &&
+                robot.<DcMotor>get("leftRear").getTargetPosition() !=
+                        robot.<DcMotor>get("leftRear").getCurrentPosition() &&
+                robot.<DcMotor>get("rightRear").getTargetPosition() !=
+                        robot.<DcMotor>get("rightRear").getCurrentPosition();
     }
 
     public boolean targetTagDetected(List<AprilTagDetection> currentDetections) {

@@ -38,9 +38,11 @@ public class CameraTest extends OpMode {
         });
     }
 
+    @Override
     public void start() {
             telemetry.addData("ROTATION: ", sleeveDetection.getPosition());
     }
 
+    @Override
     public void loop() {};
 }
