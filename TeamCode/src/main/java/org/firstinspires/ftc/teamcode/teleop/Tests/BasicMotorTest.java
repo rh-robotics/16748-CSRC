@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teleop;
+package org.firstinspires.ftc.teamcode.teleop.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
  * <br/>
  * "BasicMotorTest" is the name of OpMode in Driver Station.
  */
-@TeleOp(name = "BasicMotorTest", group = "Iterative OpMode")
+@TeleOp(name = "BasicMotorTest", group = "Tests")
 public class BasicMotorTest extends OpMode {
     private final ElapsedTime time = new ElapsedTime();
     private Hardware robot;

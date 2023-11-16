@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystems.hardware;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import java.util.HashMap;
 
@@ -48,13 +50,17 @@ public class HardwareElement<T extends HardwareDevice> {
         this.initializers = createHashMap(initializers);
     }
 
-    /** Sets default initializers given device type.
-     * Update this method when implementing new initializers. **/
+    /** Sets default initializers given device type. */
+     /* TODO: Update this method when implementing new initializers. */
     private void setDefaultInitializers(Class<T> deviceType) {
         if (deviceType.equals(DcMotor.class) || deviceType.equals(DcMotorEx.class)) {
             initializers.put("setDirection", "FORWARD");
             initializers.put("setZeroPowerBehavior", "BRAKE");
             initializers.put("setMode", "RUN_USING_ENCODER");
+        } else if (deviceType.equals(Servo.class)) {
+            initializers.put("setDirection", "FORWARD");
+        } else if (deviceType.equals(CRServo.class)) {
+            initializers.put("setZeroPowerBehavior", "BRAKE");
         } else {
             throw new RuntimeException(deviceType.getName() + " has not been " +
                     "implemented with default initializers.");
