@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import java.util.HashMap;
 
@@ -55,6 +56,8 @@ public class HardwareElement<T extends HardwareDevice> {
             initializers.put("setDirection", "FORWARD");
             initializers.put("setZeroPowerBehavior", "BRAKE");
             initializers.put("setMode", "RUN_USING_ENCODER");
+        } else if (deviceType.equals(TouchSensor.class)){
+
         } else {
             throw new RuntimeException(deviceType.getName() + " has not been " +
                     "implemented with default initializers.");
