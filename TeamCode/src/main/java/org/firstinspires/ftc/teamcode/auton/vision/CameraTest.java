@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.auton.vision;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.subsystems.vision.SleeveDetection;
@@ -13,14 +13,14 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
  * Autonomous OpMode to test scanning signal sleeves
  */
 @Autonomous(name = "Signal Sleeve Test", group = "Testing OpModes")
-public class CameraTest extends LinearOpMode {
+public class CameraTest extends OpMode {
 
     SleeveDetection sleeveDetection = new SleeveDetection(145, 168, 30, 50);
     OpenCvCamera camera;
     String webcamName = "webcam";
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void init() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, webcamName), cameraMonitorViewId);
         sleeveDetection = new SleeveDetection(20, 20, 20, 20);
@@ -36,12 +36,11 @@ public class CameraTest extends LinearOpMode {
             public void onError(int errorCode) {
             }
         });
-
-        while (!isStarted()) {
-            telemetry.addData("ROTATION: ", sleeveDetection.getPosition());
-            telemetry.update();
-        }
-
-        waitForStart();
     }
+
+    public void start() {
+            telemetry.addData("ROTATION: ", sleeveDetection.getPosition());
+    }
+
+    public void loop() {};
 }

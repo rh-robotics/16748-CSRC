@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.auton.vision;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.subsystems.vision.TestFramePipeline;
@@ -13,13 +13,13 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
  * Autonomous OpMode to test scanning signal sleeves
  */
 @Autonomous(name = "Camera Test Frame")
-public class TestFrame extends LinearOpMode {
+public class TestFrame extends OpMode {
     OpenCvCamera camera;
     OpenCvCamera cameraUneditedFootage;
 
     TestFramePipeline testFramePipeline;
     @Override
-    public void runOpMode() {
+    public void init() {
 
         /* Activating the camera monitor view on robot controller phone. */
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -45,10 +45,7 @@ public class TestFrame extends LinearOpMode {
                 );
             }
         });
-
-        telemetry.addLine("Waiting for start");
-        waitForStart();
-
-        while (opModeIsActive()){}
     }
+
+    public void loop () {}
 }
