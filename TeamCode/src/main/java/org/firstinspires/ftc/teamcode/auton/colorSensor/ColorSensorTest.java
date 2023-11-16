@@ -1,25 +1,24 @@
 package org.firstinspires.ftc.teamcode.auton.colorSensor;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
-@Autonomous(name = "Color Sensor Test", group = "Testing Color Sensor")
-
-public class ColorSensorTest extends LinearOpMode {
+@Autonomous(name = "Color Sensor Test")
+public class ColorSensorTest extends OpMode {
     ColorSensor colorSensor;
     int colorReading;
 
-    public void runOpMode() {
+    @Override
+    public void init() {
         colorSensor = hardwareMap.colorSensor.get("color");
+    }
 
-        waitForStart();
-
-        while (opModeIsActive()) {
-            //finds amount of red, green, blue, and light (alpha)
-            colorReading = colorSensor.argb();
-            telemetry.addData("Hue", colorReading);
-            telemetry.update();
-        }
+    @Override
+    public void loop() {
+        //finds amount of red, green, blue, and light (alpha)
+        colorReading = colorSensor.argb();
+        telemetry.addData("Hue", colorReading);
+        telemetry.update();
     }
 }

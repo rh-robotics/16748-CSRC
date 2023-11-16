@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.auton.vision;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.subsystems.vision.IntakeDetectionPipeline;
@@ -13,14 +13,13 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
  * Autonomous OpMode to test scanning signal sleeves
  */
 @Autonomous(name = "Intake Detection")
-public class IntakeDetection extends LinearOpMode {
+public class IntakeDetection extends OpMode {
     OpenCvCamera camera;
     OpenCvCamera cameraUneditedFootage;
 
     IntakeDetectionPipeline intakeDetection;
     @Override
-    public void runOpMode() throws InterruptedException {
-        /* Activating the camera monitor view on robot controller phone. */
+    public void init() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam"), cameraMonitorViewId);
 
@@ -44,10 +43,8 @@ public class IntakeDetection extends LinearOpMode {
                 );
             }
         });
-
-        telemetry.addLine("Waiting for start");
-        waitForStart();
-
-        while (opModeIsActive()) {}
     }
+
+    @Override
+    public void loop() {}
 }
