@@ -25,11 +25,10 @@ public class BasicMotorTest extends OpMode {
         robot = new Hardware(hardwareMap, telemetry);
 
         /** DcMotorEx is a child class of DcMotor, so for now we just introduce them as DcMotors. */
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear", "setDirection:REVERSE"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightRear"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "intakeMotor"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront", "setDirection:FORWARD"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear", "setDirection:FORWARD"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront", "setDirection:FORWARD"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightRear", "setDirection:FORWARD"));
 
         telemetry.addData("Status", "Initialized"); // Updates "Status" key's value.
     }
