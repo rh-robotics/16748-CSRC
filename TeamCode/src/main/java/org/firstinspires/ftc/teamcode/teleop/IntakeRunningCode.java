@@ -41,19 +41,14 @@ public class IntakeRunningCode extends OpMode{
     public void loop() {
         double intakePower = 0.5;
 
-        if (gamepad1.a) {
+        if (gamepad1.dpad_left) {
             /* Setting power of intake motors and servos. */
             robot.<DcMotor>get("intakeMotor").setPower(intakePower);
             robot.<CRServo>get("geekoWheelServo").setPower(intakePower);
             robot.<CRServo>get("entraptionServo1").setPower(intakePower);
-            robot.<CRServo>get("entraptionServo2").setPower(intakePower);
             telemetry.addData("Intake", "Running");
-        } else {
-            robot.<DcMotor>get("intakeMotor").setPower(0);
-            robot.<CRServo>get("geekoWheelServo").setPower(0);
-            robot.<CRServo>get("entraptionServo1").setPower(0);
-            robot.<CRServo>get("entraptionServo2").setPower(0);
-            telemetry.addData("Intake", "At rest");
+        } else if (gamepad1.dpad_right) {
+
         }
     }
 }
