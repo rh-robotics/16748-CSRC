@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import java.util.HashMap;
 
@@ -51,7 +52,7 @@ public class HardwareElement<T extends HardwareDevice> {
     }
 
     /** Sets default initializers given device type. */
-     /* TODO: Update this method when implementing new initializers. */
+    /* TODO: Update this method when implementing new initializers. */
     private void setDefaultInitializers(Class<T> deviceType) {
         if (deviceType.equals(DcMotor.class) || deviceType.equals(DcMotorEx.class)) {
             initializers.put("setDirection", "FORWARD");
@@ -61,6 +62,8 @@ public class HardwareElement<T extends HardwareDevice> {
             initializers.put("setDirection", "FORWARD");
         } else if (deviceType.equals(CRServo.class)) {
             initializers.put("setZeroPowerBehavior", "BRAKE");
+        } else if (deviceType.equals(TouchSensor.class)){
+
         } else {
             throw new RuntimeException(deviceType.getName() + " has not been " +
                     "implemented with default initializers.");
