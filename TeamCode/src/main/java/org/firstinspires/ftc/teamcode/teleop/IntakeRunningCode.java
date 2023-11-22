@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -19,12 +18,9 @@ public class IntakeRunningCode extends OpMode{
 
         robot = new Hardware(hardwareMap, telemetry);
 
-        /** DcMotorEx is a child class of DcMotor, so for now we just introduce them as DcMotors.*/
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "intakeMotor"));
         /**Introduced Servos*/
-        robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "geekoWheelServo"));
-        robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "entraptionServo1"));
-        robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "entraptionServo2"));
+       // robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "geekoWheelServo", "setDirection:FORWARD"));
+        robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "tubeServo", "setDirection:FORWARD"));
         telemetry.addData("Status", "Initialized");
     }
 
@@ -43,9 +39,8 @@ public class IntakeRunningCode extends OpMode{
 
         if (gamepad1.dpad_left) {
             /* Setting power of intake motors and servos. */
-            robot.<DcMotor>get("intakeMotor").setPower(intakePower);
-            robot.<CRServo>get("geekoWheelServo").setPower(intakePower);
-            robot.<CRServo>get("entraptionServo1").setPower(intakePower);
+            //robot.<CRServo>get("geekoWheelServo").setPower(intakePower);
+            robot.<CRServo>get("tubeServo").setPower(intakePower);
             telemetry.addData("Intake", "Running");
         } else if (gamepad1.dpad_right) {
 
