@@ -108,7 +108,7 @@ public class TensorFlowObjectDetection extends LinearOpMode {
 
         TfodProcessor tfodProcessor = TfodProcessor.easyCreateWithDefaults();
 
-        VisionPortal visionPortal = VisionPortal.easyCreateWithDefaults();
+        VisionPortal visionPortal = VisionPortal.easyCreateWithDefaults()
 
                 // Use setModelAssetName() if the TF Model is built in as an asset.
                 // Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
