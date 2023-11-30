@@ -17,8 +17,12 @@ public class ScoringAlgorithm extends OpMode {
     boolean pixelsInClaw = false;
     double armStartPos = 0.0;
     double armTargetPos = 0.0;
+    double armStartTolerance = 0.0;
+    double armTolerance = 0.0;
     double viperSlideStartPos = 0.0;
     double viperSlideTargetPos = 0.0;
+    double viperSlideStartTolerance = 0.0;
+    double viperSlideTolerance = 0;
     double jointStartPos = 0.0;
     double jointTargetPos = 0.0;
 
@@ -44,7 +48,9 @@ public class ScoringAlgorithm extends OpMode {
 
     }
 
-    private void scoring() {
+
+
+    public void scoring() {
         telemetry.addData("Scoring Status", "Started");
 
         setViperSlidePos();
@@ -53,46 +59,43 @@ public class ScoringAlgorithm extends OpMode {
 
         setJointPos();
 
+
         while (pixelsInClaw) {
             robot.<Servo>get("clawServo").setPosition(robot.<Servo>get("clawServo").getPosition() - 0.125);
-        }
 
+        }
         resetPos();
 
-        telemetry.addData("Scoring Status", "Scored");
+    }
+
+    public void setViperSlidePos() {
+        telemetry.addData("Scoring Status", "Setting VS Pos");
+        // Setting ViperSlidePoses based on Targets.
+        while (Math.abs(robot.<DcMotor>get("leftViperSlideMotor").getCurrentPosition() - viperSlideTargetPos) > viperSlideTolerance) {
+
+                robot.<DcMotor>get("rightViperSlideMotor").setPower(0.4);
+                robot.<DcMotor>get("leftViperSlideMotor").setPower(0.4);
+
+            telemetry.addData("VS right Pos", robot.<DcMotor>get("rightViperSlideMotor").getCurrentPosition());
+            telemetry.addData("VS left Pos", robot.<DcMotor>get("leftViperSlideMotor").getCurrentPosition());
+        }
+
+        robot.<DcMotor>get("rightViperSlideMotor").setPower(0);
+        robot.<DcMotor>get("leftViperSlideMotor").setPower(0);
+
+        telemetry.addData("Scoring Status", "VS Pos Set");
     }
 
     public void setArmPos() {
         telemetry.addData("Scoring Status", "Setting Arm Pos");
         // Setting ArmPos based on Target.
-        while (robot.<DcMotor>get("armMotor").getCurrentPosition() != armTargetPos) {
+        while (Math.abs(robot.<DcMotor>get("armMotor").getCurrentPosition() - armTargetPos) > armTolerance) {
             robot.<DcMotor>get("armMotor").setPower(0.6);
             telemetry.addData("armMotor Pos", robot.<DcMotor>get("armMotor").getCurrentPosition());
         }
         robot.<DcMotor>get("armMotor").setPower(0);
 
         telemetry.addData("Scoring Status", "Arm Pos Set");
-    }
-
-    public void setViperSlidePos() {
-        telemetry.addData("Scoring Status", "Setting VS Pos");
-        // Setting ViperSlidePoses based on Targets.
-        while (robot.<DcMotor>get("leftViperSlideMotor").getCurrentPosition() != viperSlideTargetPos ) {
-
-            if (robot.<DcMotor>get("rightViperSlideMotor").getCurrentPosition() != viperSlideTargetPos) {
-                robot.<DcMotor>get("rightViperSlideMotor").setPower(0.6);
-            } else if (robot.<DcMotor>get("rightViperSlideMotor").getCurrentPosition() == viperSlideTargetPos) {
-                robot.<DcMotor>get("rightViperSlideMotor").setPower(0);
-            } else if (robot.<DcMotor>get("leftViperSlideMotor").getCurrentPosition() != viperSlideTargetPos) {
-                robot.<DcMotor>get("leftViperSlideMotor").setPower(0.6);
-            } else if (robot.<DcMotor>get("leftViperSlideMotor").getCurrentPosition() == viperSlideTargetPos) {
-                robot.<DcMotor>get("leftViperSlideMotor").setPower(0);
-            }
-            telemetry.addData("VS right Pos", robot.<DcMotor>get("rightViperSlideMotor").getCurrentPosition());
-            telemetry.addData("VS left Pos", robot.<DcMotor>get("leftViperSlideMotor").getCurrentPosition());
-        }
-
-        telemetry.addData("Scoring Status", "VS Pos Set");
     }
 
     public void setJointPos() {
@@ -107,24 +110,24 @@ public class ScoringAlgorithm extends OpMode {
         telemetry.addData("Scoring Status1` ", "Resetting Pos");
 
         robot.<Servo>get("jointServo").setPosition(jointStartPos);
-        robot.<DcMotor>get("armMotor").setDirection(DcMotor.Direction.REVERSE);
-        robot.<DcMotor>get("leftViperSlideMotor").setDirection(DcMotorSimple.Direction.REVERSE);
-        robot.<DcMotor>get("rightViperSlideMotor").setDirection(DcMotorSimple.Direction.REVERSE);
 
-        while (robot.<DcMotor>get("armMotor").getCurrentPosition() != armStartPos) {
-
-            if (robot.<DcMotor>get("rightViperSlideMotor").getCurrentPosition() != viperSlideStartPos) {
-                robot.<DcMotor>get("rightViperSlideMotor").setPower(0.6);
-            } else if (robot.<DcMotor>get("leftViperSlideMotor").getCurrentPosition() == viperSlideStartPos) {
-                robot.<DcMotor>get("leftViperSlideMotor").setPower(0);
-            } else if (robot.<DcMotor>get("leftViperSlideMotor").getCurrentPosition() != viperSlideStartPos) {
-                robot.<DcMotor>get("leftViperSlideMotor").setPower(0.6);
-            } else if (robot.<DcMotor>get("leftViperSlideMotor").getCurrentPosition() == viperSlideStartPos) {
-                robot.<DcMotor>get("leftViperSlideMotor").setPower(0);
-            }
-
+        while (Math.abs(robot.<DcMotor>get("armMotor").getCurrentPosition() - armStartPos) > armStartTolerance) {
+            robot.<DcMotor>get("armMotor").setPower(0.6);
+            telemetry.addData("armMotor Pos", robot.<DcMotor>get("armMotor").getCurrentPosition());
         }
         robot.<DcMotor>get("armMotor").setPower(0);
+
+        while (Math.abs(robot.<DcMotor>get("leftViperSlideMotor").getCurrentPosition() - viperSlideStartPos) > viperSlideStartTolerance) {
+
+            robot.<DcMotor>get("rightViperSlideMotor").setPower(0.4);
+            robot.<DcMotor>get("leftViperSlideMotor").setPower(0.4);
+
+            telemetry.addData("VS right Pos", robot.<DcMotor>get("rightViperSlideMotor").getCurrentPosition());
+            telemetry.addData("VS left Pos", robot.<DcMotor>get("leftViperSlideMotor").getCurrentPosition());
+        }
+
+        robot.<DcMotor>get("rightViperSlideMotor").setPower(0);
+        robot.<DcMotor>get("leftViperSlideMotor").setPower(0);
 
         telemetry.addData("Scoring Status", "Pos Reset");
     }
