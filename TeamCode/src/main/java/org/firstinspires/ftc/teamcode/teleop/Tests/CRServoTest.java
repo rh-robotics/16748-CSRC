@@ -22,6 +22,7 @@ public class CRServoTest extends OpMode {
         telemetry.addLine("Initialized");
     }
 
+    @Override
     public void loop() {
         if (gamepad1.a) {
             robot.<CRServo>get("testCRServo").setPower(0.5);

@@ -9,19 +9,19 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
 
+/** @noinspection ALL */
 @Autonomous(name = "Scoring Algorithm", group = "auton")
 public class ScoringAlgorithm extends OpMode {
     private Hardware robot;
     // TODO: Get values for variables.
-    boolean pixelsInClaw = false;
-    double armStartPos = 0.0;
-    double armTargetPos = 0.0;
-    double armTolerance = 2.5;
-    double viperSlideStartPos = 0.0;
-    double viperSlideTargetPos = 0.0;
-    double jointStartPos = 0.0;
-    double jointTargetPos = 0.0;
-    boolean scored = false;
+    private boolean pixelsInClaw = false;
+    private final double armStartPos = 0.0;
+    private final double armTargetPos = 0.0;
+    private final double armTolerance = 2.5;
+    private final double viperSlideStartPos = 0.0;
+    private final double viperSlideTargetPos = 0.0;
+    private final double jointStartPos = 0.0;
+    private final double jointTargetPos = 0.0;
 
     public void init() {
         telemetry.addData("Status", "Initializing");
@@ -34,18 +34,21 @@ public class ScoringAlgorithm extends OpMode {
 
         // Introducing motors and encoders.
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "armMotor"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftViperSlideMotor"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightViperSlideMotor"));
+
+        // Motor and encoder initialization.
         robot.<DcMotor>get("armMotor").setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.<DcMotor>get("armMotor").setDirection(DcMotor.Direction.FORWARD);
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightViperSlideMotor"));
-        robot.<DcMotor>get("rightViperSlideMotor").setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.<DcMotor>get("leftViperSlideMotor").setDirection(DcMotorSimple.Direction.FORWARD);
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftViperSlideMotor"));
         robot.<DcMotor>get("leftViperSlideMotor").setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.<DcMotor>get("rightViperSlideMotor").setDirection(DcMotorSimple.Direction.FORWARD);
+        robot.<DcMotor>get("rightViperSlideMotor").setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         telemetry.addData("Status", "Initialized");
     }
 
+    @Override
     public void loop() {
         if (gamepad1.a) {
             scoring();
@@ -64,25 +67,27 @@ public class ScoringAlgorithm extends OpMode {
         }
 
         resetPos();
-        scored = true;
     }
 
     public void setViperSlidePos() {
         // If this is not true, the rest of the code will not function.
-        assert viperSlideTargetPos > viperSlideStartPos;
+
+        assert viperSlideTargetPos >= viperSlideStartPos;
 
         telemetry.addData("Scoring Status", "Setting VS Pos");
+
         // Setting ViperSlidePoses based on Targets.
         while (robot.<DcMotor>get("leftViperSlideMotor").getCurrentPosition() < viperSlideTargetPos || robot.<DcMotor>get("rightViperSlideMotor").getCurrentPosition() < viperSlideTargetPos) {
             runViperSlidesToPosition(viperSlideTargetPos, 0.4);
             viperSlideTelemetryUpdate();
         }
+
         telemetry.addData("Scoring Status", "VS Pos Set");
     }
 
     public void setArmPos() {
         // If this is not true, the rest of the code will not function.
-        assert armTargetPos > armStartPos;
+        assert armTargetPos >= armStartPos;
 
         telemetry.addData("Scoring Status", "Setting Arm Pos");
 
@@ -98,16 +103,13 @@ public class ScoringAlgorithm extends OpMode {
 
     public void setJointPos() {
         telemetry.addData("Scoring Status", "Setting Joint Pos");
-
-        // Setting JointPos based on Target.
-        robot.<Servo>get("jointServo").setPosition(jointTargetPos);
-
+        robot.<Servo>get("jointServo").setPosition(jointTargetPos); // Setting JointPos based on Target.
         telemetry.addData("Scoring Status", "Joint Pos Set");
     }
 
     public void resetPos() {
         // If this is not true, the rest of the code will not function.
-        assert viperSlideTargetPos > viperSlideStartPos;
+        assert viperSlideTargetPos >= viperSlideStartPos;
 
         telemetry.addData("Scoring Status", "Resetting Pos");
         robot.<Servo>get("jointServo").setPosition(jointStartPos);
