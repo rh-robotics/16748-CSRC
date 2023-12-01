@@ -28,9 +28,7 @@ public class CRServoTest extends OpMode {
         } else {
             robot.<CRServo>get("testCRServo").setPower(0);
         }
-
         telemetry.addData("CRServo", "Running");
-
     }
 }
 
