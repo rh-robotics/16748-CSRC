@@ -27,9 +27,9 @@ public class ClawCode extends OpMode {
     public void loop() {
         /* Rotating servos based on user input. */
         if (gamepad1.a) {
-            robot.<Servo>get("clawServo").setPosition(robot.<Servo>get("clawServo").getPosition() + -0.25);
+            robot.<Servo>get("clawServo").setPosition(robot.<Servo>get("clawServo").getPosition() + -0.125);
         } else if (gamepad1.b) {
-            robot.<Servo>get("clawServo").setPosition(robot.<Servo>get("clawServo").getPosition() + 0.25);
+            robot.<Servo>get("clawServo").setPosition(robot.<Servo>get("clawServo").getPosition() + 0.125);
         }
 
         if (gamepad1.right_bumper) {
