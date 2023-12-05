@@ -67,12 +67,11 @@ public class ScoringAlgorithm extends OpMode {
         }
 
         resetPos();
-
-        telemetry.addData("Scoring Status", "Endedxss");
+        telemetry.addData("Scoring Status", "Ended");
     }
 
     public void setViperSlidePos() {
-        // If this is not true, the rest of the code will not function.
+        // If this is not true, the rest of the code will not function
         assert viperSlideTargetPos >= viperSlideStartPos;
 
         telemetry.addData("Scoring Status", "Setting VS Pos");
