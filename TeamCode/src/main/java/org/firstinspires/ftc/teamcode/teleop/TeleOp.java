@@ -53,7 +53,8 @@ public class TeleOp extends OpMode {
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightViperSlideMotor", "setMode(DcMotor.RunMode.RUN_USING_ENCODER)"));
 
         telemetry.addData("Status", "Initialized");
-        telemetry.addData("Controls:", "\n" +
+        telemetry.addLine("Controls:\n" +
+                "        ***\n" +
                 "        Left Stick y = Drive\n" +
                 "        Left Stick x = Strafe\n" +
                 "        Right Stick x = Turn\n" +
@@ -70,7 +71,7 @@ public class TeleOp extends OpMode {
 
     @Override
     public void loop() {
-        /* Controls:
+        /** Controls:
          * Left Stick y = Drive
          * Left Stick x = Strafe
          * Right Stick x = Turn
