@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems.hardware;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -65,6 +66,8 @@ public class Hardware {
             initTouchSensor(hardwareElement, hardwareElement.initializers);
         } else if (hardwareElement.device instanceof ColorSensor) {
             initColorSensor(hardwareElement, hardwareElement.initializers);
+        } else if (hardwareElement.device instanceof DistanceSensor) {
+            initDistanceSensor(hardwareElement, hardwareElement.initializers);
         } else {
             throw new RuntimeException("Unimplemented hardware element of type '" +
                     hardwareElement.getClass().getSimpleName() + "'.");
@@ -150,6 +153,15 @@ public class Hardware {
                                  HashMap<String, String> initsHashMap) {
         ColorSensor deviceColorSensor = (ColorSensor) hardwareElement.device;
 
+    }
+
+    private void initDistanceSensor(HardwareElement<?> hardwareElement,
+                                 HashMap<String, String> initsHashMap) {
+        if (!initsHashMap.isEmpty()) {
+            throw new RuntimeException("Distance Sensor unnecessary initializers included");
+        }
+
+        DistanceSensor deviceDistanceSensor = (DistanceSensor) hardwareElement.device;
     }
 
      /** Gets a hardware element.

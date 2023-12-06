@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.subsystems.hardware;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import java.util.HashMap;
@@ -62,9 +63,11 @@ public class HardwareElement<T extends HardwareDevice> {
             initializers.put("setMode", "RUN_USING_ENCODER");
         } else if (deviceType.equals(Servo.class)) {
             initializers.put("setDirection", "FORWARD");
-        } else if (deviceType.equals(CRServo .class)) {
+        } else if (deviceType.equals(CRServo.class)) {
             initializers.put("setZeroPowerBehavior", "BRAKE");
-        } else if (deviceType.equals(TouchSensor.class)){
+        } else if (deviceType.equals(TouchSensor.class)) {
+
+        } else if (deviceType.equals(DistanceSensor.class)) {
 
         } else {
             throw new RuntimeException(deviceType.getName() + " has not been " +
