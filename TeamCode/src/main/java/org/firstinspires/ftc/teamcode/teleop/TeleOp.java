@@ -27,12 +27,12 @@ public class TeleOp extends OpMode {
     private final double viperSlideTargetPos = 0.0;
     private final double jointStartPos = 0.0;
     private final double jointTargetPos = 0.0;
+    boolean scoringATM;
 
     @Override
     public void init() {
         telemetry.addData("Status", "Initializing");
 
-        // Do all init stuff.
         robot = new Hardware(hardwareMap, telemetry);
 
         // Init Servos.
@@ -104,7 +104,7 @@ public class TeleOp extends OpMode {
         // Calling scoring() via left bumper and resetting via left trigger
         if (gamepad1.left_bumper) {
             scoring();
-        } else if (gamepad1.left_trigger > 0.5) {
+        } else if (gamepad1.left_trigger > 0.5 && !scoringATM) {
             resetPos();
             telemetry.addData("Scoring Pos", "Reset");
         }
@@ -153,9 +153,13 @@ public class TeleOp extends OpMode {
     public void scoring() {
         telemetry.addData("Scoring Status", "Started");
 
+        scoringATM = true;
+
         setViperSlidePos();
         setArmPos();
         setJointPos();
+
+        scoringATM = false;
 
         telemetry.addData("Scoring Status", "Ended");
     }
