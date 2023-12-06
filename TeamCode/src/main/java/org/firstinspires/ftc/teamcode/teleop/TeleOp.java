@@ -35,15 +35,15 @@ public class TeleOp extends OpMode {
         // Do all init stuff.
         robot = new Hardware(hardwareMap, telemetry);
 
-        //Init Servos
+        // Init Servos.
         robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "clawServo"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "jointServo"));
 
-        //Init CR Servos
+        // Init CR Servos.
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "geekoWheelCRServo"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "tubeCRServo"));
 
-        //Init DcMotors
+        // Init DcMotors.
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront", "setDirection:FORWARD"));
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear", "setDirection:FORWARD"));
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront", "setDirection:FORWARD"));
@@ -58,7 +58,7 @@ public class TeleOp extends OpMode {
     @Override
     public void loop() {
 
-        //
+        // Values for drive.
         drive = gamepad1.left_stick_y * 0.8;
         turn = -gamepad1.left_stick_x * 0.6;
         strafe = gamepad1.right_stick_x * 0.8;
@@ -74,6 +74,7 @@ public class TeleOp extends OpMode {
         telemetry.addData("rightFPower: ", rightFPower);
         telemetry.addData("rightBPower: ", rightBPower);
 
+        // Calling scoring() via left bumper and resetting via left trigger
         if (gamepad1.left_bumper) {
             scoring();
         } else if (gamepad1.left_trigger > 0.5) {
@@ -81,12 +82,14 @@ public class TeleOp extends OpMode {
             telemetry.addData("Scoring Pos", "Reset");
         }
 
+        // Move claw via x, and y.
         if (gamepad1.x) {
             robot.<Servo>get("clawServo").setPosition(robot.<Servo>get("clawServo").getPosition() + -0.125);
         } else if (gamepad1.y) {
             robot.<Servo>get("clawServo").setPosition(robot.<Servo>get("clawServo").getPosition() + 0.125);
         }
 
+        // Moving VS maually via dpad up, and down.
         if (gamepad1.dpad_up) {
             robot.<DcMotor>get("leftViperSlideMotor").setPower(0.5);
             robot.<DcMotor>get("rightViperSlideMotor").setPower(0.5);
@@ -107,6 +110,7 @@ public class TeleOp extends OpMode {
             robot.<CRServo>get("jointServo").setPower(0);
         }
 
+        // Activating Intake via gamepad a.
         if (gamepad1.a) {
             robot.<CRServo>get("tubeCRServo").setPower(intakePower);
             robot.<CRServo>get("geekoWheelCRServo").setPower(intakePower);
@@ -118,6 +122,7 @@ public class TeleOp extends OpMode {
         }
     }
 
+    // Scoring method, all together like a bowl of chilli.
     public void scoring() {
         telemetry.addData("Scoring Status", "Started");
 
@@ -128,7 +133,7 @@ public class TeleOp extends OpMode {
         telemetry.addData("Scoring Status", "Ended");
     }
 
-
+    // Setting VS POS.
     public void setViperSlidePos() {
         // If this is not true, the rest of the code will not function.
         assert viperSlideTargetPos >= viperSlideStartPos;
@@ -144,6 +149,7 @@ public class TeleOp extends OpMode {
         telemetry.addData("Scoring Status", "VS Pos Set");
     }
 
+    // Setting Arm Pos.
     public void setArmPos() {
         // If this is not true, the rest of the code will not function.
         assert armTargetPos >= armStartPos;
@@ -160,12 +166,14 @@ public class TeleOp extends OpMode {
         telemetry.addData("Scoring Status", "Arm Pos Set");
     }
 
+    //Setting Joint Pos.
     public void setJointPos() {
         telemetry.addData("Scoring Status", "Setting Joint Pos");
         robot.<Servo>get("jointServo").setPosition(jointTargetPos); // Setting JointPos based on Target.
         telemetry.addData("Scoring Status", "Joint Pos Set");
     }
 
+    // Resetting Scoring POS.
     public void resetPos() {
         // If this is not true, the rest of the code will not function.
         assert viperSlideTargetPos >= viperSlideStartPos;
@@ -183,6 +191,7 @@ public class TeleOp extends OpMode {
         telemetry.addData("Scoring Status", "Pos Reset");
     }
 
+    // VS Telemetry Updates.
     public void viperSlideTelemetryUpdate() {
         telemetry.addData("VS Left Pos", robot.<DcMotor>get("leftViperSlideMotor").getCurrentPosition());
         telemetry.addData("VS Left Power", robot.<DcMotor>get("leftViperSlideMotor").getPower());
@@ -191,6 +200,7 @@ public class TeleOp extends OpMode {
         telemetry.addData("VS Right Power", robot.<DcMotor>get("rightViperSlideMotor").getPower());
     }
 
+    // VS run Code to Target.
     public void runViperSlidesToPosition(double position, double power) {
         robot.<DcMotor>get("leftViperSlideMotor").setPower(0);
         robot.<DcMotor>get("rightViperSlideMotor").setPower(0);
@@ -205,6 +215,7 @@ public class TeleOp extends OpMode {
         }
     }
 
+    // Strafe Drive using sticks on Gamepad 1
     public void driving() {
         // Calculate drive power.
         if (drive != 0 || turn != 0) {
