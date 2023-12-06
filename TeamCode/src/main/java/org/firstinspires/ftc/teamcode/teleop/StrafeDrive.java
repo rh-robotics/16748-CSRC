@@ -16,6 +16,13 @@ import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
 public class StrafeDrive extends OpMode {
     private final ElapsedTime time = new ElapsedTime();
     private Hardware robot;
+    double leftFPower;
+    double rightFPower;
+    double leftBPower;
+    double rightBPower;
+    double drive;
+    double turn;
+    double strafe;
 
     // init() Runs ONCE after the driver hits initialize.
     @Override
@@ -50,10 +57,7 @@ public class StrafeDrive extends OpMode {
     // loop() - Runs continuously while the OpMode is active.
     @Override
     public void loop() {
-        double leftFPower;
-        double rightFPower;
-        double leftBPower;
-        double rightBPower;
+
         double drive = gamepad1.left_stick_y * 0.8;
         double turn = -gamepad1.left_stick_x * 0.6;
         double strafe = gamepad1.right_stick_x * 0.8;
