@@ -7,12 +7,13 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name="Distance Sensor Test")
+
 public class DistanceSensorTest extends OpMode {
     DistanceSensor distanceSensor;
     @Override
     public void init() {
-        telemetry.addData("Initializing Distance Sensor.", null);
-        telemetry.addData("Distance Sensor Initialized.", null);
+        telemetry.addData("Distance Sensor:", "Initializing");
+        telemetry.addData("Distance Sensor:", "Initialized");
     }
 
     @Override
