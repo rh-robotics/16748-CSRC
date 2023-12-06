@@ -51,8 +51,10 @@ public class HardwareElement<T extends HardwareDevice> {
         this.initializers = createHashMap(initializers);
     }
 
-    /** Sets default initializers given device type. */
-    /* TODO: Update this method when implementing new initializers. */
+    /** Sets default initializers given device type.
+    *  TODO: Update this method when implementing new initializers:
+    *   Add default initializers for any new hardwareElements. Initializers hashmap can be left
+    *   blank but must have a case in the conditionals to handle it and avoid RuntimeException. */
     private void setDefaultInitializers(Class<T> deviceType) {
         if (deviceType.equals(DcMotor.class) || deviceType.equals(DcMotorEx.class)) {
             initializers.put("setDirection", "FORWARD");
