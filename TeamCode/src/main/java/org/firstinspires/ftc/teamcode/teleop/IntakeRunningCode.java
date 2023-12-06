@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
@@ -18,9 +17,9 @@ public class IntakeRunningCode extends OpMode{
 
         robot = new Hardware(hardwareMap, telemetry);
 
-        /**Introduced Servos*/
-       // robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "geekoWheelServo", "setDirection:FORWARD"));
-        robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "tubeServo", "setDirection:FORWARD"));
+        /** Introduced Servos. */
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "geekoWheelCRServo"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "tubeCRServo"));
         telemetry.addData("Status", "Initialized");
     }
 
@@ -35,15 +34,14 @@ public class IntakeRunningCode extends OpMode{
 
     @Override
     public void loop() {
-        double intakePower = 0.5;
-
-        if (gamepad1.dpad_left) {
-            /* Setting power of intake motors and servos. */
-            //robot.<CRServo>get("geekoWheelServo").setPower(intakePower);
-            robot.<CRServo>get("tubeServo").setPower(intakePower);
+        if (gamepad1.a) {
+            robot.<CRServo>get("tubeCRServo").setPower(0.5);
+            robot.<CRServo>get("geekoWheelCRServo").setPower(0.5);
             telemetry.addData("Intake", "Running");
-        } else if (gamepad1.dpad_right) {
-
+        } else {
+            robot.<CRServo>get("tubeCRServo").setPower(0);
+            robot.<CRServo>get("geekoWheelCRServo").setPower(0);
+            telemetry.addData("Intake", "Stopped");
         }
     }
 }
