@@ -158,8 +158,8 @@ public class Hardware {
         if (!initsHashMap.isEmpty()) {
             throw new RuntimeException("Distance Sensor unnecessary initializers included");
         }
-        DistanceSensor deviceDistanceSensor = (DistanceSensor) hardwareElement.device;
 
+        DistanceSensor deviceDistanceSensor = (DistanceSensor) hardwareElement.device;
     }
 
      /** Gets a hardware element.

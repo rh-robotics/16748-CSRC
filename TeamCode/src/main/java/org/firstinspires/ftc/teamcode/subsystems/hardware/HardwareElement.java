@@ -65,9 +65,9 @@ public class HardwareElement<T extends HardwareDevice> {
             initializers.put("setZeroPowerBehavior", "BRAKE");
         } else if (deviceType.equals(TouchSensor.class)) {
 
-        }else if (deviceType.equals(DistanceSensor.class)){
+        } else if (deviceType.equals(DistanceSensor.class)) {
 
-        }else {
+        } else {
             throw new RuntimeException(deviceType.getName() + " has not been " +
                     "implemented with default initializers.");
         }
