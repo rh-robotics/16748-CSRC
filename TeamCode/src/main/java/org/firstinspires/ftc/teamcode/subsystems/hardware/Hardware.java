@@ -50,9 +50,11 @@ public class Hardware {
         this.hardwareElements.put(hardwareElement.name, hardwareElement.device);
     }
 
+    /** Runs initializing methods based on type, parses hardwareElement to specific hardware class.
+     * TODO: Update this method when implementing new initializers:
+     *  Add a conditional to recognize new types and write new init methods to handle initializers
+     *  and parse hardwareElement as specific type. */
     private void init(HardwareElement<?> hardwareElement) {
-        /* Initializers should be added as needed to the conditional with their corresponding
-         * class. */
         if (hardwareElement.device instanceof DcMotor) {
             initDcMotor(hardwareElement, hardwareElement.initializers);
         } else if (hardwareElement.device instanceof CRServo) {
