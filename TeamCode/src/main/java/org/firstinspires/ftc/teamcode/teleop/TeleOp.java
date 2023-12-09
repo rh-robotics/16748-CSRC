@@ -40,8 +40,8 @@ public class TeleOp extends OpMode {
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "jointServo"));
 
         // Init CR Servos.
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "geckoWheelCRServo"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "tubeCRServo"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeGeckoWheels"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeTube"));
 
         // Init DcMotors.
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront", "setDirection:FORWARD"));
@@ -49,8 +49,8 @@ public class TeleOp extends OpMode {
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront", "setDirection:FORWARD"));
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightBack", "setDirection:FORWARD"));
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "armMotor", "setMode(DcMotor.RunMode.RUN_USING_ENCODER)"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftViperSlideMotor", "setMode(DcMotor.RunMode.RUN_USING_ENCODER)"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightViperSlideMotor", "setMode(DcMotor.RunMode.RUN_USING_ENCODER)"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftViperSlide", "setMode(DcMotor.RunMode.RUN_USING_ENCODER)"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightViperSlide", "setMode(DcMotor.RunMode.RUN_USING_ENCODER)"));
 
         telemetry.addData("Status", "Initialized");
         telemetry.addLine("Controls:\n" +
@@ -119,14 +119,14 @@ public class TeleOp extends OpMode {
 
         // Moving VS maually via dpad up and down.
         if (gamepad1.dpad_up) {
-            robot.<DcMotor>get("leftViperSlideMotor").setPower(0.5);
-            robot.<DcMotor>get("rightViperSlideMotor").setPower(0.5);
+            robot.<DcMotor>get("leftViperSlide").setPower(0.5);
+            robot.<DcMotor>get("rightViperSlide").setPower(0.5);
         } else if (gamepad1.dpad_down) {
-            robot.<DcMotor>get("leftViperSlideMotor").setPower(-0.5);
-            robot.<DcMotor>get("rightViperSlideMotor").setPower(-0.5);
+            robot.<DcMotor>get("leftViperSlide").setPower(-0.5);
+            robot.<DcMotor>get("rightViperSlide").setPower(-0.5);
         } else {
-            robot.<DcMotor>get("leftViperSlideMotor").setPower(0);
-            robot.<DcMotor>get("rightViperSlideMotor").setPower(0);
+            robot.<DcMotor>get("leftViperSlide").setPower(0);
+            robot.<DcMotor>get("rightViperSlide").setPower(0);
         }
 
         // Controls jointServo using right bumper and right trigger.
@@ -140,12 +140,12 @@ public class TeleOp extends OpMode {
 
         // Activating Intake via gamepad a.
         if (gamepad1.a) {
-            robot.<CRServo>get("tubeCRServo").setPower(intakePower);
-            robot.<CRServo>get("geckoWheelCRServo").setPower(intakePower);
+            robot.<CRServo>get("intakeTube").setPower(intakePower);
+            robot.<CRServo>get("intakeGeckoWheels").setPower(intakePower);
             telemetry.addData("Intake", "Running");
         } else {
-            robot.<CRServo>get("tubeCRServo").setPower(0);
-            robot.<CRServo>get("geckoWheelCRServo").setPower(0);
+            robot.<CRServo>get("intakeTube").setPower(0);
+            robot.<CRServo>get("intakeGeckoWheels").setPower(0);
             telemetry.addData("Intake", "Stopped");
         }
     }
@@ -173,7 +173,7 @@ public class TeleOp extends OpMode {
         telemetry.addData("Scoring Status", "Setting VS Pos");
 
         // Setting ViperSlidePoses based on Targets.
-        while (robot.<DcMotor>get("leftViperSlideMotor").getCurrentPosition() < viperSlideTargetPos || robot.<DcMotor>get("rightViperSlideMotor").getCurrentPosition() < viperSlideTargetPos) {
+        while (robot.<DcMotor>get("leftViperSlide").getCurrentPosition() < viperSlideTargetPos || robot.<DcMotor>get("rightViperSlide").getCurrentPosition() < viperSlideTargetPos) {
             runViperSlidesToPosition(viperSlideTargetPos, 0.4);
             viperSlideTelemetryUpdate();
         }
@@ -213,37 +213,37 @@ public class TeleOp extends OpMode {
         telemetry.addData("Scoring Status", "Resetting Pos");
         robot.<Servo>get("jointServo").setPosition(jointStartPos);
 
-        while (robot.<DcMotor>get("leftViperSlideMotor").getCurrentPosition() > viperSlideStartPos || robot.<DcMotor>get("rightViperSlideMotor").getCurrentPosition() > viperSlideStartPos) {
+        while (robot.<DcMotor>get("leftViperSlide").getCurrentPosition() > viperSlideStartPos || robot.<DcMotor>get("rightViperSlide").getCurrentPosition() > viperSlideStartPos) {
             runViperSlidesToPosition(viperSlideStartPos, -0.4);
             viperSlideTelemetryUpdate();
         }
 
-        robot.<DcMotor>get("leftViperSlideMotor").setPower(0);
-        robot.<DcMotor>get("rightViperSlideMotor").setPower(0);
+        robot.<DcMotor>get("leftViperSlide").setPower(0);
+        robot.<DcMotor>get("rightViperSlide").setPower(0);
         telemetry.addData("Scoring Status", "Pos Reset");
     }
 
     // VS Telemetry Updates.
     public void viperSlideTelemetryUpdate() {
-        telemetry.addData("VS Left Pos", robot.<DcMotor>get("leftViperSlideMotor").getCurrentPosition());
-        telemetry.addData("VS Left Power", robot.<DcMotor>get("leftViperSlideMotor").getPower());
+        telemetry.addData("VS Left Pos", robot.<DcMotor>get("leftViperSlide").getCurrentPosition());
+        telemetry.addData("VS Left Power", robot.<DcMotor>get("leftViperSlide").getPower());
 
-        telemetry.addData("VS Right Pos", robot.<DcMotor>get("rightViperSlideMotor").getCurrentPosition());
-        telemetry.addData("VS Right Power", robot.<DcMotor>get("rightViperSlideMotor").getPower());
+        telemetry.addData("VS Right Pos", robot.<DcMotor>get("rightViperSlide").getCurrentPosition());
+        telemetry.addData("VS Right Power", robot.<DcMotor>get("rightViperSlide").getPower());
     }
 
     // VS run Code to Target.
     public void runViperSlidesToPosition(double position, double power) {
-        robot.<DcMotor>get("leftViperSlideMotor").setPower(0);
-        robot.<DcMotor>get("rightViperSlideMotor").setPower(0);
+        robot.<DcMotor>get("leftViperSlide").setPower(0);
+        robot.<DcMotor>get("rightViperSlide").setPower(0);
 
-        if (robot.<DcMotor>get("leftViperSlideMotor").getCurrentPosition() > position) {
-            robot.<DcMotor>get("leftViperSlideMotor").setPower(power);
+        if (robot.<DcMotor>get("leftViperSlide").getCurrentPosition() > position) {
+            robot.<DcMotor>get("leftViperSlide").setPower(power);
             telemetry.addLine("Running VS Left");
         }
 
-        if (robot.<DcMotor>get("rightViperSlideMotor").getCurrentPosition() > position) {
-            robot.<DcMotor>get("rightViperSlideMotor").setPower(power);
+        if (robot.<DcMotor>get("rightViperSlide").getCurrentPosition() > position) {
+            robot.<DcMotor>get("rightViperSlide").setPower(power);
         }
     }
 

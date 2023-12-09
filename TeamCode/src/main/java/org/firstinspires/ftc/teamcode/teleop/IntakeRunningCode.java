@@ -18,8 +18,8 @@ public class IntakeRunningCode extends OpMode{
         robot = new Hardware(hardwareMap, telemetry);
 
         /** Introduced Servos. */
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "geckoWheelCRServo"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "tubeCRServo"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeGeckoWheels"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeTube"));
         telemetry.addData("Status", "Initialized");
     }
 
@@ -35,12 +35,12 @@ public class IntakeRunningCode extends OpMode{
     @Override
     public void loop() {
         if (gamepad1.a) {
-            robot.<CRServo>get("tubeCRServo").setPower(0.5);
-            robot.<CRServo>get("geckoWheelCRServo").setPower(0.5);
+            robot.<CRServo>get("intakeTube").setPower(0.5);
+            robot.<CRServo>get("intakeGeckoWheels").setPower(0.5);
             telemetry.addData("Intake", "Running");
         } else {
-            robot.<CRServo>get("tubeCRServo").setPower(0);
-            robot.<CRServo>get("geckoWheelCRServo").setPower(0);
+            robot.<CRServo>get("intakeTube").setPower(0);
+            robot.<CRServo>get("intakeGeckoWheels").setPower(0);
             telemetry.addData("Intake", "Stopped");
         }
     }
