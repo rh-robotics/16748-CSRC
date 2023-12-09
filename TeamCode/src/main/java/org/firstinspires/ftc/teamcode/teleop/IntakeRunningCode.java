@@ -57,11 +57,11 @@ public class IntakeRunningCode extends OpMode{
         }
 
         if (gamepad1.right_bumper) {
-            robot.<CRServo>get("outerIntakeMovementCRServo1").setPower(-0.25);
-            robot.<CRServo>get("outerIntakeMovementCRServo2").setPower(0.25);
+            robot.<CRServo>get("outerIntakeJoint1").setPower(-0.25);
+            robot.<CRServo>get("outerIntakeJoint2").setPower(0.25);
         } else if (gamepad1.right_trigger > 0.5) {
-            robot.<CRServo>get("outerIntakeMovementCRServo1").setPower(0.25);
-            robot.<CRServo>get("outerIntakeMovementCRServo2").setPower(-0.25);
+            robot.<CRServo>get("outerIntakeJoint1").setPower(0.25);
+            robot.<CRServo>get("outerIntakeJoint2").setPower(-0.25);
         }
     }
 }

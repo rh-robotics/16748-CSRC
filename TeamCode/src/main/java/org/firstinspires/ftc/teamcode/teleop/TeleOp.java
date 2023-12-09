@@ -42,6 +42,10 @@ public class TeleOp extends OpMode {
         // Init intake CRServos.
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeGeekoWheels"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeTube"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint1"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint2"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeTube1"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeTube2"));
 
         // Init wheel DcMotors.
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront", "setDirection:FORWARD"));
@@ -148,7 +152,7 @@ public class TeleOp extends OpMode {
         }
 
         // Activating Intake via gamepad a.
-        if (gamepad2.a) {
+        if (gamepad1.a) {
             robot.<CRServo>get("intakeTube").setPower(0.5);
             robot.<CRServo>get("intakeGeekoWheels").setPower(0.5);
             robot.<CRServo>get("outerIntakeTube1").setPower(-0.5);
@@ -160,6 +164,14 @@ public class TeleOp extends OpMode {
             robot.<CRServo>get("outerIntakeTube1").setPower(0);
             robot.<CRServo>get("outerIntakeTube2").setPower(0);
             telemetry.addData("Intake", "Stopped");
+        }
+
+        if (gamepad1.right_bumper) {
+            robot.<CRServo>get("outerIntakeJoint1").setPower(-0.25);
+            robot.<CRServo>get("outerIntakeJoint2").setPower(0.25);
+        } else if (gamepad1.right_trigger > 0.5) {
+            robot.<CRServo>get("outerIntakeJoint1").setPower(0.25);
+            robot.<CRServo>get("outerIntakeJoint2").setPower(-0.25);
         }
     }
 
