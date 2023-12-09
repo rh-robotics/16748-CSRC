@@ -54,27 +54,33 @@ public class TeleOp extends OpMode {
 
         telemetry.addData("Status", "Initialized");
         telemetry.addLine("Controls:\n" +
-                "        ***\n" +
-                "        Left Stick y = Drive\n" +
-                "        Left Stick x = Strafe\n" +
-                "        Right Stick x = Turn\n" +
-                "        Right Bumper = Joint +\n" +
-                "        Right Trigger = Joint -\n" +
-                "        Left Bumper = Automatic Scoring\n" +
-                "        Left Trigger = VS, Arm and Claw reset (Auto)\n" +
-                "        A = Activate Intake (Hold)\n" +
-                "        X = Claw + (Manual)\n" +
-                "        Y = Claw - (Manual)\n" +
-                "        D Pad Up = VS Up (Manual)\n" +
-                "        D Pad Down = VS Down (Manual)");
+                "         *** \n" +
+                "         * Gamepad 1\n" +
+                "         * Left Stick y = Drive\n" +
+                "         * Left Stick x = Strafe\n" +
+                "         * Right Stick x = Turn\n" +
+                "         * \n" +
+                "         *  Gamepad 2\n" +
+                "         * Right Bumper = Joint +\n" +
+                "         * Right Trigger = Joint -\n" +
+                "         * Left Bumper = Automatic Scoring\n" +
+                "         * Left Trigger = VS, Arm and Claw reset (Auto)\n" +
+                "         * A = Activate Intake (Hold)\n" +
+                "         * X = Claw + (Manual)\n" +
+                "         * Y = Claw - (Manual)\n" +
+                "         * D Pad Up = VS Up (Manual)\n" +
+                "         * D Pad Down = VS Down (Manual)");
     }
 
     @Override
     public void loop() {
         /** Controls:
+         * Gamepad 1
          * Left Stick y = Drive
          * Left Stick x = Strafe
          * Right Stick x = Turn
+         *
+         *  Gamepad 2
          * Right Bumper = Joint +
          * Right Trigger = Joint -
          * Left Bumper = Automatic Scoring
@@ -103,25 +109,25 @@ public class TeleOp extends OpMode {
         telemetry.addData("rightBPower: ", rightBPower);
 
         // Calling scoring() via left bumper and resetting via left trigger
-        if (gamepad1.left_bumper) {
+        if (gamepad2.left_bumper) {
             scoring();
-        } else if (gamepad1.left_trigger > 0.5 && !scoringATM) {
+        } else if (gamepad2.left_trigger > 0.5 && !scoringATM) {
             resetPos();
             telemetry.addData("Scoring Pos", "Reset");
         }
 
         // Move claw via x and y.
-        if (gamepad1.x) {
+        if (gamepad2.x) {
             robot.<Servo>get("clawServo").setPosition(robot.<Servo>get("clawServo").getPosition() + -0.125);
-        } else if (gamepad1.y) {
+        } else if (gamepad2.y) {
             robot.<Servo>get("clawServo").setPosition(robot.<Servo>get("clawServo").getPosition() + 0.125);
         }
 
         // Moving VS maually via dpad up and down.
-        if (gamepad1.dpad_up) {
+        if (gamepad2.dpad_up) {
             robot.<DcMotor>get("leftViperSlideMotor").setPower(0.5);
             robot.<DcMotor>get("rightViperSlideMotor").setPower(0.5);
-        } else if (gamepad1.dpad_down) {
+        } else if (gamepad2.dpad_down) {
             robot.<DcMotor>get("leftViperSlideMotor").setPower(-0.5);
             robot.<DcMotor>get("rightViperSlideMotor").setPower(-0.5);
         } else {
@@ -130,16 +136,16 @@ public class TeleOp extends OpMode {
         }
 
         // Controls jointServo using right bumper and right trigger.
-        if (gamepad1.right_bumper) {
+        if (gamepad2.right_bumper) {
             robot.<CRServo>get("jointServo").setPower(0.15);
-        } else if (gamepad1.right_trigger > 0.5) {
+        } else if (gamepad2.right_trigger > 0.5) {
             robot.<CRServo>get("jointServo").setPower(-0.15);
         } else {
             robot.<CRServo>get("jointServo").setPower(0);
         }
 
         // Activating Intake via gamepad a.
-        if (gamepad1.a) {
+        if (gamepad2.a) {
             robot.<CRServo>get("tubeCRServo").setPower(intakePower);
             robot.<CRServo>get("geekoWheelCRServo").setPower(intakePower);
             telemetry.addData("Intake", "Running");

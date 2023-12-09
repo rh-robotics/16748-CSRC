@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.teleop.Tests;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
@@ -25,10 +26,16 @@ public class BasicMotorTest extends OpMode {
         robot = new Hardware(hardwareMap, telemetry);
 
         /** DcMotorEx is a child class of DcMotor, so for now we just introduce them as DcMotors. */
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront", "setDirection:FORWARD"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear", "setDirection:FORWARD"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront", "setDirection:FORWARD"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightRear", "setDirection:FORWARD"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightRear"));
+
+        robot.<DcMotor>get("leftRear").setDirection(DcMotorSimple.Direction.REVERSE);
+        robot.<DcMotor>get("rightRear").setDirection(DcMotorSimple.Direction.REVERSE);
+        robot.<DcMotor>get("leftFront").setDirection(DcMotorSimple.Direction.REVERSE);
+        robot.<DcMotor>get("rightFront").setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         telemetry.addData("Status", "Initialized"); // Updates "Status" key's value.
     }

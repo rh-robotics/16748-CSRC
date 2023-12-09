@@ -20,6 +20,8 @@ public class IntakeRunningCode extends OpMode{
         /** Introduced Servos. */
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "geekoWheelCRServo"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "tubeCRServo"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeMovementCRServo1"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeMovementCRServo2"));
         telemetry.addData("Status", "Initialized");
     }
 
@@ -42,6 +44,13 @@ public class IntakeRunningCode extends OpMode{
             robot.<CRServo>get("tubeCRServo").setPower(0);
             robot.<CRServo>get("geekoWheelCRServo").setPower(0);
             telemetry.addData("Intake", "Stopped");
+        }
+        if (gamepad1.dpad_up) {
+            robot.<CRServo>get("outerIntakeMovementCRServo1").setPower(-0.25);
+            robot.<CRServo>get("outerIntakeMovementCRServo2").setPower(0.25);
+        } else if (gamepad1.dpad_down) {
+            robot.<CRServo>get("outerIntakeMovementCRServo1").setPower(0.25);
+            robot.<CRServo>get("outerIntakeMovementCRServo2").setPower(-0.25);
         }
     }
 }
