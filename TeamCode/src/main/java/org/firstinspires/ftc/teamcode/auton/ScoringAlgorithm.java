@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
 
-/** @noinspection ALL */
 @Autonomous(name = "Scoring Algorithm", group = "auton")
 public class ScoringAlgorithm extends OpMode {
     private Hardware robot;
