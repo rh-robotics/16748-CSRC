@@ -40,7 +40,7 @@ public class TeleOp extends OpMode {
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "jointServo"));
 
         // Init CR Servos.
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "geekoWheelCRServo"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "geckoWheelCRServo"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "tubeCRServo"));
 
         // Init DcMotors.
@@ -141,11 +141,11 @@ public class TeleOp extends OpMode {
         // Activating Intake via gamepad a.
         if (gamepad1.a) {
             robot.<CRServo>get("tubeCRServo").setPower(intakePower);
-            robot.<CRServo>get("geekoWheelCRServo").setPower(intakePower);
+            robot.<CRServo>get("geckoWheelCRServo").setPower(intakePower);
             telemetry.addData("Intake", "Running");
         } else {
             robot.<CRServo>get("tubeCRServo").setPower(0);
-            robot.<CRServo>get("geekoWheelCRServo").setPower(0);
+            robot.<CRServo>get("geckoWheelCRServo").setPower(0);
             telemetry.addData("Intake", "Stopped");
         }
     }
