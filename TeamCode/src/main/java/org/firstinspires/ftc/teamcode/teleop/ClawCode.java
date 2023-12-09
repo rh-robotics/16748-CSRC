@@ -18,8 +18,8 @@ public class ClawCode extends OpMode {
 
         robot = new Hardware(hardwareMap, telemetry);
 
-        robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "clawServo"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "jointServo"));
+        robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "clawLock"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "clawJoint"));
         telemetry.addData("Status", "Initialized");
     }
 
@@ -27,20 +27,20 @@ public class ClawCode extends OpMode {
     public void loop() {
         /* Rotating servos based on user input. */
         if (gamepad1.a) {
-            robot.<Servo>get("clawServo").setPosition(robot.<Servo>get("clawServo").getPosition() + -0.125);
+            robot.<Servo>get("clawLock").setPosition(robot.<Servo>get("clawLock").getPosition() + -0.125);
         } else if (gamepad1.b) {
-            robot.<Servo>get("clawServo").setPosition(robot.<Servo>get("clawServo").getPosition() + 0.125);
+            robot.<Servo>get("clawLock").setPosition(robot.<Servo>get("clawLock").getPosition() + 0.125);
         }
 
         if (gamepad1.right_bumper) {
-            robot.<CRServo>get("jointServo").setPower(0.15);
+            robot.<CRServo>get("clawJoint").setPower(0.15);
         } else if (gamepad1.right_trigger > 0.5) {
-            robot.<CRServo>get("jointServo").setPower(-0.15);
+            robot.<CRServo>get("clawJoint").setPower(-0.15);
         } else {
-            robot.<CRServo>get("jointServo").setPower(0);
+            robot.<CRServo>get("clawJoint").setPower(0);
         }
 
-        telemetry.addData("clawServo position: ", robot.<Servo>get("clawServo").getPosition());
-        telemetry.addData("jointServo position: ", robot.<CRServo>get("jointServo").getPower());
+        telemetry.addData("clawLock position: ", robot.<Servo>get("clawLock").getPosition());
+        telemetry.addData("clawJoint position: ", robot.<CRServo>get("clawJoint").getPower());
     }
 }
