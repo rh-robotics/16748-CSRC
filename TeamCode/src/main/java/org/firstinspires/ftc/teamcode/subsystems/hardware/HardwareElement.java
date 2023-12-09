@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems.hardware;
 
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -68,6 +69,8 @@ public class HardwareElement<T extends HardwareDevice> {
         } else if (deviceType.equals(TouchSensor.class)) {
 
         } else if (deviceType.equals(DistanceSensor.class)) {
+
+        } else if (deviceType.equals(ColorSensor.class)) {
 
         } else {
             throw new RuntimeException(deviceType.getName() + " has not been " +

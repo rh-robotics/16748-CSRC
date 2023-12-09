@@ -17,8 +17,8 @@ public class DistanceSensorTest extends OpMode {
         robot = new Hardware(hardwareMap, telemetry);
         robot.introduce(new HardwareElement<>(DistanceSensor.class, hardwareMap, "distanceSensor"));
 
-        telemetry.addData("Distance Sensor", "Initializing");
-        telemetry.addData("Distance Sensor", "Initialized");
+        telemetry.addLine("Distance Sensor Initializing");
+        telemetry.addLine("Distance Sensor Initialized");
     }
 
     @Override

@@ -1,18 +1,27 @@
 package org.firstinspires.ftc.teamcode.auton;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
+import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
+
 @Autonomous(name="Touch Sensor Test")
+
 public class TouchSensorTest extends OpMode {
-    TouchSensor touch;
+    private Hardware robot;
     @Override
-    public void init() {}
+    public void init() {
+        robot = new Hardware(hardwareMap, telemetry);
+        robot.introduce(new HardwareElement<>(TouchSensor.class, hardwareMap, "touchSensor"));
+        telemetry.addLine("Touch Sensor Initializing");
+        telemetry.addLine("Touch Sensor Initialized");
+    }
 
     @Override
     public void loop() {
-        touch = hardwareMap.touchSensor.get("touchSensor");
-        telemetry.addData("Touch Sensor", touch.isPressed());
+        boolean touch = robot.<TouchSensor>get("touchSensor").isPressed();
+        telemetry.addData("Touch Sensor Pressed", touch);
     }
 }
