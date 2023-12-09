@@ -11,17 +11,19 @@ import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
 
 public class TouchSensorTest extends OpMode {
     private Hardware robot;
+    boolean pressed;
+
     @Override
     public void init() {
+        telemetry.addData("Touch Sensor", "Initializing");
         robot = new Hardware(hardwareMap, telemetry);
         robot.introduce(new HardwareElement<>(TouchSensor.class, hardwareMap, "touchSensor"));
-        telemetry.addLine("Touch Sensor Initializing");
-        telemetry.addLine("Touch Sensor Initialized");
+        telemetry.addData("Touch Sensor", "Initialized");
     }
 
     @Override
     public void loop() {
-        boolean touch = robot.<TouchSensor>get("touchSensor").isPressed();
-        telemetry.addData("Touch Sensor Pressed", touch);
+        pressed = robot.<TouchSensor>get("touchSensor").isPressed();
+        telemetry.addData("Touch Sensor Pressed", pressed);
     }
 }

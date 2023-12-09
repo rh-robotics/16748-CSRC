@@ -17,15 +17,15 @@ public class ColorSensorTest extends OpMode {
 
     @Override
     public void init() {
+        telemetry.addData("Color Sensor", "Initializing");
         robot = new Hardware(hardwareMap, telemetry);
         robot.introduce(new HardwareElement<>(ColorSensor.class, hardwareMap, "colorSensor"));
-        telemetry.addLine("Color Sensor Initializing");
-        telemetry.addLine("Color Sensor Initialized");
+        telemetry.addData("Color Sensor", "Initialized");
     }
 
     @Override
     public void loop() {
-        //finds amount of red, green, blue, and light (alpha)
+        // Finds amount of red, green, blue, and light (alpha).
         red = robot.<ColorSensor>get("colorSensor").red();
         green = robot.<ColorSensor>get("colorSensor").green();
         blue = robot.<ColorSensor>get("colorSensor").blue();
