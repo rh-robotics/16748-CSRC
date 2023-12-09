@@ -64,15 +64,15 @@ public class TeleOp extends OpMode {
                 "         * \n" +
                 "         *** \n" +
                 "         *  Gamepad 2\n" +
-                "         * Right Bumper = Joint +\n" +
-                "         * Right Trigger = Joint -\n" +
+                "         * Right Bumper = Claw Joint +\n" +
+                "         * Right Trigger = Claw Joint -\n" +
                 "         * Left Bumper = Automatic Scoring\n" +
-                "         * Left Trigger = VS, Arm and Claw reset (Auto)\n" +
+                "         * Left Trigger = VS, Arm and Claw reset (Automatic Scoring Reset)\n" +
                 "         * A = Activate Intake (Hold)\n" +
-                "         * X = Claw + (Manual)\n" +
-                "         * Y = Claw - (Manual)\n" +
+                "         * X = Claw Lock + (Manual)\n" +
+                "         * Y = Claw Lock - (Manual)\n" +
                 "         * D Pad Up = VS Up (Manual)\n" +
-                "         * D Pad Down = VS Down (Manual)");
+                "         * D Pad Down = VS Down (Manual)\n");
     }
 
     @Override
@@ -84,13 +84,13 @@ public class TeleOp extends OpMode {
          * Right Stick x = Turn
          *
          *  Gamepad 2
-         * Right Bumper = Joint +
-         * Right Trigger = Joint -
+         * Right Bumper = Claw Joint +
+         * Right Trigger = Claw Joint -
          * Left Bumper = Automatic Scoring
-         * Left Trigger = VS, Arm and Claw reset (Auto)
+         * Left Trigger = VS, Arm and Claw reset (Automatic Scoring Reset)
          * A = Activate Intake (Hold)
-         * X = Claw + (Manual)
-         * Y = Claw - (Manual)
+         * X = Claw Lock + (Manual)
+         * Y = Claw Lock - (Manual)
          * D Pad Up = VS Up (Manual)
          * D Pad Down = VS Down (Manual)
          */
@@ -149,12 +149,16 @@ public class TeleOp extends OpMode {
 
         // Activating Intake via gamepad a.
         if (gamepad2.a) {
-            robot.<CRServo>get("intakeTube").setPower(intakePower);
-            robot.<CRServo>get("intakeGeekoWheels").setPower(intakePower);
+            robot.<CRServo>get("intakeTube").setPower(0.5);
+            robot.<CRServo>get("intakeGeekoWheels").setPower(0.5);
+            robot.<CRServo>get("outerIntakeTube1").setPower(-0.5);
+            robot.<CRServo>get("outerIntakeTube2").setPower(-0.5);
             telemetry.addData("Intake", "Running");
         } else {
             robot.<CRServo>get("intakeTube").setPower(0);
             robot.<CRServo>get("intakeGeekoWheels").setPower(0);
+            robot.<CRServo>get("outerIntakeTube1").setPower(0);
+            robot.<CRServo>get("outerIntakeTube2").setPower(0);
             telemetry.addData("Intake", "Stopped");
         }
     }
