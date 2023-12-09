@@ -151,6 +151,10 @@ public class Hardware {
 
     private void initColorSensor(HardwareElement<?> hardwareElement,
                                  HashMap<String, String> initsHashMap) {
+        if (!initsHashMap.isEmpty()){
+            throw new RuntimeException("Color Sensor unnecessary initializers included");
+        }
+
         ColorSensor deviceColorSensor = (ColorSensor) hardwareElement.device;
 
     }
