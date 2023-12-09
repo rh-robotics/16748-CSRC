@@ -163,6 +163,7 @@ public class TeleOp extends OpMode {
             robot.<CRServo>get("intakeGeekoWheels").setPower(0);
             robot.<CRServo>get("outerIntakeTube1").setPower(0);
             robot.<CRServo>get("outerIntakeTube2").setPower(0);
+
             telemetry.addData("Intake", "Stopped");
         }
 
