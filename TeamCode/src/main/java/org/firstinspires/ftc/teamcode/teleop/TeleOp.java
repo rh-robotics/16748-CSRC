@@ -81,23 +81,7 @@ public class TeleOp extends OpMode {
 
     @Override
     public void loop() {
-        /** Controls:
-         * Gamepad 1
-         * Left Stick y = Drive
-         * Left Stick x = Strafe
-         * Right Stick x = Turn
-         *
-         *  Gamepad 2
-         * Right Bumper = Claw Joint +
-         * Right Trigger = Claw Joint -
-         * X = Automatic Scoring
-         * Y = VS, Arm and Claw reset (Automatic Scoring Reset)
-         * A = Activate Intake (Hold)
-         * Left Bumper = Claw Lock + (Manual)
-         * Left Trigger = Claw Lock - (Manual)
-         * D Pad Up = VS Up (Manual)
-         * D Pad Down = VS Down (Manual)
-         */
+
 
         // Values for drive.
         drive = gamepad1.left_stick_y * 0.8;
