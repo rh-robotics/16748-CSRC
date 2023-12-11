@@ -35,19 +35,19 @@ public class TeleOp extends OpMode {
 
         robot = new Hardware(hardwareMap, telemetry);
 
-        // Init claw Servos.
-        robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "clawLock"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "clawJoint"));
+        // Init Servos.
+        robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "clawServo"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "jointServo"));
 
-        // Init intake CRServos.
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeGeekoWheels"));
+        // Init CR Servos.
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeGeckoWheels"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeTube"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint1"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint2"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeTube1"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeTube2"));
-
-        // Init wheel DcMotors.
+      
+        // Init DcMotors.
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront", "setDirection:FORWARD"));
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear", "setDirection:FORWARD"));
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront", "setDirection:FORWARD"));
@@ -153,17 +153,16 @@ public class TeleOp extends OpMode {
 
         // Activating Intake via gamepad a.
         if (gamepad1.a) {
-            robot.<CRServo>get("intakeTube").setPower(0.5);
-            robot.<CRServo>get("intakeGeekoWheels").setPower(0.5);
+            robot.<CRServo>get("intakeTube").setPower(intakePower);
+            robot.<CRServo>get("intakeGeckoWheels").setPower(intakePower);
             robot.<CRServo>get("outerIntakeTube1").setPower(-0.5);
             robot.<CRServo>get("outerIntakeTube2").setPower(-0.5);
             telemetry.addData("Intake", "Running");
         } else {
             robot.<CRServo>get("intakeTube").setPower(0);
-            robot.<CRServo>get("intakeGeekoWheels").setPower(0);
+            robot.<CRServo>get("intakeGeckoWheels").setPower(0);
             robot.<CRServo>get("outerIntakeTube1").setPower(0);
             robot.<CRServo>get("outerIntakeTube2").setPower(0);
-
             telemetry.addData("Intake", "Stopped");
         }
 
