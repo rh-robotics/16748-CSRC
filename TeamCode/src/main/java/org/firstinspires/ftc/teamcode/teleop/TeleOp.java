@@ -116,21 +116,21 @@ public class TeleOp extends OpMode {
         telemetry.addData("rightBPower: ", rightBPower);
 
         // Calling scoring() via left bumper and resetting via left trigger
-        if (gamepad2.left_bumper) {
+        if (gamepad2.x) {
             scoring();
-        } else if (gamepad2.left_trigger > 0.5 && !scoringATM) {
+        } else if (gamepad2.y && !scoringATM) {
             resetPos();
             telemetry.addData("Scoring Pos", "Reset");
         }
 
         // Move claw via x and y.
-        if (gamepad2.x) {
+        if (gamepad2.left_bumper) {
             robot.<Servo>get("clawLock").setPosition(robot.<Servo>get("clawLock").getPosition() + -0.125);
-        } else if (gamepad2.y) {
+        } else if (gamepad2.left_trigger > 0.5) {
             robot.<Servo>get("clawLock").setPosition(robot.<Servo>get("clawLock").getPosition() + 0.125);
         }
 
-        // Moving VS maually via dpad up and down.
+        // Moving VS manually via dpad up and down.
         if (gamepad2.dpad_up) {
             robot.<DcMotor>get("leftViperSlide").setPower(0.5);
             robot.<DcMotor>get("rightViperSlide").setPower(0.5);
