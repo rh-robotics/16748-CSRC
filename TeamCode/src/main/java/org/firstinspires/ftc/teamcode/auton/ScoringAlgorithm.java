@@ -16,7 +16,6 @@ public class ScoringAlgorithm extends OpMode {
     private boolean pixelsInClaw = false;
     private final double armStartPos = 0.0;
     private final double armTargetPos = 0.0;
-    private final double armTolerance = 2.5;
     private final double viperSlideStartPos = 0.0;
     private final double viperSlideTargetPos = 0.0;
     private final double jointStartPos = 0.0;
