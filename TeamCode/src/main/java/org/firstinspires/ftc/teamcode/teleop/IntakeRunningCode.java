@@ -17,8 +17,6 @@ public class IntakeRunningCode extends OpMode{
         /** Introduced Servos. */
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeGeckoWheels"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeTube"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeGeckoWheels"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeTube"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint1"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint2"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeTube1"));
@@ -37,20 +35,29 @@ public class IntakeRunningCode extends OpMode{
 
     @Override
     public void loop() {
-        telemetry.addLine("Button A: Run Intake \n Right Bumper: Outer Intake Up \n " +
-                "Right Trigger: Outer Intake Down");
+        telemetry.addLine("Button A: Run Intake \nRight Bumper: Outer Intake Up \n" +
+                "Right Trigger: Outer Intake Down\n***\nButton B: Outer Intake Tube\nButton X: " +
+                "(Inner) Intake Tube and Gecko");
+
+        if (gamepad1.b) {
+            robot.<CRServo>get("outerIntakeTube1").setPower(0.5);
+            robot.<CRServo>get("outerIntakeTube2").setPower(0.5);
+            telemetry.addData("Outer Intake", "Running");
+        }
+
+        if (gamepad1.x) {
+            robot.<CRServo>get("intakeTube").setPower(0.5);
+            robot.<CRServo>get("intakeGeckoWheels").setPower(0.5);
+            telemetry.addData("(Inner) Intake", "Running");
+        }
 
         if (gamepad1.a) {
             robot.<CRServo>get("intakeTube").setPower(0.5);
             robot.<CRServo>get("intakeGeckoWheels").setPower(0.5);
-            robot.<CRServo>get("intakeTube").setPower(0.5);
-            robot.<CRServo>get("intakeGeckoWheels").setPower(0.5);
-            robot.<CRServo>get("outerIntakeTube1").setPower(-0.5);
-            robot.<CRServo>get("outerIntakeTube2").setPower(-0.5);
+            robot.<CRServo>get("outerIntakeTube1").setPower(0.5);
+            robot.<CRServo>get("outerIntakeTube2").setPower(0.5);
             telemetry.addData("Intake", "Running");
         } else {
-            robot.<CRServo>get("intakeTube").setPower(0);
-            robot.<CRServo>get("intakeGeckoWheels").setPower(0);
             robot.<CRServo>get("intakeTube").setPower(0);
             robot.<CRServo>get("intakeGeckoWheels").setPower(0);
             robot.<CRServo>get("outerIntakeTube1").setPower(0);
@@ -64,6 +71,9 @@ public class IntakeRunningCode extends OpMode{
         } else if (gamepad1.right_trigger > 0.5) {
             robot.<CRServo>get("outerIntakeJoint1").setPower(0.25);
             robot.<CRServo>get("outerIntakeJoint2").setPower(-0.25);
+        } else {
+            robot.<CRServo>get("outerIntakeJoint1").setPower(0);
+            robot.<CRServo>get("outerIntakeJoint2").setPower(0);
         }
     }
 }
