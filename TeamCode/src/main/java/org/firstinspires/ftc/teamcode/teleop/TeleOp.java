@@ -70,34 +70,17 @@ public class TeleOp extends OpMode {
                 "         *  Gamepad 2\n" +
                 "         * Right Bumper = Claw Joint +\n" +
                 "         * Right Trigger = Claw Joint -\n" +
-                "         * Left Bumper = Automatic Scoring\n" +
-                "         * Left Trigger = VS, Arm and Claw reset (Automatic Scoring Reset)\n" +
+                "         * X = Automatic Scoring\n" +
+                "         * Y = VS, Arm and Claw reset (Automatic Scoring Reset)\n" +
                 "         * A = Activate Intake (Hold)\n" +
-                "         * X = Claw Lock + (Manual)\n" +
-                "         * Y = Claw Lock - (Manual)\n" +
+                "         * Left Bumper = Claw Lock + (Manual)\n" +
+                "         * Left Trigger = Claw Lock - (Manual)\n" +
                 "         * D Pad Up = VS Up (Manual)\n" +
-                "         * D Pad Down = VS Down (Manual)\n");
+                "         * D Pad Down = VS Down (Manual)");
     }
 
     @Override
     public void loop() {
-        /** Controls:
-         * Gamepad 1
-         * Left Stick y = Drive
-         * Left Stick x = Strafe
-         * Right Stick x = Turn
-         *
-         *  Gamepad 2
-         * Right Bumper = Claw Joint +
-         * Right Trigger = Claw Joint -
-         * Left Bumper = Automatic Scoring
-         * Left Trigger = VS, Arm and Claw reset (Automatic Scoring Reset)
-         * A = Activate Intake (Hold)
-         * X = Claw Lock + (Manual)
-         * Y = Claw Lock - (Manual)
-         * D Pad Up = VS Up (Manual)
-         * D Pad Down = VS Down (Manual)
-         */
 
         // Values for drive.
         drive = gamepad1.left_stick_y * 0.8;
@@ -116,21 +99,21 @@ public class TeleOp extends OpMode {
         telemetry.addData("rightBPower: ", rightBPower);
 
         // Calling scoring() via left bumper and resetting via left trigger
-        if (gamepad2.left_bumper) {
+        if (gamepad2.x) {
             scoring();
-        } else if (gamepad2.left_trigger > 0.5 && !scoringATM) {
+        } else if (gamepad2.y && !scoringATM) {
             resetPos();
             telemetry.addData("Scoring Pos", "Reset");
         }
 
         // Move claw via x and y.
-        if (gamepad2.x) {
+        if (gamepad2.left_bumper) {
             robot.<Servo>get("clawLock").setPosition(robot.<Servo>get("clawLock").getPosition() + -0.125);
-        } else if (gamepad2.y) {
+        } else if (gamepad2.left_trigger > 0.5) {
             robot.<Servo>get("clawLock").setPosition(robot.<Servo>get("clawLock").getPosition() + 0.125);
         }
 
-        // Moving VS maually via dpad up and down.
+        // Moving VS manually via dpad up and down.
         if (gamepad2.dpad_up) {
             robot.<DcMotor>get("leftViperSlide").setPower(0.5);
             robot.<DcMotor>get("rightViperSlide").setPower(0.5);
