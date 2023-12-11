@@ -82,7 +82,6 @@ public class TeleOp extends OpMode {
     @Override
     public void loop() {
 
-
         // Values for drive.
         drive = gamepad1.left_stick_y * 0.8;
         turn = -gamepad1.right_stick_x * 0.6;
