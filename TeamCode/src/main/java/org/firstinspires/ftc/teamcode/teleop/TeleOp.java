@@ -70,13 +70,13 @@ public class TeleOp extends OpMode {
                 "         *  Gamepad 2\n" +
                 "         * Right Bumper = Claw Joint +\n" +
                 "         * Right Trigger = Claw Joint -\n" +
-                "         * Left Bumper = Automatic Scoring\n" +
-                "         * Left Trigger = VS, Arm and Claw reset (Automatic Scoring Reset)\n" +
+                "         * X = Automatic Scoring\n" +
+                "         * Y = VS, Arm and Claw reset (Automatic Scoring Reset)\n" +
                 "         * A = Activate Intake (Hold)\n" +
-                "         * X = Claw Lock + (Manual)\n" +
-                "         * Y = Claw Lock - (Manual)\n" +
+                "         * Left Bumper = Claw Lock + (Manual)\n" +
+                "         * Left Trigger = Claw Lock - (Manual)\n" +
                 "         * D Pad Up = VS Up (Manual)\n" +
-                "         * D Pad Down = VS Down (Manual)\n");
+                "         * D Pad Down = VS Down (Manual)");
     }
 
     @Override
