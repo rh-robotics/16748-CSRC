@@ -36,26 +36,13 @@ public class IntakeRunningCode extends OpMode {
     @Override
     public void loop() {
         telemetry.addLine("Button A: Run Intake \nRight Bumper: Outer Intake Up \n" +
-                "Right Trigger: Outer Intake Down\n***\nButton B: Outer Intake Tube\nButton X: " +
-                "(Inner) Intake Tube and Gecko");
-
-        if (gamepad1.b) {
-            robot.<CRServo>get("outerIntakeTube1").setPower(0.5);
-            robot.<CRServo>get("outerIntakeTube2").setPower(0.5);
-            telemetry.addData("Outer Intake", "Running");
-        }
-
-        if (gamepad1.x) {
-            robot.<CRServo>get("intakeTube").setPower(0.5);
-            robot.<CRServo>get("intakeGeckoWheels").setPower(0.5);
-            telemetry.addData("(Inner) Intake", "Running");
-        }
+                "Right Trigger: Outer Intake Down\n***");
 
         if (gamepad1.a) {
             robot.<CRServo>get("intakeTube").setPower(0.5);
             robot.<CRServo>get("intakeGeckoWheels").setPower(0.5);
             robot.<CRServo>get("outerIntakeTube1").setPower(0.5);
-            robot.<CRServo>get("outerIntakeTube2").setPower(0.5);
+            robot.<CRServo>get("outerIntakeTube2").setPower(-0.5);
             telemetry.addData("Intake", "Running");
         } else {
             robot.<CRServo>get("intakeTube").setPower(0);
