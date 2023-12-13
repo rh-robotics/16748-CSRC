@@ -40,7 +40,7 @@ public class ClawCode extends OpMode {
             robot.<CRServo>get("clawJoint").setPower(0);
         }
 
-        telemetry.addData("clawLock position", robot.<Servo>get("clawLock").getPosition());
-        telemetry.addData("clawJoint position", robot.<CRServo>get("clawJoint").getPower());
+        telemetry.addData("clawServo position", robot.<Servo>get("clawServo").getPosition());
+        telemetry.addData("jointServo position", robot.<CRServo>get("jointServo").getPower());
     }
 }
