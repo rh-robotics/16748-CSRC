@@ -15,7 +15,7 @@ public class Edge {
      * returns "StateMachineTest.gamepad.a"
      *
      * This IS equivalent to
-     * condition = () - > {
+     * condition = () -> {
      *      return StateMachineTest.gamepad.a;
      * };
      *
@@ -33,7 +33,12 @@ public class Edge {
     /* Create a new Edge by writing eg.
     * "edge = new Edge(IdleState, () -> StateMachineTest.gamepad.a); */
 
-    /* condition is an instance of an implementation of EdgeCallback. */
+    /** Edges are the way we transition between States, decided by a certain condition(s).
+     * A State's Edges are stored within the State.
+     *
+     * @param to            State that a ceratin state is going *to*.
+     * @param condition     instance of an implementation of EdgeCallback.
+     */
     public Edge (Class to, EdgeCallback condition) {
         this.to = to;
         this.condition = condition;
