@@ -36,8 +36,8 @@ public class TeleOp extends OpMode {
         robot = new Hardware(hardwareMap, telemetry);
 
         // Init Servos.
-        robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "clawServo"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "jointServo"));
+        robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "clawLock"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "clawJoint"));
 
         // Init CR Servos.
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeGeckoWheels"));
