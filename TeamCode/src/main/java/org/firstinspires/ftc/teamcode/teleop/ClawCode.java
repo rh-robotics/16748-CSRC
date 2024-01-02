@@ -24,6 +24,7 @@ public class ClawCode extends OpMode {
     }
 
     @Override
+
     public void loop() {
         /* Rotating servos based on user input. */
         if (gamepad1.a) {
@@ -43,4 +44,3 @@ public class ClawCode extends OpMode {
         telemetry.addData("clawLock position", robot.<Servo>get("clawLock").getPosition());
         telemetry.addData("clawJoint position", robot.<CRServo>get("clawJoint").getPower());
     }
-}
