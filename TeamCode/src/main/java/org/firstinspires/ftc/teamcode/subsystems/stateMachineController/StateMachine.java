@@ -24,6 +24,8 @@ public class StateMachine {
         }
 
         checkEdges(telemetry);
+        telemetry.addData("Current State", currentState);
+
         currentState.loop();
     }
 
@@ -36,9 +38,23 @@ public class StateMachine {
                 edgeCallbacks.add(edge);
             }
         }
+
         if (edgeCallbacks.size() > 1) {
-            telemetry.addLine("Multiple edge callbacks");
+            telemetry.addLine();
+            telemetry.addLine("***");
+            telemetry.addLine("Multiple edge callbacks:");
+
+            for (Edge edge: edgeCallbacks)
+                telemetry.addLine("....." + edge.condition.toString());
+
+            telemetry.addLine("***");
+            telemetry.addLine();
         }
-        currentState = states.get(edgeCallbacks.get(0).to);
+
+        if (edgeCallbacks.size() >= 1) {
+            telemetry.addLine("State switched to " + edgeCallbacks.get(0).to.toString() + " from " +
+                    currentState.toString() + ".");
+            currentState = states.get(edgeCallbacks.get(0).to);
+        }
     }
 }

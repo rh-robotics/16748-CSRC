@@ -56,7 +56,6 @@ public class AprilTagAlignment extends OpMode {
     float wheelEncoderPPR = 537.7f; // PPR
     int wheelDiameter = 96; // mm
     double mmPerEncoderTick = (360/wheelEncoderPPR)/360*(wheelDiameter*Math.PI); // 0.56089435511 mm
-    // TODO: Measure and record turning radius. Should be the same as the distance between wheels.
     float turningRadius = 228.6f; // mm
     int targetTagID = 2;
 
@@ -119,7 +118,6 @@ public class AprilTagAlignment extends OpMode {
             } else {
                 telemetry.addData("AprilTag Detected", false);
             }
-
     }
 
     public void stopAndResetMotors() {

@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
 
+// TODO: Outer intake
+
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "OpMode")
 public class TeleOp extends OpMode {
     private Hardware robot;
@@ -67,7 +69,7 @@ public class TeleOp extends OpMode {
                 "         * Right Stick x = Turn\n" +
                 "         * \n" +
                 "         *** \n" +
-                "         *  Gamepad 2\n" +
+                "         * Gamepad 2\n" +
                 "         * Right Bumper = Claw Joint +\n" +
                 "         * Right Trigger = Claw Joint -\n" +
                 "         * X = Automatic Scoring\n" +
