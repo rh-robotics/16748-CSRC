@@ -157,7 +157,7 @@ public class TeleOp extends OpMode {
         } else {
             robot.<CRServo>get("outerIntakeJoint").setPower(0);
         }
-    }2
+    }
 
     // Scoring method, all together like a bowl of chili.
     public void scoring() {
