@@ -44,8 +44,7 @@ public class TeleOp extends OpMode {
         // Init CR Servos.
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeGeckoWheels"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeTube"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint1"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint2"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeTube1"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeTube2"));
       
@@ -138,10 +137,10 @@ public class TeleOp extends OpMode {
 
         // Activating Intake via gamepad a.
         if (gamepad1.a) {
-            robot.<CRServo>get("intakeTube").setPower(intakePower);
-            robot.<CRServo>get("intakeGeckoWheels").setPower(intakePower);
-            robot.<CRServo>get("outerIntakeTube1").setPower(-0.5);
-            robot.<CRServo>get("outerIntakeTube2").setPower(-0.5);
+            robot.<CRServo>get("intakeTube").setPower(0.5);
+            robot.<CRServo>get("intakeGeckoWheels").setPower(0.5);
+            robot.<CRServo>get("outerIntakeTube1").setPower(0.5);
+            robot.<CRServo>get("outerIntakeTube2").setPower(0.5);
             telemetry.addData("Intake", "Running");
         } else {
             robot.<CRServo>get("intakeTube").setPower(0);
@@ -152,13 +151,13 @@ public class TeleOp extends OpMode {
         }
 
         if (gamepad1.right_bumper) {
-            robot.<CRServo>get("outerIntakeJoint1").setPower(-0.25);
-            robot.<CRServo>get("outerIntakeJoint2").setPower(0.25);
+            robot.<CRServo>get("outerIntakeJoint").setPower(-0.25);
         } else if (gamepad1.right_trigger > 0.5) {
-            robot.<CRServo>get("outerIntakeJoint1").setPower(0.25);
-            robot.<CRServo>get("outerIntakeJoint2").setPower(-0.25);
+            robot.<CRServo>get("outerIntakeJoint").setPower(0.25);
+        } else {
+            robot.<CRServo>get("outerIntakeJoint").setPower(0);
         }
-    }
+    }2
 
     // Scoring method, all together like a bowl of chili.
     public void scoring() {
