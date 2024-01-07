@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class StateMachine {
-    /* Storing states in <Class, Instance of Class> pairs.*/
+    /* Storing states in <Class, Instance of Class> pairs. */
     public HashMap<Class<? extends State>, State> states;
     public State currentState;
 
