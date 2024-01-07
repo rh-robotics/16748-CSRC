@@ -12,5 +12,4 @@ public interface State {
     void loop();
     /* Write the state's edges here. */
     ArrayList<Edge> getEdges();
-
 }
