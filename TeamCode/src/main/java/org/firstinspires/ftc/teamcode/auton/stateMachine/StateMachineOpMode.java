@@ -23,11 +23,13 @@ public class StateMachineOpMode extends OpMode {
         context.pixelsInControl = 0;
 
         stateMachine = new StateMachine();
+
         stateMachine.addState(new DrivingState());
         stateMachine.addState(new ScoringState());
-        // TODO: add more states
+        stateMachine.addState(new IdleState());
+        stateMachine.addState(new IntakeState());
 
-        /* Initial state. */
+        /* Initialize state. */
         stateMachine.currentState = stateMachine.states.get(DrivingState.class);
     }
 
