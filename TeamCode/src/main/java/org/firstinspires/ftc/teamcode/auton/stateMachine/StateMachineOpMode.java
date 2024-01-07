@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode.auton.stateMachine;
 
+import org.firstinspires.ftc.teamcode.subsystems.stateMachineController.*;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.subsystems.stateMachineController.*;
 
 @Autonomous(name = "Autonomous State Machine")
 public class StateMachineOpMode extends OpMode {
@@ -14,6 +12,7 @@ public class StateMachineOpMode extends OpMode {
 
     StateMachine stateMachine;
     protected static Context context;
+
     @Override
     public void init() {
         elapsedTime = new ElapsedTime();
@@ -45,6 +44,10 @@ public class StateMachineOpMode extends OpMode {
             /* TODO: Figure out if there's any other rules we need to be consistently being careful
                 not to break. */
             telemetry.addLine("RULE BROKEN: POSSESSION OF MORE THAN 2 PIXELS.");
+        } else if (context.pixelsInControl < 0) {
+            telemetry.addLine("LESS THAN 0 PIXELS LOGGED IN POSSESSION.");
+            context.setPixelsInControl((byte) 0);
+            telemetry.addLine("PIXELS IN POSSESSION SET TO ZERO.");
         }
 
         /* Passing telemetry around. */

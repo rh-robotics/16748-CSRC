@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.subsystems.stateMachineController;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class StateMachine {
     /* Storing states in <Class, Instance of Class> pairs.*/
