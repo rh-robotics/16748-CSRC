@@ -9,11 +9,13 @@ import org.firstinspires.ftc.teamcode.subsystems.hardware.*;
 @Autonomous(name="Motor Encoder Test")
 
 public class MotorEncoderTest extends OpMode {
-    float wheelEncoderPPR = 537.7f; // PPR
-    int wheelDiameter = 96; // mm
-    double mmPerEncoderTick = (360/wheelEncoderPPR)/360*(wheelDiameter*Math.PI); // 0.56089435511 mm
-    double distance;
-    float motorRunPower = 0.4f;
+    private float wheelEncoderPPR = 537.7f; // PPR
+    private int wheelDiameter = 96; // mm
+    private double mmPerEncoderTick = (360/wheelEncoderPPR)/360*(wheelDiameter*Math.PI); // 0.56089435511 mm
+    private double distance;
+    private float motorRunPower = 0.4f;
+    private float tolerance = 1;
+    // TODO: Figure out actual value of tolerance.
     private Hardware robot;
 
     @Override
@@ -23,41 +25,42 @@ public class MotorEncoderTest extends OpMode {
       robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear", "setDirection:REVERSE"));
       robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront"));
       robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightRear"));
+
+      distance = inchesToMM(12);
     }
 
     @Override
     public void start() {
-        distance = inchesToMM(12);
 
         setTargetPosition(robot.<DcMotor>get("leftFront"), distance);
         setTargetPosition(robot.<DcMotor>get("rightFront"), distance);
         setTargetPosition(robot.<DcMotor>get("leftRear"), distance);
         setTargetPosition(robot.<DcMotor>get("rightRear"), distance);
 
-        while (wheelsInPosition()) {
-            updateMotors();
-        }
     }
 
     public double inchesToMM(double inches) {
         return inches*25.4;
     }
 
-    public void loop(){}
+    public void loop() {
+        checkMotors();
+    }
+
     public void setTargetPosition(DcMotor motor, double mm) {
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setTargetPosition((int) Math.round(mm/mmPerEncoderTick));
     }
 
     public boolean wheelsInPosition() {
-        return robot.<DcMotor>get("leftFront").getTargetPosition() !=
-                robot.<DcMotor>get("leftFront").getCurrentPosition() &&
-                robot.<DcMotor>get("rightFront").getTargetPosition() !=
-                        robot.<DcMotor>get("rightFront").getCurrentPosition() &&
-                robot.<DcMotor>get("leftRear").getTargetPosition() !=
-                        robot.<DcMotor>get("leftRear").getCurrentPosition() &&
-                robot.<DcMotor>get("rightRear").getTargetPosition() !=
-                        robot.<DcMotor>get("rightRear").getCurrentPosition();
+        return Math.abs(robot.<DcMotor>get("leftFront").getTargetPosition() -
+                robot.<DcMotor>get("leftFront").getCurrentPosition()) > tolerance &&
+                Math.abs(robot.<DcMotor>get("rightFront").getTargetPosition() -
+                        robot.<DcMotor>get("rightFront").getCurrentPosition()) > tolerance &&
+                Math.abs(robot.<DcMotor>get("leftRear").getTargetPosition() -
+                        robot.<DcMotor>get("leftRear").getCurrentPosition()) > tolerance &&
+                Math.abs(robot.<DcMotor>get("rightRear").getTargetPosition() -
+                        robot.<DcMotor>get("rightRear").getCurrentPosition()) > tolerance;
     }
 
     public void updateMotors() {
@@ -72,20 +75,25 @@ public class MotorEncoderTest extends OpMode {
         updateMotorPower(robot.<DcMotor>get("rightRear"));
     }
 
+    public void checkMotors(){
+        while (!wheelsInPosition()) {
+            updateMotors();
+        }
+    }
     public void showMotorStatus(DcMotor motor) {
-        if (motor.getTargetPosition() == motor.getCurrentPosition()) {
-            telemetry.addLine(motor.getDeviceName() + " in Position");
+        if (Math.abs(motor.getTargetPosition() - motor.getCurrentPosition()) < tolerance) {
+            telemetry.addLine(motor.getDeviceName() + " in Position.");
         } else {
             telemetry.addLine("Running " + motor.getDeviceName() + " Motor");
-            telemetry.addData(motor.getDeviceName() + " Target Position",
+            telemetry.addData(motor.getDeviceName() + " Target Position.",
                     motor.getTargetPosition());
-            telemetry.addData(motor.getDeviceName() + " Current Position",
+            telemetry.addData(motor.getDeviceName() + " Current Position.",
                     motor.getTargetPosition());
         }
     }
 
     public void updateMotorPower(DcMotor motor) {
-        if (motor.getTargetPosition() == motor.getCurrentPosition()) {
+        if (Math.abs(motor.getTargetPosition() - motor.getCurrentPosition()) < tolerance) {
             motor.setPower(0);
         } else {
             motor.setPower(motorRunPower);
