@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="dashboardColor">#2962ff</color>
+    <string name="app_name">FTC Dashboard</string>
+</resources>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.google.blocks"
+    android:versionCode="106"
+    android:versionName="21.0.1" >
+
+    <uses-sdk
+        android:minSdkVersion="24"
+        android:targetSdkVersion="28" />
+
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:required="true" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:required="true" />
+
+    <application>
+        <activity
+            android:name="org.firstinspires.ftc.ftccommon.internal.ProgramAndManageActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/program_and_manage_activity" >
+        </activity>
+    </application>
+
+</manifest>

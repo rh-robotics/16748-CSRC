@@ -1,0 +1,6 @@
+org.openftc.apriltag.AprilTagDetection
+org.openftc.apriltag.AprilTagDetectorJNI
+org.openftc.apriltag.AprilTagDetectorJNI$TagFamily
+org.openftc.apriltag.AprilTagPose
+org.openftc.apriltag.ApriltagDetectionJNI
+org.openftc.apriltag.BuildConfig

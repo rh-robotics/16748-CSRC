@@ -1,0 +1,74 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "org.firstinspires.ftc",
+    "module": "Tfod",
+    "version": "9.0.1",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.4"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "Tfod-9.0.1.aar",
+          "url": "Tfod-9.0.1.aar",
+          "size": 1224671,
+          "sha512": "6f89e801093d61095008c6a76697432d648c7d15e3f82ac3f9a162b0a942e51dd493e28f363676bb13d66ba332d2a84424b91bd33592fe8eaa31697c8d3b698e",
+          "sha256": "55f5821714055150ddb9100f799c82c3c78dac35c04c79d227f50871e7852eb9",
+          "sha1": "982200682e13df96c43e5430172917d95313807e",
+          "md5": "6acc5408fa7b1a888a8c9443d4a025fa"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.tensorflow",
+          "module": "tensorflow-lite",
+          "version": {
+            "requires": "2.12.0"
+          }
+        },
+        {
+          "group": "org.tensorflow",
+          "module": "tensorflow-lite-task-vision",
+          "version": {
+            "requires": "0.4.3"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "Tfod-9.0.1.aar",
+          "url": "Tfod-9.0.1.aar",
+          "size": 1224671,
+          "sha512": "6f89e801093d61095008c6a76697432d648c7d15e3f82ac3f9a162b0a942e51dd493e28f363676bb13d66ba332d2a84424b91bd33592fe8eaa31697c8d3b698e",
+          "sha256": "55f5821714055150ddb9100f799c82c3c78dac35c04c79d227f50871e7852eb9",
+          "sha1": "982200682e13df96c43e5430172917d95313807e",
+          "md5": "6acc5408fa7b1a888a8c9443d4a025fa"
+        }
+      ]
+    }
+  ]
+}

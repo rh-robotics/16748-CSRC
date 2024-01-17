@@ -1,0 +1,95 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "org.firstinspires.ftc",
+    "module": "OnBotJava",
+    "version": "9.0.1",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.4"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "OnBotJava-9.0.1.aar",
+          "url": "OnBotJava-9.0.1.aar",
+          "size": 5341448,
+          "sha512": "06b76e894b6eef51c83b5576641e1ac6caa80be81e4c41b26a3cf087102a7c962a29198ed1225d359075bd08ab776e264e1035c4d7bedad46d4e5530f2490d31",
+          "sha256": "fd118b94400aa54db0f092b3b23be5cdc64aebfb475eb83674b5c376996d95e4",
+          "sha1": "f73c47bbe7b901e97879cd4b1b99afd89833bb79",
+          "md5": "b54a57ff4afbd5dad205bc416efe84ab"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "androidx.appcompat",
+          "module": "appcompat",
+          "version": {
+            "requires": "1.2.0"
+          }
+        },
+        {
+          "group": "com.android.tools",
+          "module": "r8",
+          "version": {
+            "requires": "2.1.75"
+          }
+        },
+        {
+          "group": "org.firstinspires.ftc",
+          "module": "Blocks",
+          "version": {
+            "requires": "9.0.1"
+          }
+        },
+        {
+          "group": "org.firstinspires.ftc",
+          "module": "RobotCore",
+          "version": {
+            "requires": "9.0.1"
+          }
+        },
+        {
+          "group": "org.firstinspires.ftc",
+          "module": "RobotServer",
+          "version": {
+            "requires": "9.0.1"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "OnBotJava-9.0.1.aar",
+          "url": "OnBotJava-9.0.1.aar",
+          "size": 5341448,
+          "sha512": "06b76e894b6eef51c83b5576641e1ac6caa80be81e4c41b26a3cf087102a7c962a29198ed1225d359075bd08ab776e264e1035c4d7bedad46d4e5530f2490d31",
+          "sha256": "fd118b94400aa54db0f092b3b23be5cdc64aebfb475eb83674b5c376996d95e4",
+          "sha1": "f73c47bbe7b901e97879cd4b1b99afd89833bb79",
+          "md5": "b54a57ff4afbd5dad205bc416efe84ab"
+        }
+      ]
+    }
+  ]
+}

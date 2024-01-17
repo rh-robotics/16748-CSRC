@@ -1,0 +1,81 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "org.firstinspires.ftc",
+    "module": "Inspection",
+    "version": "9.0.1",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.4"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "Inspection-9.0.1.aar",
+          "url": "Inspection-9.0.1.aar",
+          "size": 58138,
+          "sha512": "722fb86960557be073227d71f2ba828a3fc7f67470dcf7804af352ada648d8dd29fc9770e09a652295e9d2ef223eaa10b110448dbe1aeea8eb299a0bf2007bba",
+          "sha256": "11a13042256eb72eadb02b1d48ef1fd4f5ac41d655ccef52af81f0308f42b472",
+          "sha1": "385a87e5e61678fce5201ec2670e777011e4c18b",
+          "md5": "29554239d47325de3aa5a690ff386528"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.firstinspires.ftc",
+          "module": "RobotCore",
+          "version": {
+            "requires": "9.0.1"
+          }
+        },
+        {
+          "group": "com.journeyapps",
+          "module": "zxing-android-embedded",
+          "version": {
+            "requires": "4.3.0"
+          }
+        },
+        {
+          "group": "io.github.ehn-digital-green-development",
+          "module": "base45",
+          "version": {
+            "requires": "0.0.3"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "Inspection-9.0.1.aar",
+          "url": "Inspection-9.0.1.aar",
+          "size": 58138,
+          "sha512": "722fb86960557be073227d71f2ba828a3fc7f67470dcf7804af352ada648d8dd29fc9770e09a652295e9d2ef223eaa10b110448dbe1aeea8eb299a0bf2007bba",
+          "sha256": "11a13042256eb72eadb02b1d48ef1fd4f5ac41d655ccef52af81f0308f42b472",
+          "sha1": "385a87e5e61678fce5201ec2670e777011e4c18b",
+          "md5": "29554239d47325de3aa5a690ff386528"
+        }
+      ]
+    }
+  ]
+}

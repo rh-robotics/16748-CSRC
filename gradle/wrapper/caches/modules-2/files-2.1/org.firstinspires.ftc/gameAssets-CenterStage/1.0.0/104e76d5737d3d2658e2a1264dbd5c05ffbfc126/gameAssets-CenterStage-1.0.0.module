@@ -1,0 +1,58 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "org.firstinspires.ftc",
+    "module": "gameAssets-CenterStage",
+    "version": "1.0.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.4"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "gameAssets-CenterStage-1.0.0.aar",
+          "url": "gameAssets-CenterStage-1.0.0.aar",
+          "size": 4204244,
+          "sha512": "e870ceeed9669a859d7feefbcf3ab3fa776d04f337c74a810ef24a8c296b753e8fc587ac981358630cb7a732f050cd429a0fa0bf7cf4d8a3d2e1f6e57cd373f0",
+          "sha256": "6f9e1207f6d1ad6388f9ae13ce7c58ed2a21b87d59edbf431165853063039086",
+          "sha1": "f92416f32ce19eb401f61852901e7180edcb474e",
+          "md5": "cadc120fea6717af9dea6bcc9ee25f87"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "gameAssets-CenterStage-1.0.0.aar",
+          "url": "gameAssets-CenterStage-1.0.0.aar",
+          "size": 4204244,
+          "sha512": "e870ceeed9669a859d7feefbcf3ab3fa776d04f337c74a810ef24a8c296b753e8fc587ac981358630cb7a732f050cd429a0fa0bf7cf4d8a3d2e1f6e57cd373f0",
+          "sha256": "6f9e1207f6d1ad6388f9ae13ce7c58ed2a21b87d59edbf431165853063039086",
+          "sha1": "f92416f32ce19eb401f61852901e7180edcb474e",
+          "md5": "cadc120fea6717af9dea6bcc9ee25f87"
+        }
+      ]
+    }
+  ]
+}

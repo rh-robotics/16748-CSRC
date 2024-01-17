@@ -137,14 +137,12 @@ public class TeleOp extends OpMode {
         if (gamepad1.a) {
             robot.<CRServo>get("intakeTube").setPower(0.5);
             robot.<CRServo>get("intakeGeckoWheels").setPower(0.5);
-            robot.<CRServo>get("outerIntakeTube1").setPower(0.5);
-            robot.<CRServo>get("outerIntakeTube2").setPower(0.5);
+            robot.<CRServo>get("outerIntakeTube").setPower(0.5);
             telemetry.addData("Intake", "Running");
         } else {
             robot.<CRServo>get("intakeTube").setPower(0);
             robot.<CRServo>get("intakeGeckoWheels").setPower(0);
-            robot.<CRServo>get("outerIntakeTube1").setPower(0);
-            robot.<CRServo>get("outerIntakeTube2").setPower(0);
+            robot.<CRServo>get("outerIntakeTube").setPower(0);
             telemetry.addData("Intake", "Stopped");
         }
 

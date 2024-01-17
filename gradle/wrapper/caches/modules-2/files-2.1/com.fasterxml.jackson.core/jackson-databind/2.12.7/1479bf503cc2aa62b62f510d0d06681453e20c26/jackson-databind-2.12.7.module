@@ -1,0 +1,112 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.fasterxml.jackson.core",
+    "module": "jackson-databind",
+    "version": "2.12.7",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "maven": {
+      "version": "3.8.4"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "com.fasterxml.jackson.core",
+          "module": "jackson-annotations",
+          "version": {
+            "requires": "2.12.7"
+          }
+        },
+        {
+          "group": "com.fasterxml.jackson.core",
+          "module": "jackson-core",
+          "version": {
+            "requires": "2.12.7"
+          }
+        },
+        {
+          "group": "com.fasterxml.jackson",
+          "module": "jackson-bom",
+          "version": {
+            "requires": "2.12.7"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          },
+          "endorseStrictVersions": true
+        }
+      ],
+      "files": [
+        {
+          "name": "jackson-databind-2.12.7.jar",
+          "url": "jackson-databind-2.12.7.jar",
+          "size": 1517276,
+          "sha512": "c9bc54491c075d108457c831f4f9b7882f0cf424895ceab5f5497bc18a8f66089cdb8dee3fa8a6de76052b53bedc18c24b14075fc46f4717cdef803f02d84df",
+          "sha256": "4ed50208a764347fb86e79305d3b91c68a5232b22b763214683db07d88b6c687",
+          "sha1": "c48e7b68d8cbfec1347e357ee2682e825f861127",
+          "md5": "c98af3dc162eefeeb3ffd0491099cbc2"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "com.fasterxml.jackson.core",
+          "module": "jackson-annotations",
+          "version": {
+            "requires": "2.12.7"
+          }
+        },
+        {
+          "group": "com.fasterxml.jackson.core",
+          "module": "jackson-core",
+          "version": {
+            "requires": "2.12.7"
+          }
+        },
+        {
+          "group": "com.fasterxml.jackson",
+          "module": "jackson-bom",
+          "version": {
+            "requires": "2.12.7"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          },
+          "endorseStrictVersions": true
+        }
+      ],
+      "files": [
+        {
+          "name": "jackson-databind-2.12.7.jar",
+          "url": "jackson-databind-2.12.7.jar",
+          "size": 1517276,
+          "sha512": "c9bc54491c075d108457c831f4f9b7882f0cf424895ceab5f5497bc18a8f66089cdb8dee3fa8a6de76052b53bedc18c24b14075fc46f4717cdef803f02d84df",
+          "sha256": "4ed50208a764347fb86e79305d3b91c68a5232b22b763214683db07d88b6c687",
+          "sha1": "c48e7b68d8cbfec1347e357ee2682e825f861127",
+          "md5": "c98af3dc162eefeeb3ffd0491099cbc2"
+        }
+      ]
+    }
+  ]
+}

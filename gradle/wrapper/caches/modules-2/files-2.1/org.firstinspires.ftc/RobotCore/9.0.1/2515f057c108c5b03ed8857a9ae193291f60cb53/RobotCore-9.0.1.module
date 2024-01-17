@@ -1,0 +1,104 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "org.firstinspires.ftc",
+    "module": "RobotCore",
+    "version": "9.0.1",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.4"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "com.jakewharton.threetenabp",
+          "module": "threetenabp",
+          "version": {
+            "requires": "1.3.1"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "RobotCore-9.0.1.aar",
+          "url": "RobotCore-9.0.1.aar",
+          "size": 2365842,
+          "sha512": "3f09a265b590fe14cfd332f55e8b62c7c7bc2ea30da6fd6c6f3d1305d7e65b29d9aebd3af6640f28848f2c40c8aba67073c6b5d9e4afe31142f2871eaa44863f",
+          "sha256": "0e7bcf8d47510861e791c48fd60773df69a1eb27c680265f8a21b1ebf9cb33ce",
+          "sha1": "4ab01b5fbb3cf16ff78aa4e523e3856adf1abb0f",
+          "md5": "8738af92052a023238bb30cc7b047348"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.tensorflow",
+          "module": "tensorflow-lite",
+          "version": {
+            "requires": "2.12.0"
+          }
+        },
+        {
+          "group": "org.firstinspires.ftc",
+          "module": "Tfod",
+          "version": {
+            "requires": "9.0.1"
+          }
+        },
+        {
+          "group": "org.tensorflow",
+          "module": "tensorflow-lite-task-vision",
+          "version": {
+            "requires": "0.4.3"
+          }
+        },
+        {
+          "group": "androidx.appcompat",
+          "module": "appcompat",
+          "version": {
+            "requires": "1.2.0"
+          }
+        },
+        {
+          "group": "com.jakewharton.threetenabp",
+          "module": "threetenabp",
+          "version": {
+            "requires": "1.3.1"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "RobotCore-9.0.1.aar",
+          "url": "RobotCore-9.0.1.aar",
+          "size": 2365842,
+          "sha512": "3f09a265b590fe14cfd332f55e8b62c7c7bc2ea30da6fd6c6f3d1305d7e65b29d9aebd3af6640f28848f2c40c8aba67073c6b5d9e4afe31142f2871eaa44863f",
+          "sha256": "0e7bcf8d47510861e791c48fd60773df69a1eb27c680265f8a21b1ebf9cb33ce",
+          "sha1": "4ab01b5fbb3cf16ff78aa4e523e3856adf1abb0f",
+          "md5": "8738af92052a023238bb30cc7b047348"
+        }
+      ]
+    }
+  ]
+}

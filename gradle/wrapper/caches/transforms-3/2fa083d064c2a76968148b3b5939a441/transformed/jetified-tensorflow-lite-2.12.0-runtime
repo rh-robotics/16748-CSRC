@@ -1,0 +1,12 @@
+org.tensorflow.lite.DataTypeUtils
+org.tensorflow.lite.DataTypeUtils$1
+org.tensorflow.lite.Interpreter
+org.tensorflow.lite.Interpreter$Options
+org.tensorflow.lite.InterpreterFactoryImpl
+org.tensorflow.lite.InterpreterImpl
+org.tensorflow.lite.InterpreterImpl$Options
+org.tensorflow.lite.NativeInterpreterWrapper
+org.tensorflow.lite.NativeInterpreterWrapperExperimental
+org.tensorflow.lite.NativeSignatureRunnerWrapper
+org.tensorflow.lite.TensorImpl
+org.tensorflow.lite.nnapi.NnApiDelegateImpl
