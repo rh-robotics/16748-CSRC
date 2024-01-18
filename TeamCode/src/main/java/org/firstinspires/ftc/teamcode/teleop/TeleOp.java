@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
@@ -80,14 +79,11 @@ public class TeleOp extends OpMode {
                 "         * Left Stick y = Drive\n" +
                 "         * Left Stick x = Strafe\n" +
                 "         * Right Stick x = Turn\n" +
-                "         * \n" +
-                "         *** \n" +
-                "         * Gamepad 2\n" +
                 "         * Right Bumper = Claw Joint +\n" +
                 "         * Right Trigger = Claw Joint -\n" +
                 "         * X = Automatic Scoring\n" +
                 "         * Y = VS, Arm and Claw reset (Automatic Scoring Reset)\n" +
-                "         * A = Activate Intake (Hold)\n" +
+                "         * A = Activate Intake (Toggle)\n" +
                 "         * Left Bumper = Claw Lock + (Manual)\n" +
                 "         * Left Trigger = Claw Lock - (Manual)\n" +
                 "         * D Pad Up = VS Up (Manual)\n" +
@@ -116,25 +112,25 @@ public class TeleOp extends OpMode {
         telemetry.addData("rightBPower: ", rightBPower);
 
         // Calling scoring() via left bumper and resetting via left trigger
-        if (gamepad2.x) {
+        if (gamepad1.x) {
             scoring();
-        } else if (gamepad2.y && !scoringATM) {
+        } else if (gamepad1.y && !scoringATM) {
             resetPos();
             telemetry.addData("Scoring Pos", "Reset");
         }
 
         // Move claw via x and y.
-        if (gamepad2.left_bumper) {
+        if (gamepad1.left_bumper) {
             robot.<Servo>get("clawLock").setPosition(robot.<Servo>get("clawLock").getPosition() + -0.125);
-        } else if (gamepad2.left_trigger > 0.5) {
+        } else if (gamepad1.left_trigger > 0.5) {
             robot.<Servo>get("clawLock").setPosition(robot.<Servo>get("clawLock").getPosition() + 0.125);
         }
 
         // Moving VS manually via dpad up and down.
-        if (gamepad2.dpad_up) {
+        if (gamepad1.dpad_up) {
             robot.<DcMotor>get("leftViperSlide").setPower(0.5);
             robot.<DcMotor>get("rightViperSlide").setPower(0.5);
-        } else if (gamepad2.dpad_down) {
+        } else if (gamepad1.dpad_down) {
             robot.<DcMotor>get("leftViperSlide").setPower(-0.5);
             robot.<DcMotor>get("rightViperSlide").setPower(-0.5);
         } else {
@@ -143,9 +139,9 @@ public class TeleOp extends OpMode {
         }
 
         // Controls clawJoint using right bumper and right trigger.
-        if (gamepad2.right_bumper) {
+        if (gamepad1.right_bumper) {
             robot.<CRServo>get("clawJoint").setPower(0.15);
-        } else if (gamepad2.right_trigger > 0.5) {
+        } else if (gamepad1.right_trigger > 0.5) {
             robot.<CRServo>get("clawJoint").setPower(-0.15);
         } else {
             robot.<CRServo>get("clawJoint").setPower(0);
@@ -280,26 +276,5 @@ public class TeleOp extends OpMode {
 
         currentGamepad1.copy(gamepad1);
         currentGamepad2.copy(gamepad2);
-    }
-
-    // Strafe Drive using sticks on Gamepad 1
-    public void driving() {
-        // Calculate drive power.
-        if (drive != 0 || turn != 0) {
-            leftFPower = Range.clip(drive + turn, -1.0, 1.0);
-            rightFPower = Range.clip(drive - turn, -1.0, 1.0);
-            leftBPower = Range.clip(drive + turn, -1.0, 1.0);
-            rightBPower = Range.clip(drive - turn, -1.0, 1.0);
-        } else if (strafe != 0) {
-            leftFPower = -strafe;
-            rightFPower = strafe;
-            leftBPower = strafe;
-            rightBPower = -strafe;
-        } else {
-            leftFPower = 0;
-            rightFPower = 0;
-            leftBPower = 0;
-            rightBPower = 0;
-        }
     }
 }
