@@ -14,8 +14,8 @@ public class MotorEncoderTest extends OpMode {
     private double mmPerEncoderTick = (360/wheelEncoderPPR)/360*(wheelDiameter*Math.PI); // 0.56089435511 mm
     private double distance;
     private float motorRunPower = 0.4f;
-    private float tolerance = 1;
     // TODO: Figure out actual value of tolerance.
+    private float tolerance = 1;
     private Hardware robot;
 
     @Override
