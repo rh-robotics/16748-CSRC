@@ -63,7 +63,7 @@ public class HardwareElement<T extends HardwareDevice> {
             initializers.put("setZeroPowerBehavior", "BRAKE");
             initializers.put("setMode", "RUN_USING_ENCODER");
         } else if (deviceType.equals(Servo.class)) {
-            initializers.put("setDirection", "FORWARD");
+
         } else if (deviceType.equals(CRServo.class)) {
             initializers.put("setZeroPowerBehavior", "BRAKE");
         } else if (deviceType.equals(TouchSensor.class)) {
