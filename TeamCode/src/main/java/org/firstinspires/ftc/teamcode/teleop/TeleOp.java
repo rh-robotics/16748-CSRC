@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
 
-// TODO: Outer intake
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "OpMode")
 public class TeleOp extends OpMode {
@@ -55,8 +54,7 @@ public class TeleOp extends OpMode {
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeTube"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint1"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint2"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeTube1"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeTube2"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeTube"));
       
         // Init DcMotors.
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront", "setDirection:FORWARD"));
