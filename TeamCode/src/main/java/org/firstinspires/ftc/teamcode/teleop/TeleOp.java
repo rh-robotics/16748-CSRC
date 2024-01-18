@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
@@ -20,6 +21,7 @@ public class TeleOp extends OpMode {
     double turn;
     double strafe;
     double intakePower = 0.5;
+    boolean intakeToggle = false;
     private final double armStartPos = 0.0;
     private final double armTargetPos = 0.0;
     private final double armTolerance = 2.5;
@@ -28,6 +30,12 @@ public class TeleOp extends OpMode {
     private final double jointStartPos = 0.0;
     private final double jointTargetPos = 0.0;
     boolean scoringATM;
+
+    Gamepad currentGamepad1 = new Gamepad();
+    Gamepad currentGamepad2 = new Gamepad();
+
+    Gamepad previousGamepad1 = new Gamepad();
+    Gamepad previousGamepad2 = new Gamepad();
 
     @Override
     public void init() {
@@ -42,10 +50,10 @@ public class TeleOp extends OpMode {
         // Init CR Servos.
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeGeckoWheels"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeTube"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeTube1"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeTube2"));
-      
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint1"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint2"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeTube"));
+
         // Init DcMotors.
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront", "setDirection:FORWARD"));
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear", "setDirection:FORWARD"));
@@ -80,6 +88,8 @@ public class TeleOp extends OpMode {
 
     @Override
     public void loop() {
+
+        gamepadUpdate();
 
         // Values for drive.
         drive = gamepad1.left_stick_y * 0.8;
@@ -133,8 +143,12 @@ public class TeleOp extends OpMode {
             robot.<CRServo>get("clawJoint").setPower(0);
         }
 
+        if (currentGamepad1.a && !previousGamepad1.a) {
+            intakeToggle = !intakeToggle;
+        }
+
         // Activating Intake via gamepad a.
-        if (gamepad1.a) {
+        if (intakeToggle) {
             robot.<CRServo>get("intakeTube").setPower(0.5);
             robot.<CRServo>get("intakeGeckoWheels").setPower(0.5);
             robot.<CRServo>get("outerIntakeTube").setPower(0.5);
@@ -147,11 +161,14 @@ public class TeleOp extends OpMode {
         }
 
         if (gamepad1.right_bumper) {
-            robot.<CRServo>get("outerIntakeJoint").setPower(-0.25);
+            robot.<CRServo>get("outerIntakeJoint1").setPower(-0.25);
+            robot.<CRServo>get("outerIntakeJoint2").setPower(-0.25);
         } else if (gamepad1.right_trigger > 0.5) {
-            robot.<CRServo>get("outerIntakeJoint").setPower(0.25);
+            robot.<CRServo>get("outerIntakeJoint1").setPower(0.25);
+            robot.<CRServo>get("outerIntakeJoint2").setPower(0.25);
         } else {
-            robot.<CRServo>get("outerIntakeJoint").setPower(0);
+            robot.<CRServo>get("outerIntakeJoint1").setPower(0);
+            robot.<CRServo>get("outerIntakeJoint2").setPower(0);
         }
     }
 
@@ -250,6 +267,14 @@ public class TeleOp extends OpMode {
         if (robot.<DcMotor>get("rightViperSlide").getCurrentPosition() > position) {
             robot.<DcMotor>get("rightViperSlide").setPower(power);
         }
+    }
+
+    public void gamepadUpdate() {
+        previousGamepad1.copy(currentGamepad1);
+        previousGamepad2.copy(currentGamepad2);
+
+        currentGamepad1.copy(gamepad1);
+        currentGamepad2.copy(gamepad2);
     }
 
     // Strafe Drive using sticks on Gamepad 1
