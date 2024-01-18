@@ -14,6 +14,8 @@ import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "OpMode")
 public class TeleOp extends OpMode {
     private Hardware robot;
+
+    // Drive Variables
     double leftFPower;
     double rightFPower;
     double leftBPower;
@@ -21,8 +23,12 @@ public class TeleOp extends OpMode {
     double drive;
     double turn;
     double strafe;
+
+    // Intake Variables
     double intakePower = 0.5;
     boolean intakeToggle = false;
+
+    // Scoring Algorithm Variables
     private final double armStartPos = 0.0;
     private final double armTargetPos = 0.0;
     private final double armTolerance = 2.5;
@@ -32,12 +38,12 @@ public class TeleOp extends OpMode {
     private final double jointTargetPos = 0.0;
     boolean scoringATM;
 
+    // Gamepads
     Gamepad currentGamepad1 = new Gamepad();
     Gamepad currentGamepad2 = new Gamepad();
 
-    Gamepad previousGamepad1  = new Gamepad();
-    Gamepad previousGamepad2  = new Gamepad();
-
+    Gamepad previousActionGamepad1  = new Gamepad();
+    Gamepad previousActionGamepad2  = new Gamepad();
 
     @Override
     public void init() {
@@ -145,7 +151,7 @@ public class TeleOp extends OpMode {
             robot.<CRServo>get("clawJoint").setPower(0);
         }
 
-        if (currentGamepad1.a && !previousGamepad1.a) {
+        if (currentGamepad1.a && !previousActionGamepad1.a) {
             intakeToggle = !intakeToggle;
         }
 
@@ -269,8 +275,8 @@ public class TeleOp extends OpMode {
     }
 
     public void gamepadUpdate() {
-        previousGamepad1.copy(currentGamepad1);
-        previousGamepad2.copy(currentGamepad2);
+        previousActionGamepad1.copy(currentGamepad1);
+        previousActionGamepad2.copy(currentGamepad2);
 
         currentGamepad1.copy(gamepad1);
         currentGamepad2.copy(gamepad2);
