@@ -50,6 +50,7 @@ public class HardwareElement<T extends HardwareDevice> {
         this.name = name;
         this.type = deviceType;
         this.device = hardwareMap.get(deviceType, name);
+        setDefaultInitializers(deviceType);
         this.initializers = createHashMap(initializers);
     }
 
@@ -82,6 +83,8 @@ public class HardwareElement<T extends HardwareDevice> {
     private HashMap<String, String> createHashMap(String input) {
         String[] pairs = input.split(",");
         HashMap<String, String> inputHashMap = new HashMap<>();
+
+        // Return value.
         HashMap<String, String> initializerHashMap = new HashMap<>();
 
         for (String pair : pairs) {
@@ -91,11 +94,9 @@ public class HardwareElement<T extends HardwareDevice> {
 
         /* Iterates through default initializers, checking if the HashMap created by inputs already
          * includes the key. If so, it changes the value to the input-provided value. */
-        for (HashMap.Entry<String, String> defaultInitPair : initializers.entrySet()) {
-            if (inputHashMap.containsKey(defaultInitPair.getKey())) {
-                initializers.put(defaultInitPair.getKey(), initializerHashMap.get(defaultInitPair.getKey()));
-            } else {
-                initializerHashMap.put(defaultInitPair.getKey(), defaultInitPair.getValue());
+        for (String defaultInitKey : this.initializers.keySet()) {
+            if (inputHashMap.containsKey(defaultInitKey)) {
+                initializerHashMap.put(defaultInitKey, inputHashMap.get(defaultInitKey));
             }
         }
 
