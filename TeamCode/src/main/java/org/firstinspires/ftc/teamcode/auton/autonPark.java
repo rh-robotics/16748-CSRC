@@ -24,6 +24,7 @@ public class autonPark extends OpMode {
 
     Hardware robot;
     Context context;
+
     @Override
     public void init() {
         telemetry.addData("Status", "Initializing");
@@ -119,9 +120,7 @@ public class autonPark extends OpMode {
     }
 
     @Override
-    public void loop() {
-        telemetry.addLine("Uh oh");
-    }
+    public void loop() {}
 
     public void handleStartPosition() {
         context.setLocation(startingLocation[startingLocationIndex][0],

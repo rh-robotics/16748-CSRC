@@ -12,9 +12,12 @@ public class RobotMethods {
     static double mmPerEncoderTick = (360/wheelEncoderPPR)/360*(wheelDiameter*Math.PI); // 0.56089435511 mm
     static double distanceBetweenWheels = 264; // mm
 
+    // TODO: Pathfinding here.
     public static void driveTo(Hardware robot, Context context, double targetX, double targetY,
                                double motorRunPower, double tolerance, Telemetry telemetry) {
-        double[] passingLocation = new double[] {300,200};
+        double[] passingLocation = new double[] {300,200}; // Where we pass through "middle".
+
+        // If we're passing through the "middle" of the field.
         if (context.getY() < 250 && targetY > 250) {
             goToPosition(robot, context, 300, 200, motorRunPower, tolerance, telemetry);
             goToPosition(robot, context, 300, 350, motorRunPower, tolerance, telemetry);
@@ -39,39 +42,39 @@ public class RobotMethods {
         double currentDirection = context.getDirection();
         double degreesToTravel = directionTo - currentDirection;
 
-        turn(robot, degreesToTravel, motorRunPower, tolerance, telemetry);
+        turn(robot, context, degreesToTravel, motorRunPower, tolerance, telemetry);
     }
 
     private static void move(Hardware robot, Context context, double moveX, double moveY,
                              double motorRunPower, double tolerance, Telemetry telemetry) {
         double angleToTarget = 0;
 
-        // TODO: Kinda bs'd this math, ask Sadie to look over it.
-        if(moveY == 0) {
-            if (moveX > 0) {
-                angleToTarget = 90;
-            } else if (moveX < 0) {
-                angleToTarget = 270;
-            }
-        } else if (moveY < 0){ // Negative moveY.
-            angleToTarget = (Math.tan(moveX/moveY)*180/Math.PI) + 180;
-        } else {
-            angleToTarget = (Math.tan(moveX/moveY)*180/Math.PI) % 360;
-        }
+        // Gives counter-clockwise in degrees, west as -180, -180 to 180.
+        angleToTarget = Math.atan2(moveX, moveY) * 180/Math.PI;
+
+        // Flip to make clockwise, add 90 to rotate -90 to north (-90 to 270),
+        // mod 360 to make everything positive.
+        angleToTarget = (90 - angleToTarget) % 360;
 
         turnTo(robot, context, angleToTarget, motorRunPower, tolerance, telemetry);
 
         double distanceToTarget = Math.sqrt(Math.pow(moveX, 2) + Math.pow(moveY, 2));
         runWheelsToPosition(robot, distanceToTarget, motorRunPower, tolerance, telemetry);
+
+        double finalX = context.getX() + moveX;
+        double finalY = context.getY() + moveY;
+        context.setLocation(finalX, finalY);
     }
 
-    private static void turn(Hardware robot, double degreesToTravel, double motorRunPower, double tolerance,
+    private static void turn(Hardware robot, Context context, double degreesToTravel, double motorRunPower, double tolerance,
                              Telemetry telemetry) {
         // Clockwise turn.
         double circumference = Math.PI * distanceBetweenWheels;
         double travelDistance = circumference*(degreesToTravel/360);
 
         runWheelsToPosition(robot, travelDistance, motorRunPower, tolerance, telemetry);
+
+        context.setDirection(context.getDirection()+degreesToTravel);
     }
 
     private static void runWheelsToPosition(Hardware robot, double targetPosition, double motorRunPower,

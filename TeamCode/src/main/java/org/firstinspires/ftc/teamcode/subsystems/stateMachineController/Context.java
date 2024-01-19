@@ -20,7 +20,6 @@ public class Context {
         this.location[1] = y;
     }
 
-
     public void setTeamPropLineScored(boolean teamPropLineScored) {
         this.teamPropLineScored = teamPropLineScored;
     }
@@ -83,5 +82,9 @@ public class Context {
 
     public double getDirection() {
         return this.location[2];
+    }
+
+    public void setDirection(double direction) {
+        this.location[2] = direction % 360;
     }
 }

@@ -13,8 +13,12 @@ public class StateMachineOpMode extends OpMode {
     StateMachine stateMachine;
     protected static Context context;
 
-    double[][] startingLocation = new double[][] {new double[] {0, 0, 0}, new double[] {0, 0, 0},
-            new double[] {0, 0, 0}, new double[] {0, 0, 0}};
+    double[] backboardBlue = new double[] {0, 0, 0};
+    double[] wallBlue = new double[] {0, 0, 0};
+    double[] backboardRed = new double[] {0, 0, 0};
+    double[] wallRed = new double[] {0, 0, 0};
+
+    double[][] startingLocation = new double[][] {backboardBlue, wallBlue, backboardRed, wallRed};
     int startingLocationIndex = 0;
 
     @Override
@@ -42,12 +46,12 @@ public class StateMachineOpMode extends OpMode {
         }
     }
 
-
     @Override
     public void start() {
         context.setLocation(startingLocation[startingLocationIndex][0],
                 startingLocation[startingLocationIndex][1], startingLocation[startingLocationIndex][2]);
         context.setRobotParked(false);
+
         elapsedTime.reset();
     }
 

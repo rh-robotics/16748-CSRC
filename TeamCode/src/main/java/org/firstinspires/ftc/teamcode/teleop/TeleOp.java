@@ -93,9 +93,9 @@ public class TeleOp extends OpMode {
 
     public void automaticScoring() {
         // Calling scoring() via left bumper and resetting via left trigger
-        if (gamepad2.x) {
+        if (gamepad1.x) {
             scoring();
-        } else if (gamepad2.y && !scoringATM) {
+        } else if (gamepad1.y && !scoringATM) {
             resetPos();
             telemetry.addData("Scoring Pos", "Reset");
         }
@@ -103,19 +103,19 @@ public class TeleOp extends OpMode {
 
     public void clawLock() {
         // Move claw via x and y.
-        if (gamepad2.left_bumper) {
+        if (gamepad1.left_bumper) {
             robot.<Servo>get("clawLock").setPosition(robot.<Servo>get("clawLock").getPosition() + -0.125);
-        } else if (gamepad2.left_trigger > 0.5) {
+        } else if (gamepad1.left_trigger > 0.5) {
             robot.<Servo>get("clawLock").setPosition(robot.<Servo>get("clawLock").getPosition() + 0.125);
         }
     }
 
     public void viperSlides() {
         // Moving VS manually via dpad up and down.
-        if (gamepad2.dpad_up) {
+        if (gamepad1.dpad_up) {
             robot.<DcMotor>get("leftViperSlide").setPower(0.5);
             robot.<DcMotor>get("rightViperSlide").setPower(0.5);
-        } else if (gamepad2.dpad_down) {
+        } else if (gamepad1.dpad_down) {
             robot.<DcMotor>get("leftViperSlide").setPower(-0.5);
             robot.<DcMotor>get("rightViperSlide").setPower(-0.5);
         } else {
@@ -126,9 +126,9 @@ public class TeleOp extends OpMode {
 
     public void clawJoint() {
         // Controls clawJoint using right bumper and right trigger.
-        if (gamepad2.right_bumper) {
+        if (gamepad1.right_bumper) {
             robot.<CRServo>get("clawJoint").setPower(0.15);
-        } else if (gamepad2.right_trigger > 0.5) {
+        } else if (gamepad1.right_trigger > 0.5) {
             robot.<CRServo>get("clawJoint").setPower(-0.15);
         } else {
             robot.<CRServo>get("clawJoint").setPower(0);
