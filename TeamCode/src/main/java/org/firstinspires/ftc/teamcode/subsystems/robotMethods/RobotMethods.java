@@ -5,6 +5,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.stateMachineController.Context;
+import org.firstinspires.ftc.teamcode.subsystems.stateMachineController.Obstacle;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class RobotMethods {
     static float wheelEncoderPPR = 537.7f; // PPR
@@ -12,21 +16,33 @@ public class RobotMethods {
     static double mmPerEncoderTick = (360/wheelEncoderPPR)/360*(wheelDiameter*Math.PI); // 0.56089435511 mm
     static double distanceBetweenWheels = 264; // mm
 
-    // TODO: Pathfinding here.
     public static void driveTo(Hardware robot, Context context, double targetX, double targetY,
                                double motorRunPower, double tolerance, Telemetry telemetry) {
+        ArrayList<double[]> path = findPath(context, targetX, targetY);
+        for (double[] point : path) {
+            goToPosition(robot, context, point[0], point[1], motorRunPower, tolerance, telemetry);
+        }
+    }
+
+    // TODO: Set up actual pathfinding. (Or at least something that can handle general obstacles
+    //  (eg. backboard).
+    private static ArrayList<double[]> findPath(Context context, double targetX, double targetY) {
+        ArrayList<double[]> path = new ArrayList<>();
+
         double[] passingLocation = new double[] {300,200}; // Where we pass through "middle".
 
         // If we're passing through the "middle" of the field.
         if (context.getY() < 250 && targetY > 250) {
-            goToPosition(robot, context, 300, 200, motorRunPower, tolerance, telemetry);
-            goToPosition(robot, context, 300, 350, motorRunPower, tolerance, telemetry);
+            path.add(new double[] {300, 200});
+            path.add(new double[] {300, 350});
         } else if (context.getY() > 250 && targetY < 250) {
-            goToPosition(robot, context, 300, 350, motorRunPower, tolerance, telemetry);
-            goToPosition(robot, context, 300, 200, motorRunPower, tolerance, telemetry);
+            path.add(new double[] {300, 350});
+            path.add(new double[] {300, 200});
         }
 
-        goToPosition(robot, context, targetX, targetY, motorRunPower, tolerance, telemetry);
+        path.add(new double[] {targetX, targetY});
+
+        return path;
     }
 
     public static void goToPosition(Hardware robot, Context context, double targetX, double targetY,

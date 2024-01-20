@@ -8,6 +8,7 @@ public class Context {
     boolean inIntakePosition = false;
     byte pixelsInControl = 0;
     double[] location = new double[] {-1.0, -1.0, 0};
+    Obstacle[] obstacles = new Obstacle[] {};
 
     public void setLocation(double x, double y, double direction) {
         this.location[0] = x;
