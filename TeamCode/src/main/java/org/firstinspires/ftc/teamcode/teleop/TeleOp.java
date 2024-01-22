@@ -145,10 +145,10 @@ public class TeleOp extends OpMode {
         }
 
         // Moving VS manually via dpad up and down.
-        if (gamepad1.b) {
+        if (gamepad1.dpad_up) {
             robot.<DcMotor>get("leftViperSlide").setPower(0.25);
             robot.<DcMotor>get("rightViperSlide").setPower(-0.25);
-        } else if (gamepad1.y) {
+        } else if (gamepad1.dpad_down) {
             robot.<DcMotor>get("leftViperSlide").setPower(-0.25);
             robot.<DcMotor>get("rightViperSlide").setPower(0.25);
         } else {
@@ -175,7 +175,13 @@ public class TeleOp extends OpMode {
             robot.<CRServo>get("intakeGeckoWheels").setPower(0.2);
             robot.<CRServo>get("outerIntakeTube").setPower(0.5);
             telemetry.addData("Intake", "Running");
-        } else {
+        } else if (gamepad1.x) {
+            robot.<CRServo>get("intakeTube").setPower(-intakePower);
+            robot.<CRServo>get("intakeGeckoWheels").setPower(-0.2);
+            robot.<CRServo>get("outerIntakeTube").setPower(-0.5);
+            telemetry.addData("Intake", "Running");
+        }
+        else {
             robot.<CRServo>get("intakeTube").setPower(0);
             robot.<CRServo>get("intakeGeckoWheels").setPower(0);
             robot.<CRServo>get("outerIntakeTube").setPower(0);
@@ -213,11 +219,11 @@ public class TeleOp extends OpMode {
     }
 
     public void outerIntakeJoints() {
-        if (gamepad1.dpad_up) {
-            robot.<CRServo>get("outerIntakeJoint").setPower(-0.25);
-        } else if (gamepad1.dpad_down) {
-            robot.<CRServo>get("outerIntakeJoint").setPower(0.25);
-        }
+//        if (gamepad1.dpad_up) {
+//            robot.<CRServo>get("outerIntakeJoint").setPower(-0.25);
+//        } else if (gamepad1.dpad_down) {
+//            robot.<CRServo>get("outerIntakeJoint").setPower(0.25);
+//        }
     }
 
     // Strafe Drive using sticks on Gamepad 1.

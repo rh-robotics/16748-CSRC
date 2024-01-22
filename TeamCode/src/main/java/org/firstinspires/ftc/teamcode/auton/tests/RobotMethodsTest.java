@@ -32,8 +32,7 @@ public class RobotMethodsTest extends OpMode {
         // Init CR Servos.
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeGeckoWheels"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeTube"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint1"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint2"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeTube"));
 
         // Init DcMotors.
@@ -52,30 +51,36 @@ public class RobotMethodsTest extends OpMode {
 
     @Override
     public void start() {
-        robot.<DcMotor>get("leftFront").setTargetPosition(robot.<DcMotor>get("leftFront").getCurrentPosition() + 1000);
-        robot.<DcMotor>get("leftRear").setTargetPosition(robot.<DcMotor>get("leftRear").getCurrentPosition() + 1000);
-        robot.<DcMotor>get("rightFront").setTargetPosition(robot.<DcMotor>get("rightFront").getCurrentPosition() + 1000);
-        robot.<DcMotor>get("rightRear").setTargetPosition(robot.<DcMotor>get("rightRear").getCurrentPosition() + 1000);
+        robot.<DcMotor>get("leftFront").setTargetPosition(robot.<DcMotor>get("leftFront").getCurrentPosition() + 100);
+        robot.<DcMotor>get("leftRear").setTargetPosition(robot.<DcMotor>get("leftRear").getCurrentPosition() + 100);
+        robot.<DcMotor>get("rightFront").setTargetPosition(robot.<DcMotor>get("rightFront").getCurrentPosition() + 100);
+        robot.<DcMotor>get("rightRear").setTargetPosition(robot.<DcMotor>get("rightRear").getCurrentPosition() - 100);
     }
 
     @Override
     public void loop() {
-        double power = 0.25;
-        if (robot.<DcMotor>get("leftFront").getCurrentPosition() < robot.<DcMotor>get("leftFront").getTargetPosition()
-                && power > 0) {
+        if (robot.<DcMotor>get("leftFront").getCurrentPosition() < robot.<DcMotor>get("leftFront").getTargetPosition()) {
             robot.<DcMotor>get("leftFront").setPower(0.25);
+        } else {
+            robot.<DcMotor>get("leftFront").setPower(0);
         }
-        if (robot.<DcMotor>get("leftRear").getCurrentPosition() < robot.<DcMotor>get("leftFront").getTargetPosition()
-                && power > 0) {
+
+        if (robot.<DcMotor>get("leftRear").getCurrentPosition() < robot.<DcMotor>get("leftFront").getTargetPosition()) {
             robot.<DcMotor>get("leftRear").setPower(0.25);
+        } else {
+            robot.<DcMotor>get("leftRear").setPower(0);
         }
-        if (robot.<DcMotor>get("rightFront").getCurrentPosition() < robot.<DcMotor>get("leftFront").getTargetPosition()
-                && power > 0) {
+
+        if (robot.<DcMotor>get("rightFront").getCurrentPosition() < robot.<DcMotor>get("leftFront").getTargetPosition()) {
             robot.<DcMotor>get("rightFront").setPower(0.25);
+        } else {
+            robot.<DcMotor>get("rightFront").setPower(0);
         }
-        if (robot.<DcMotor>get("rightRear").getCurrentPosition() < robot.<DcMotor>get("leftFront").getTargetPosition()
-                && power > 0) {
-            robot.<DcMotor>get("rightRear").setPower(0.25);
+
+        if (robot.<DcMotor>get("rightRear").getCurrentPosition() > robot.<DcMotor>get("leftFront").getTargetPosition()) {
+            robot.<DcMotor>get("rightRear").setPower(-0.25);
+        } else {
+            robot.<DcMotor>get("rightRear").setPower(0);
         }
 
         telemetry.addData("leftFront current pos", robot.<DcMotor>get("leftFront").getCurrentPosition());
