@@ -2,9 +2,8 @@ package org.firstinspires.ftc.teamcode.auton.tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.robot.Robot;
 
 import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
@@ -25,74 +24,23 @@ public class RobotMethodsTest extends OpMode {
         robot = new Hardware(hardwareMap, telemetry);
         context = new Context();
 
-        // Init Servos.
-        robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "clawLock"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "clawJoint"));
-
-        // Init CR Servos.
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeGeckoWheels"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeTube"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeTube"));
-
         // Init DcMotors.
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront", "setDirection:FORWARD"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear", "setDirection:FORWARD"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront", "setDirection:FORWARD"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightRear", "setDirection:FORWARD"));
-
-        // Init arm and Viper Slide DcMotors.
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "armJoint", "setMode:RUN_USING_ENCODER"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftViperSlide", "setMode:RUN_USING_ENCODER"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightViperSlide", "setMode:RUN_USING_ENCODER"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "testMotor"));
 
         telemetry.addData("Status", "Initialized");
     }
 
     @Override
     public void start() {
-        robot.<DcMotor>get("leftFront").setTargetPosition(robot.<DcMotor>get("leftFront").getCurrentPosition() + 100);
-        robot.<DcMotor>get("leftRear").setTargetPosition(robot.<DcMotor>get("leftRear").getCurrentPosition() + 100);
-        robot.<DcMotor>get("rightFront").setTargetPosition(robot.<DcMotor>get("rightFront").getCurrentPosition() + 100);
-        robot.<DcMotor>get("rightRear").setTargetPosition(robot.<DcMotor>get("rightRear").getCurrentPosition() - 100);
+        RobotMethods.setTargetPosition(robot.<DcMotor>get("testMotor"), 300);
     }
 
     @Override
     public void loop() {
-        if (robot.<DcMotor>get("leftFront").getCurrentPosition() < robot.<DcMotor>get("leftFront").getTargetPosition()) {
-            robot.<DcMotor>get("leftFront").setPower(0.25);
-        } else {
-            robot.<DcMotor>get("leftFront").setPower(0);
-        }
+        RobotMethods.updateMotor(telemetry, robot.<DcMotor>get("testMotor"), motorRunPower);
 
-        if (robot.<DcMotor>get("leftRear").getCurrentPosition() < robot.<DcMotor>get("leftFront").getTargetPosition()) {
-            robot.<DcMotor>get("leftRear").setPower(0.25);
-        } else {
-            robot.<DcMotor>get("leftRear").setPower(0);
+        if (gamepad1.a) {
+            robot.<DcMotor>get("testMotor").setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
-
-        if (robot.<DcMotor>get("rightFront").getCurrentPosition() < robot.<DcMotor>get("leftFront").getTargetPosition()) {
-            robot.<DcMotor>get("rightFront").setPower(0.25);
-        } else {
-            robot.<DcMotor>get("rightFront").setPower(0);
-        }
-
-        if (robot.<DcMotor>get("rightRear").getCurrentPosition() > robot.<DcMotor>get("leftFront").getTargetPosition()) {
-            robot.<DcMotor>get("rightRear").setPower(-0.25);
-        } else {
-            robot.<DcMotor>get("rightRear").setPower(0);
-        }
-
-        telemetry.addData("leftFront current pos", robot.<DcMotor>get("leftFront").getCurrentPosition());
-        telemetry.addData("leftFront target", robot.<DcMotor>get("leftFront").getTargetPosition());
-        telemetry.addLine("***");
-        telemetry.addData("leftRear current pos", robot.<DcMotor>get("leftFront").getCurrentPosition());
-        telemetry.addData("leftRear target", robot.<DcMotor>get("leftFront").getTargetPosition());
-        telemetry.addLine("***");
-        telemetry.addData("rightFront current pos", robot.<DcMotor>get("leftFront").getCurrentPosition());
-        telemetry.addData("rightFront target", robot.<DcMotor>get("leftFront").getTargetPosition());
-        telemetry.addLine("***");
-        telemetry.addData("rightRear current pos", robot.<DcMotor>get("leftFront").getCurrentPosition());
-        telemetry.addData("rightRear target", robot.<DcMotor>get("leftFront").getTargetPosition());
     }
 }
