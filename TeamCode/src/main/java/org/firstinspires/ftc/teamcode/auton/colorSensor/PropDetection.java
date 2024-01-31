@@ -13,12 +13,11 @@ public class PropDetection extends OpMode {
     private Hardware robot;
     int red;
     int colorTolerence = 30;
-    boolean propDetected = false;
+    boolean teamPropDetected = false;
 
     @Override
     public void init() {
         robot = new Hardware(hardwareMap, telemetry);
-
         robot.introduce(new HardwareElement<>(ColorSensor.class, hardwareMap, "colorSensor"));
 
         telemetry.addData("Status", "Init");
@@ -26,11 +25,10 @@ public class PropDetection extends OpMode {
 
     @Override
     public void loop() {
-
         red = robot.<ColorSensor>get("colorSensor").red();
 
         if (red - colorTolerence < red && red < red + colorTolerence) {
-            propDetected = true;
+            teamPropDetected = true;
         }
     }
 }
