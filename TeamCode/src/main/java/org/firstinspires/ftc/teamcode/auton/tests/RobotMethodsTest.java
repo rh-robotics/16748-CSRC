@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.auton.tests;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.robot.Robot;
 
 import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
@@ -15,7 +14,6 @@ public class RobotMethodsTest extends OpMode {
     Hardware robot;
     Context context;
     double motorRunPower = 0.5;
-    double tolerance = 0;
 
     @Override
     public void init() {
