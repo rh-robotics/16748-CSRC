@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -10,11 +11,12 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
 
-// TODO: Outer intake
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "OpMode")
 public class TeleOp extends OpMode {
     private Hardware robot;
+
+    // Drive Variables
     double leftFPower;
     double rightFPower;
     double leftBPower;
@@ -22,7 +24,12 @@ public class TeleOp extends OpMode {
     double drive;
     double turn;
     double strafe;
+
+    // Intake Variables
     double intakePower = 0.5;
+    boolean intakeToggle = false;
+
+    // Scoring Algorithm Variables
     private final double armStartPos = 0.0;
     private final double armTargetPos = 0.0;
     private final double armTolerance = 2.5;
@@ -42,6 +49,13 @@ public class TeleOp extends OpMode {
     ElapsedTime clawPositionChange = new ElapsedTime();
     ElapsedTime viperSlidePositionChange = new ElapsedTime();
     ElapsedTime armPositionChange = new ElapsedTime();
+
+    // Gamepads
+    Gamepad currentGamepad1 = new Gamepad();
+    Gamepad currentGamepad2 = new Gamepad();
+
+    Gamepad previousActionGamepad1  = new Gamepad();
+    Gamepad previousActionGamepad2  = new Gamepad();
 
     @Override
     public void init() {
@@ -84,6 +98,7 @@ public class TeleOp extends OpMode {
     @Override
     public void loop() {
         listControls();
+        gamepadUpdate();
 
         // automaticScoring();
         clawLock();
@@ -170,7 +185,11 @@ public class TeleOp extends OpMode {
 
     public void intake() {
         // Activating Intake via gamepad a.
-        if (gamepad1.a) {
+        if (currentGamepad1.a && !previousActionGamepad1.a) {
+            intakeToggle = !intakeToggle;
+        }
+
+        if (intakeToggle) {
             robot.<CRServo>get("intakeTube").setPower(intakePower);
             robot.<CRServo>get("intakeGeckoWheels").setPower(0.2);
             robot.<CRServo>get("outerIntakeTube").setPower(0.5);
@@ -379,5 +398,13 @@ public class TeleOp extends OpMode {
                 "         * D Pad Right = Arm +\n" +
                 "         * D Pad Up = Outer Intake Down\n" +
                 "         * D Pad Down = Outer Intake Up");
+    }
+
+    public void gamepadUpdate() {
+        previousActionGamepad1.copy(currentGamepad1);
+        previousActionGamepad2.copy(currentGamepad2);
+
+        currentGamepad1.copy(gamepad1);
+        currentGamepad2.copy(gamepad2);
     }
 }
