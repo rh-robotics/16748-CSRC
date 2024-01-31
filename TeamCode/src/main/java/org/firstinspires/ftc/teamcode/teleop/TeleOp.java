@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
@@ -36,6 +38,17 @@ public class TeleOp extends OpMode {
     private final double jointStartPos = 0.0;
     private final double jointTargetPos = 0.0;
     boolean scoringATM;
+    byte lockPositionIndex = 0;
+    byte slidePositionIndex = 0;
+    byte armPositionIndex = 0;
+
+    double[] lockPositions = new double[] {0.0, 0.4, 0.8};
+    double[] slidePositions = new double[] {0.0, 1.0};
+    double[] armPositions = new double[] {0.0, 1.0};
+
+    ElapsedTime clawPositionChange = new ElapsedTime();
+    ElapsedTime viperSlidePositionChange = new ElapsedTime();
+    ElapsedTime armPositionChange = new ElapsedTime();
 
     // Gamepads
     Gamepad currentGamepad1 = new Gamepad();
@@ -57,15 +70,14 @@ public class TeleOp extends OpMode {
         // Init CR Servos.
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeGeckoWheels"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "intakeTube"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint1"));
-        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint2"));
+        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeJoint"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeTube"));
 
         // Init DcMotors.
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront", "setDirection:FORWARD"));
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear", "setDirection:FORWARD"));
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront", "setDirection:FORWARD"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightRear", "setDirection:FORWARD"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightRear"));
 
         // Init arm and Viper Slide DcMotors.
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "armJoint", "setMode:RUN_USING_ENCODER"));
@@ -73,40 +85,33 @@ public class TeleOp extends OpMode {
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightViperSlide", "setMode:RUN_USING_ENCODER"));
 
         telemetry.addData("Status", "Initialized");
-        telemetry.addLine("Controls:\n" +
-                "         *** \n" +
-                "         * Gamepad 1\n" +
-                "         * Left Stick y = Drive\n" +
-                "         * Left Stick x = Strafe\n" +
-                "         * Right Stick x = Turn\n" +
-                "         * \n" +
-                "         *** \n" +
-                "         * Gamepad 2\n" +
-                "         * Right Trigger = Claw Joint -\n" +
-                "         * Right Trigger = Claw Joint -\n" +
-                "         * X = Automatic Scoring\n" +
-                "         * Y = VS, Arm and Claw reset (Automatic Scoring Reset)\n" +
-                "         * A = Activate Intake (Toggle)\n" +
-                "         * Left Bumper = Claw Lock + (Manual)\n" +
-                "         * Left Trigger = Claw Lock - (Manual)\n" +
-                "         * D Pad Up = VS Up (Manual)\n" +
-                "         * D Pad Down = VS Down (Manual)");
+
+        listControls();
+    }
+
+    public void start() {
+        clawPositionChange.reset();
+        viperSlidePositionChange.reset();
+        armPositionChange.reset();
     }
 
     @Override
     public void loop() {
-        automaticScoring();
+        listControls();
+
+        // automaticScoring();
         clawLock();
         viperSlides();
         clawJoint();
         intake();
+        arm();
         outerIntakeJoints();
         driving();
     }
 
     public void automaticScoring() {
         // Calling scoring() via left bumper and resetting via left trigger
-        if (gamepad1.x) {
+        if (gamepad1.dpad_left) {
             scoring();
         } else if (gamepad1.y && !scoringATM) {
             resetPos();
@@ -116,21 +121,50 @@ public class TeleOp extends OpMode {
 
     public void clawLock() {
         // Move claw via x and y.
-        if (gamepad1.left_bumper) {
-            robot.<Servo>get("clawLock").setPosition(robot.<Servo>get("clawLock").getPosition() + -0.125);
-        } else if (gamepad1.left_trigger > 0.5) {
-            robot.<Servo>get("clawLock").setPosition(robot.<Servo>get("clawLock").getPosition() + 0.125);
+        if (clawPositionChange.time() > 0.25){
+            if (gamepad1.left_bumper) {
+                lockPositionIndex ++;
+                if(lockPositionIndex > 2) {
+                    lockPositionIndex = 2;
+                }
+                robot.<Servo>get("clawLock").setPosition(lockPositions[lockPositionIndex]);
+                clawPositionChange.reset();
+            } else if (gamepad1.left_trigger > 0.5) {
+                lockPositionIndex --;
+                if(lockPositionIndex < 0) {
+                    lockPositionIndex = 0;
+                }
+                robot.<Servo>get("clawLock").setPosition(lockPositions[lockPositionIndex]);
+                clawPositionChange.reset();
+            }
         }
+        telemetry.addData("claw lock position", robot.<Servo>get("clawLock").getPosition());
+        telemetry.addData("claw lock index", lockPositionIndex);
     }
 
     public void viperSlides() {
+        // Moving VS to pre-set positions.
+        if (viperSlidePositionChange.time() > 0.5){
+            if (false) { // gamepad1.b
+                if (lockPositionIndex == 1) {
+                    lockPositionIndex = 0;
+                } else {
+                    lockPositionIndex = 1;
+                }
+
+                robot.<DcMotor>get("leftViperSlide").setTargetPosition((int) slidePositions[slidePositionIndex]);
+                robot.<DcMotor>get("rightViperSlide").setTargetPosition((int) slidePositions[slidePositionIndex]);
+                viperSlidePositionChange.reset();
+            }
+        }
+
         // Moving VS manually via dpad up and down.
         if (gamepad1.dpad_up) {
-            robot.<DcMotor>get("leftViperSlide").setPower(0.5);
-            robot.<DcMotor>get("rightViperSlide").setPower(0.5);
+            robot.<DcMotor>get("leftViperSlide").setPower(0.25);
+            robot.<DcMotor>get("rightViperSlide").setPower(-0.25);
         } else if (gamepad1.dpad_down) {
-            robot.<DcMotor>get("leftViperSlide").setPower(-0.5);
-            robot.<DcMotor>get("rightViperSlide").setPower(-0.5);
+            robot.<DcMotor>get("leftViperSlide").setPower(-0.25);
+            robot.<DcMotor>get("rightViperSlide").setPower(0.25);
         } else {
             robot.<DcMotor>get("leftViperSlide").setPower(0);
             robot.<DcMotor>get("rightViperSlide").setPower(0);
@@ -152,25 +186,58 @@ public class TeleOp extends OpMode {
         // Activating Intake via gamepad a.
         if (intakeToggle) {
             robot.<CRServo>get("intakeTube").setPower(intakePower);
-            robot.<CRServo>get("intakeGeckoWheels").setPower(intakePower);
+            robot.<CRServo>get("intakeGeckoWheels").setPower(0.2);
+            robot.<CRServo>get("outerIntakeTube").setPower(0.5);
+            telemetry.addData("Intake", "Running");
+        } else if (gamepad1.x) {
+            robot.<CRServo>get("intakeTube").setPower(-intakePower);
+            robot.<CRServo>get("intakeGeckoWheels").setPower(-0.2);
             robot.<CRServo>get("outerIntakeTube").setPower(-0.5);
             telemetry.addData("Intake", "Running");
-        } else {
+        }
+        else {
             robot.<CRServo>get("intakeTube").setPower(0);
             robot.<CRServo>get("intakeGeckoWheels").setPower(0);
             robot.<CRServo>get("outerIntakeTube").setPower(0);
             telemetry.addData("Intake", "Stopped");
         }
+
+        if (gamepad1.y) {
+            robot.<CRServo>get("intakeGeckoWheels").setPower(-0.2);
+        }
+    }
+
+    public void arm() {
+        // Moving arm to pre-set positions.
+        if (armPositionChange.time() > 0.5){
+//            if (gamepad1.y) {
+//                if (armPositionIndex == 1) {
+//                    armPositionIndex = 0;
+//                } else {
+//                    armPositionIndex = 1;
+//                }
+//
+//                robot.<DcMotor>get("armJoint").setTargetPosition((int) armPositions[armPositionIndex]);
+//                armPositionChange.reset();
+//            }
+        }
+
+        // Moving arm manually.
+        if (gamepad1.dpad_left) {
+            robot.<DcMotor>get("armJoint").setPower(0.15);
+        } else if (gamepad1.dpad_right) {
+            robot.<DcMotor>get("armJoint").setPower(-0.15);
+        } else {
+            robot.<DcMotor>get("armJoint").setPower(0);
+        }
     }
 
     public void outerIntakeJoints() {
-        if (gamepad1.right_bumper) {
-            robot.<CRServo>get("outerIntakeJoint1").setPower(-0.25);
-            robot.<CRServo>get("outerIntakeJoint2").setPower(0.25);
-        } else if (gamepad1.right_trigger > 0.5) {
-            robot.<CRServo>get("outerIntakeJoint1").setPower(0.25);
-            robot.<CRServo>get("outerIntakeJoint2").setPower(-0.25);
-        }
+//        if (gamepad1.dpad_up) {
+//            robot.<CRServo>get("outerIntakeJoint").setPower(-0.25);
+//        } else if (gamepad1.dpad_down) {
+//            robot.<CRServo>get("outerIntakeJoint").setPower(0.25);
+//        }
     }
 
     // Strafe Drive using sticks on Gamepad 1.
@@ -184,7 +251,7 @@ public class TeleOp extends OpMode {
         robot.<DcMotor>get("leftFront").setPower(leftFPower);
         robot.<DcMotor>get("leftRear").setPower(leftBPower);
         robot.<DcMotor>get("rightFront").setPower(rightFPower);
-        robot.<DcMotor>get("rightRear").setPower(rightBPower);
+        robot.<DcMotor>get("rightRear").setPower(-rightBPower);
 
         telemetry.addData("leftFPower: ", leftFPower);
         telemetry.addData("leftBPower: ", leftBPower);
@@ -305,5 +372,26 @@ public class TeleOp extends OpMode {
         if (robot.<DcMotor>get("rightViperSlide").getCurrentPosition() > position) {
             robot.<DcMotor>get("rightViperSlide").setPower(power);
         }
+    }
+
+    public void listControls() {
+        telemetry.addLine("Controls:\n" +
+                "         *** \n" +
+                "         * Gamepad 1\n" +
+                "         * Left Stick y = Drive\n" +
+                "         * Left Stick x = Strafe\n" +
+                "         * Right Stick x = Turn\n" +
+                "         * Left Trigger = Claw Lock -\n" +
+                "         * Left Bumper = Claw Lock +\n" +
+                "         * Right Trigger = Claw Joint -\n" +
+                "         * Right Bumper = Claw Joint +\n" +
+                "         * A = Run Intake (Toggle)\n" +
+                "         * B = VS +\n" +
+                "         * X = VS -\n" +
+                "         * Y = Arm Position Change\n" +
+                "         * D Pad Left = Arm -\n" +
+                "         * D Pad Right = Arm +\n" +
+                "         * D Pad Up = Outer Intake Down\n" +
+                "         * D Pad Down = Outer Intake Up");
     }
 }

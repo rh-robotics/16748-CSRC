@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teleop.Tests;
+package org.firstinspires.ftc.teamcode.teleop.tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
