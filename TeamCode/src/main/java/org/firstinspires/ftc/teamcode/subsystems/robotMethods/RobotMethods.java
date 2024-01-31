@@ -118,21 +118,34 @@ public class RobotMethods {
         setTargetPosition(robot.<DcMotor>get("rightRear"), mm);
     }
 
-    private static void setTargetPosition(DcMotor motor, double mm) {
+    public static void setTargetPosition(DcMotor motor, double mm) {
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setTargetPosition((int) Math.round(mm/mmPerEncoderTick));
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    private static void updateMotor(Telemetry telemetry, DcMotor motor, double motorRunPower) {
+    public static void updateMotor(Telemetry telemetry, DcMotor motor, double motorRunPower) {
         showMotorStatus(motor, telemetry);
         updateMotorPower(motor, motorRunPower);
     }
 
     private static void updateMotorPower(DcMotor motor, double motorRunPower) {
-        if (motor.getTargetPosition() == motor.getCurrentPosition()) {
+        // Is motor in position?
+        if ((motor.getTargetPosition() <= 0 && motor.getCurrentPosition() <= motor.getTargetPosition() ||
+                motor.getTargetPosition() >= 0 && motor.getCurrentPosition() >= motor.getTargetPosition())) {
             motor.setPower(0);
-        } else {
-            motor.setPower(motorRunPower);
+        } else if (motor.getPower() == 0) { // If not in position and power is zero, set power.
+            if (motor.getTargetPosition() > 0){
+                motor.setPower(motorRunPower);
+            } else if (motor.getTargetPosition() > 0) {
+                motor.setPower(-motorRunPower);
+            }
+        }
+
+        // Catch any motors running the wrong way.
+        if (motor.getTargetPosition() < motor.getCurrentPosition() && motor.getCurrentPosition() > 0 ||
+                motor.getTargetPosition() > motor.getCurrentPosition() && motor.getCurrentPosition() < 0) {
+            motor.setPower(-motor.getPower());
         }
     }
 

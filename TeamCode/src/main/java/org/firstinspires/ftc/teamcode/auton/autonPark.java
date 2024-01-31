@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.auton;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.subsystems.stateMachineController.Context;
 
 import org.firstinspires.ftc.teamcode.subsystems.robotMethods.*;
 
+@Autonomous(name = "Auton Park")
 public class autonPark extends OpMode {
     byte startingLocationIndex = 0;
     double[][] startingLocation = new double[][] {new double[] {0, 0, 0}, new double[] {0, 0, 0},
