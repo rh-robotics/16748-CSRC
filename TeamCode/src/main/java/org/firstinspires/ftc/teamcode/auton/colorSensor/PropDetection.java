@@ -12,6 +12,7 @@ public class PropDetection extends OpMode {
 
     private Hardware robot;
     int red;
+    int blue;
     int colorTolerence = 30;
     boolean teamPropDetected = false;
 
@@ -28,6 +29,10 @@ public class PropDetection extends OpMode {
         red = robot.<ColorSensor>get("colorSensor").red();
 
         if (red - colorTolerence < red && red < red + colorTolerence) {
+            teamPropDetected = true;
+        }
+
+        if (blue - colorTolerence < blue && blue < blue + colorTolerence) {
             teamPropDetected = true;
         }
     }
