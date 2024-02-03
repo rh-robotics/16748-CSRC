@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,20 +11,21 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
-
+import org.firstinspires.ftc.teamcode.subsystems.robotMethods.PID;
+import org.firstinspires.ftc.teamcode.subsystems.robotMethods.RobotMethods;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "OpMode")
 public class TeleOp extends OpMode {
     private Hardware robot;
+    private PID pid;
+    private RobotMethods rMethods;
+    private PIDController leftFrontPID;
+    private PIDController leftRearPID;
+    private PIDController rightFrontPID;
+    private PIDController rightRearPID;
 
     // Drive Variables
-    double leftFPower;
-    double rightFPower;
-    double leftBPower;
-    double rightBPower;
-    double drive;
-    double turn;
-    double strafe;
+    int targetRPM = 200;
 
     // Intake Variables
     double intakePower = 0.5;
@@ -41,6 +43,9 @@ public class TeleOp extends OpMode {
     byte lockPositionIndex = 0;
     byte slidePositionIndex = 0;
     byte armPositionIndex = 0;
+    double P_Constant = 0.1;
+    double I_Constant = 0.1;
+    double D_Constant = 0.1;
 
     double[] lockPositions = new double[] {0.0, 0.4, 0.8};
     double[] slidePositions = new double[] {0.0, 1.0};
@@ -63,6 +68,11 @@ public class TeleOp extends OpMode {
 
         robot = new Hardware(hardwareMap, telemetry);
 
+        PIDController leftFrontPID = new PIDController(P_Constant, I_Constant, D_Constant);
+        PIDController leftRearPID = new PIDController(P_Constant, I_Constant, D_Constant);
+        PIDController rightFrontPID = new PIDController(P_Constant, I_Constant, D_Constant);
+        PIDController rightRearPID = new PIDController(P_Constant, I_Constant, D_Constant);
+
         // Init Servos.
         robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "clawLock"));
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "clawJoint"));
@@ -74,10 +84,10 @@ public class TeleOp extends OpMode {
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeTube"));
 
         // Init DcMotors.
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront", "setDirection:FORWARD"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear", "setDirection:FORWARD"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront", "setDirection:FORWARD"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightRear"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront", "setDirection:FORWARD, setMode:RUN_USING_ENCODER"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear", "setDirection:FORWARD, setMode:RUN_USING_ENCODER"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront", "setDirection:FORWARD, setMode:RUN_USING_ENCODER"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightRear", "setMode:RUN_USING_ENCODER"));
 
         // Init arm and Viper Slide DcMotors.
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "armJoint", "setMode:RUN_USING_ENCODER"));
@@ -247,40 +257,42 @@ public class TeleOp extends OpMode {
 
     // Strafe Drive using sticks on Gamepad 1.
     public void driving() {
+
+        double forwardPower = rMethods.scaleInput(currentGamepad1.left_stick_y);
+        double turnPower = rMethods.scaleInput(currentGamepad1.right_stick_x);
+        double strafePower = rMethods.scaleInput(currentGamepad1.left_stick_x);
+
         // Values for drive.
-        drive = gamepad1.left_stick_y * 0.8;
-        turn = -gamepad1.right_stick_x * 0.6;
-        strafe = gamepad1.left_stick_x * 0.8;
 
-        // Set power to values calculated above.
-        robot.<DcMotor>get("leftFront").setPower(leftFPower);
-        robot.<DcMotor>get("leftRear").setPower(leftBPower);
-        robot.<DcMotor>get("rightFront").setPower(rightFPower);
-        robot.<DcMotor>get("rightRear").setPower(-rightBPower);
-
-        telemetry.addData("leftFPower: ", leftFPower);
-        telemetry.addData("leftBPower: ", leftBPower);
-        telemetry.addData("rightFPower: ", rightFPower);
-        telemetry.addData("rightBPower: ", rightBPower);
+        double leftFrontCorrection = leftFrontPID.calculate(forwardPower * targetRPM, pid.calculateRPM(robot.<DcMotor>get("leftFront")));
+        double leftRearCorrection = rightFrontPID.calculate(forwardPower * targetRPM, pid.calculateRPM(robot.<DcMotor>get("leftRear")));
+        double rightFrontCorrection = leftRearPID.calculate(forwardPower * targetRPM, pid.calculateRPM(robot.<DcMotor>get("rightFront")));
+        double rightRearCorrection = rightRearPID.calculate(forwardPower * targetRPM, pid.calculateRPM(robot.<DcMotor>get("rightRear")));
 
         // Calculate drive power.
-        if (drive != 0 || turn != 0) {
-            leftFPower = Range.clip(drive + turn, -1.0, 1.0);
-            rightFPower = Range.clip(drive - turn, -1.0, 1.0);
-            leftBPower = Range.clip(drive + turn, -1.0, 1.0);
-            rightBPower = Range.clip(drive - turn, -1.0, 1.0);
-        } else if (strafe != 0) {
-            leftFPower = -strafe;
-            rightFPower = strafe;
-            leftBPower = strafe;
-            rightBPower = -strafe;
-        } else {
-            leftFPower = 0;
-            rightFPower = 0;
-            leftBPower = 0;
-            rightBPower = 0;
-        }
+        double leftFrontPower = forwardPower + strafePower + turnPower;
+        double leftRearPower = forwardPower - strafePower + turnPower;
+        double rightFrontPower = forwardPower - strafePower - turnPower;
+        double rightRearPower = forwardPower + strafePower - turnPower;
+
+        setDriveMotorPowers(leftFrontPower + leftFrontCorrection, leftRearPower + leftRearCorrection,
+                rightFrontPower + rightFrontCorrection, rightRearPower + rightRearCorrection);
     }
+
+    private void setDriveMotorPowers(double frontLeftPower, double rearLeftPower, double frontRightPower, double rearRightPower) {
+        // Set motor powers within range [-1, 1]
+        frontLeftPower = Range.clip(frontLeftPower, -1.0, 1.0);
+        frontRightPower = Range.clip(frontRightPower, -1.0, 1.0);
+        rearLeftPower = Range.clip(rearLeftPower, -1.0, 1.0);
+        rearRightPower = Range.clip(rearRightPower, -1.0, 1.0);
+
+        // Set motor powers
+        robot.<DcMotor>get("leftFront").setPower(frontLeftPower);
+        robot.<DcMotor>get("leftRear").setPower(rearLeftPower);
+        robot.<DcMotor>get("rightFront").setPower(frontRightPower);
+        robot.<DcMotor>get("rightRear").setPower(rearRightPower);
+    }
+
 
     // Scoring method, all together like a bowl of chili.
     public void scoring() {

@@ -1,10 +1,11 @@
-package org.firstinspires.ftc.teamcode.subsystems.pid;
+package org.firstinspires.ftc.teamcode.subsystems.robotMethods;
 
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 /** Initialize a motor as a RobotComponent with its values for PID functionality and extra features */
-public class RobotComponents {
+public class PID {
     private final DcMotorEx motor;
     private final double ticks_per_degree;
     private final double F;
@@ -21,7 +22,7 @@ public class RobotComponents {
      * @param d                  The Derivative Value tuned after P, this value helps reduce oscillation in reaching a target and should result in a smoothed out curve when going to a target. Extremely small and sensitive, typically around 0.001. Re-tune after adjusting I.
      * @param f                  The Feed-forward value, tuned before anything else by increasing until the motor can hold itself against gravity at any position. Only use if you want a motor to hold its position against gravity and never use on locking systems like worm gears (in this case, set to 0)! Value is variable based on necessary motor power, but should be low (under 0.1) to avoid motor overheating and power draw.
      */
-    RobotComponents(DcMotorEx motor, double ticks_per_rotation, double p, double i, double d, double f) {
+    PID(DcMotorEx motor, double ticks_per_rotation, double p, double i, double d, double f) {
         this.motor = motor;
         this.F = f;
         ticks_per_degree = ticks_per_rotation / 360.0;
@@ -63,7 +64,6 @@ public class RobotComponents {
      * Sends power to the RobotComponent's motor to smoothly and automatically reach currentTarget (or whatever its called, might be different) using the PID loop. Must be called every code loop!
      */
     public void moveUsingPID() {
-
         controller.reset();
         motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         int armPos = motor.getCurrentPosition();
@@ -72,15 +72,22 @@ public class RobotComponents {
         double power = pid + ff;
 
         motor.setPower(power);
+    }
 
+    public double calculateRPM(DcMotor motor) {
+        int motorPos = motor.getCurrentPosition();
+        double motorCountsPerRev = 537.7;
+        double gearRatio = 1.0;
+
+        return (motorPos/ motorCountsPerRev) * 60 * gearRatio;
     }
 
     /**
      * Returns true if the motor's current encoder position is within the specified range of currentTarget and false otherwise (e.g. true for a pos of 167 with a target of 170 and a range of 5, false for the same conditions and a pos of 200)
      *
-     * @param range The permissible range of encoder positions relative to the current target (e.g. target of 170 with a range of 5 will accept positions from 165 to 175)
+     * @param tolerance The permissible range of encoder positions relative to the current target (e.g. target of 170 with a range of 5 will accept positions from 165 to 175)
      */
-    public boolean motorCloseEnough(int range) {
-        return (target - range <= motor.getCurrentPosition()) && (target + range >= motor.getCurrentPosition());
+    public boolean motorCloseEnough(int tolerance) {
+        return (target - tolerance <= motor.getCurrentPosition()) && (target + tolerance >= motor.getCurrentPosition());
     }
 }

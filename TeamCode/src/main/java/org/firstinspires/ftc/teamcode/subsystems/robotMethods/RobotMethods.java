@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems.robotMethods;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.subsystems.stateMachineController.Obstacle
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import org.firstinspires.ftc.teamcode.subsystems.robotMethods.PID.*;
 
 public class RobotMethods {
     static float wheelEncoderPPR = 537.7f; // PPR
@@ -188,6 +190,16 @@ public class RobotMethods {
                 Math.abs(motor2.getTargetPosition()-motor2.getCurrentPosition()) < tolerance &&
                 Math.abs(motor3.getTargetPosition()-motor3.getCurrentPosition()) < tolerance &&
                 Math.abs(motor4.getTargetPosition()-motor4.getCurrentPosition()) < tolerance;
+    }
+
+    public static int getWheelDiameter() {
+        return wheelDiameter;
+    }
+
+    // Stick Sensitivity
+     public double scaleInput(double inputValue) {
+        double expo = 2.0; // Adjust For Sensitivity
+        return Math.pow(inputValue, expo);
     }
 
     private double inchesToMM(double inches) {
