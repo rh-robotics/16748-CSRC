@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.subsystems.stateMachineController.Context;
 import org.firstinspires.ftc.teamcode.subsystems.robotMethods.*;
 
 @Autonomous(name = "Auton Park")
-public class autonPark extends OpMode {
+public class AutonPark extends OpMode {
     byte startingLocationIndex = 0;
     double[][] startingLocation = new double[][] {new double[] {0, 0, 0}, new double[] {0, 0, 0},
             new double[] {0, 0, 0}, new double[] {0, 0, 0}};
