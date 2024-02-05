@@ -17,8 +17,7 @@ import org.firstinspires.ftc.teamcode.subsystems.robotMethods.RobotMethods;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "OpMode")
 public class TeleOp extends OpMode {
     private Hardware robot;
-    private PID pid;
-    private RobotMethods rMethods;
+    private RobotMethods robotMethods;
     private PIDController leftFrontPID;
     private PIDController leftRearPID;
     private PIDController rightFrontPID;
@@ -55,18 +54,13 @@ public class TeleOp extends OpMode {
     ElapsedTime viperSlidePositionChange = new ElapsedTime();
     ElapsedTime armPositionChange = new ElapsedTime();
 
-    // Gamepads
-    Gamepad currentGamepad1 = new Gamepad();
-    Gamepad currentGamepad2 = new Gamepad();
-
-    Gamepad previousActionGamepad1  = new Gamepad();
-    Gamepad previousActionGamepad2  = new Gamepad();
-
     @Override
     public void init() {
         telemetry.addData("Status", "Initializing");
 
         robot = new Hardware(hardwareMap, telemetry);
+
+        robotMethods = new RobotMethods();
 
         PIDController leftFrontPID = new PIDController(P_Constant, I_Constant, D_Constant);
         PIDController leftRearPID = new PIDController(P_Constant, I_Constant, D_Constant);
@@ -108,7 +102,7 @@ public class TeleOp extends OpMode {
     @Override
     public void loop() {
         listControls();
-        gamepadUpdate();
+        robotMethods.gamepadUpdate(gamepad1, gamepad2);
 
         // automaticScoring();
         clawLock();
@@ -195,7 +189,7 @@ public class TeleOp extends OpMode {
 
     public void intake() {
         // Activating Intake via gamepad a.
-        if (currentGamepad1.a && !previousActionGamepad1.a) {
+        if (robotMethods.currentGamepad1.a && !robotMethods.previousActionGamepad1.a) {
             intakeToggle = !intakeToggle;
         }
 
@@ -258,16 +252,16 @@ public class TeleOp extends OpMode {
     // Strafe Drive using sticks on Gamepad 1.
     public void driving() {
 
-        double forwardPower = rMethods.scaleInput(currentGamepad1.left_stick_y);
-        double turnPower = rMethods.scaleInput(currentGamepad1.right_stick_x);
-        double strafePower = rMethods.scaleInput(currentGamepad1.left_stick_x);
+        double forwardPower = robotMethods.scaleInput(robotMethods.currentGamepad1.left_stick_y);
+        double turnPower = robotMethods.scaleInput(robotMethods.currentGamepad1.right_stick_x);
+        double strafePower = robotMethods.scaleInput(robotMethods.currentGamepad1.left_stick_x);
 
         // Values for drive.
 
-        double leftFrontCorrection = leftFrontPID.calculate(forwardPower * targetRPM, pid.calculateRPM(robot.<DcMotor>get("leftFront")));
-        double leftRearCorrection = rightFrontPID.calculate(forwardPower * targetRPM, pid.calculateRPM(robot.<DcMotor>get("leftRear")));
-        double rightFrontCorrection = leftRearPID.calculate(forwardPower * targetRPM, pid.calculateRPM(robot.<DcMotor>get("rightFront")));
-        double rightRearCorrection = rightRearPID.calculate(forwardPower * targetRPM, pid.calculateRPM(robot.<DcMotor>get("rightRear")));
+        double leftFrontCorrection = leftFrontPID.calculate(forwardPower * targetRPM, robotMethods.pid.calculateRPM(robot.<DcMotor>get("leftFront")));
+        double leftRearCorrection = rightFrontPID.calculate(forwardPower * targetRPM, robotMethods.pid.calculateRPM(robot.<DcMotor>get("leftRear")));
+        double rightFrontCorrection = leftRearPID.calculate(forwardPower * targetRPM, robotMethods.pid.calculateRPM(robot.<DcMotor>get("rightFront")));
+        double rightRearCorrection = rightRearPID.calculate(forwardPower * targetRPM, robotMethods.pid.calculateRPM(robot.<DcMotor>get("rightRear")));
 
         // Calculate drive power.
         double leftFrontPower = forwardPower + strafePower + turnPower;
@@ -410,13 +404,5 @@ public class TeleOp extends OpMode {
                 "         * D Pad Right = Arm +\n" +
                 "         * D Pad Up = Outer Intake Down\n" +
                 "         * D Pad Down = Outer Intake Up");
-    }
-
-    public void gamepadUpdate() {
-        previousActionGamepad1.copy(currentGamepad1);
-        previousActionGamepad2.copy(currentGamepad2);
-
-        currentGamepad1.copy(gamepad1);
-        currentGamepad2.copy(gamepad2);
     }
 }

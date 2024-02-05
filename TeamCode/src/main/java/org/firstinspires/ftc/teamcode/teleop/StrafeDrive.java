@@ -8,12 +8,15 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
+import org.firstinspires.ftc.teamcode.subsystems.robotMethods.RobotMethods;
 
 /**
  * TeleOp OpMode for simply driving with strafing wheels
  */
 @TeleOp(name = "StrafeDriveBasic", group = "Iterative OpMode")
 public class StrafeDrive extends OpMode {
+
+    private RobotMethods robotMethods;
     private final ElapsedTime time = new ElapsedTime();
     private Hardware robot;
     double leftFPower;
@@ -29,6 +32,8 @@ public class StrafeDrive extends OpMode {
     public void init() {
         // Tell the driver the Op is initializing.
         telemetry.addData("Status", "Initializing");
+
+        robotMethods = new RobotMethods();
 
         // Do all init stuff.
         robot = new Hardware(hardwareMap, telemetry);
@@ -46,6 +51,7 @@ public class StrafeDrive extends OpMode {
     @Override
     public void init_loop() {
     }
+
 
     // Start() - Runs ONCE when the driver presses play.
     @Override
