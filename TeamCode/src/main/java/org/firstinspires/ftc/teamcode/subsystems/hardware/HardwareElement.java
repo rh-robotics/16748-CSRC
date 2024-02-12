@@ -1,36 +1,53 @@
 package org.firstinspires.ftc.teamcode.subsystems.hardware;
 
+import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.teamcode.subsystems.robotMethods.RobotMethods;
 
 import java.util.HashMap;
 
 /** Creates Objects to store hardware elements and initializers.
  * HardwareElement's are essentially HardwareDevices plus initializers. */
 public class HardwareElement<T extends HardwareDevice> {
-    /** Stores value that is expected to be in the hardware map.
-     * Assumed to be both the entry and key values. */
+    /**
+     * Stores value that is expected to be in the hardware map.
+     * Assumed to be both the entry and key values.
+     */
     public String name;
-    /** Stores type of device as a HardwareDevice Class. */
+    /**
+     * Stores type of device as a HardwareDevice Class.
+     */
     public Class<T> type;
-    /** Stores Hardware device from hardwareMap.
-     * Use this to run commands (eg. HardwareElement.device.setPower(0.5)) */
+    /**
+     * Stores Hardware device from hardwareMap.
+     * Use this to run commands (eg. HardwareElement.device.setPower(0.5))
+     */
     public HardwareDevice device;
-    /** Hashmap to store element's initializers in feature:initValue format. */
+    /**
+     * Hashmap to store element's initializers in feature:initValue format.
+     */
     public HashMap<String, String> initializers = new HashMap<>();
 
-    /** Constructs a HardwareElement.
-     * @param deviceType The type of the device.
-     * @param name Represents value of both Key and Entry.
+    /**
+     * Constructs a HardwareElement.
+     *
+     * @param deviceType  The type of the device.
+     * @param name        Represents value of both Key and Entry.
      * @param hardwareMap The FTC SDK hardware map.
-     * */
+     */
     public HardwareElement(Class<T> deviceType, HardwareMap hardwareMap, String name) {
         this.name = name;
         this.type = deviceType;
@@ -38,13 +55,16 @@ public class HardwareElement<T extends HardwareDevice> {
         setDefaultInitializers(deviceType);
     }
 
-    /** Constructs a HardwareElement.
-     * @param deviceType The type of the device.
-     * @param name Represents value of both Key and Entry.
-     * @param hardwareMap The FTC SDK hardware map.
+    /**
+     * Constructs a HardwareElement.
+     *
+     * @param deviceType    The type of the device.
+     * @param name          Represents value of both Key and Entry.
+     * @param hardwareMap   The FTC SDK hardware map.
      * @param initializers: key:value,key:value
-     *      eg. "setDirection:REVERSE,setZeroPowerBehavior:BRAKE"
-     *      Only necessary to list non-default pairs. */
+     *                      eg. "setDirection:REVERSE,setZeroPowerBehavior:BRAKE"
+     *                      Only necessary to list non-default pairs.
+     */
     public HardwareElement(Class<T> deviceType, HardwareMap hardwareMap,
                            String name, String initializers) {
         this.name = name;
@@ -54,10 +74,12 @@ public class HardwareElement<T extends HardwareDevice> {
         this.initializers = createHashMap(initializers);
     }
 
-    /** Sets default initializers given device type.
-    *  TODO: Update this method when implementing new initializers:
-    *   Add default initializers for any new hardwareElements. Initializers hashmap can be left
-    *   blank but must have a case in the conditionals to handle it and avoid RuntimeException. */
+    /**
+     * Sets default initializers given device type.
+     *  TODO: Update this method when implementing new initializers:
+     *   Add default initializers for any new hardwareElements. Initializers hashmap can be left
+     *   blank but must have a case in the conditionals to handle it and avoid RuntimeException.
+     */
     private void setDefaultInitializers(Class<T> deviceType) {
         if (deviceType.equals(DcMotor.class) || deviceType.equals(DcMotorEx.class)) {
             initializers.put("setDirection", "FORWARD");
@@ -79,7 +101,9 @@ public class HardwareElement<T extends HardwareDevice> {
         }
     }
 
-    /** Takes in string formatted "key:value,key:value" and creates HashMap. */
+    /**
+     * Takes in string formatted "key:value,key:value" and creates HashMap.
+     */
     private HashMap<String, String> createHashMap(String input) {
         input = input.replace(" ", "");
         String[] pairs = input.split(",");
