@@ -1,0 +1,21 @@
+Index: TeamCode/src/main/java/org/firstinspires/ftc/teamcode/teleop/IntakeRunningCode.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.firstinspires.ftc.teamcode.teleop;\n\nimport com.qualcomm.robotcore.eventloop.opmode.OpMode;\nimport com.qualcomm.robotcore.eventloop.opmode.TeleOp;\nimport com.qualcomm.robotcore.hardware.CRServo;\nimport com.qualcomm.robotcore.util.ElapsedTime;\n\nimport org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;\nimport org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;\n@TeleOp(name = \"Intake Running Code\", group = \"Iterative OpMode\")\npublic class IntakeRunningCode extends OpMode{\n    private final ElapsedTime time = new ElapsedTime();\n    private Hardware robot;\n    @Override\n    public void init() {\n        telemetry.addData(\"Status\", \"Initializing\");\n\n        robot = new Hardware(hardwareMap, telemetry);\n\n        /** Introduced Servos. */\n        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, \"geekoWheelCRServo\"));\n        robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, \"tubeCRServo\"));\n        telemetry.addData(\"Status\", \"Initialized\");\n    }\n\n    @Override\n    public void init_loop() {\n    }\n\n    @Override\n    public void start() {\n        time.reset();\n    }\n\n    @Override\n    public void loop() {\n        if (gamepad1.a) {\n            robot.<CRServo>get(\"tubeCRServo\").setPower(0.5);\n            robot.<CRServo>get(\"geekoWheelCRServo\").setPower(0.5);\n            telemetry.addData(\"Intake\", \"Running\");\n        } else {\n            robot.<CRServo>get(\"tubeCRServo\").setPower(0);\n            robot.<CRServo>get(\"geekoWheelCRServo\").setPower(0);\n            telemetry.addData(\"Intake\", \"Stopped\");\n        }\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/teleop/IntakeRunningCode.java b/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/teleop/IntakeRunningCode.java
+--- a/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/teleop/IntakeRunningCode.java	
++++ b/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/teleop/IntakeRunningCode.java	
+@@ -38,6 +38,10 @@
+             robot.<CRServo>get("tubeCRServo").setPower(0.5);
+             robot.<CRServo>get("geekoWheelCRServo").setPower(0.5);
+             telemetry.addData("Intake", "Running");
++        } else if (gamepad1.y) {
++            robot.<CRServo>get("tubeCRServo").setPower(-0.5);
++            robot.<CRServo>get("geekoWheelCRServo").setPower(-0.5);
++            telemetry.addData("Intake", "Running");
+         } else {
+             robot.<CRServo>get("tubeCRServo").setPower(0);
+             robot.<CRServo>get("geekoWheelCRServo").setPower(0);

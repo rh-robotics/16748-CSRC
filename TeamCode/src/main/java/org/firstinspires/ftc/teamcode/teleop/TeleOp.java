@@ -17,12 +17,7 @@ import org.firstinspires.ftc.teamcode.subsystems.robotMethods.RobotMethods;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "OpMode")
 public class TeleOp extends OpMode {
     private Hardware robot;
-    private PID pid;
-    private RobotMethods rMethods;
-    private PIDController leftFrontPID;
-    private PIDController leftRearPID;
-    private PIDController rightFrontPID;
-    private PIDController rightRearPID;
+    private RobotMethods rMethods = new RobotMethods();
 
     // Drive Variables
     int targetRPM = 200;
@@ -43,9 +38,9 @@ public class TeleOp extends OpMode {
     byte lockPositionIndex = 0;
     byte slidePositionIndex = 0;
     byte armPositionIndex = 0;
-    double P_Constant = 0.1;
-    double I_Constant = 0.1;
-    double D_Constant = 0.1;
+    double PROPORTIONAL = 0.1;
+    double INTEGRAL = 0.1;
+    double DERIVATIVE = 0.1;
 
     double[] lockPositions = new double[] {0.0, 0.4, 0.8};
     double[] slidePositions = new double[] {0.0, 1.0};
@@ -68,10 +63,7 @@ public class TeleOp extends OpMode {
 
         robot = new Hardware(hardwareMap, telemetry);
 
-        PIDController leftFrontPID = new PIDController(P_Constant, I_Constant, D_Constant);
-        PIDController leftRearPID = new PIDController(P_Constant, I_Constant, D_Constant);
-        PIDController rightFrontPID = new PIDController(P_Constant, I_Constant, D_Constant);
-        PIDController rightRearPID = new PIDController(P_Constant, I_Constant, D_Constant);
+//        PID = new PIDController(PROPORTIONAL, INTEGRAL, DERIVATIVE);
 
         // Init Servos.
         robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "clawLock"));
@@ -257,17 +249,17 @@ public class TeleOp extends OpMode {
 
     // Strafe Drive using sticks on Gamepad 1.
     public void driving() {
-
         double forwardPower = rMethods.scaleInput(currentGamepad1.left_stick_y);
         double turnPower = rMethods.scaleInput(currentGamepad1.right_stick_x);
         double strafePower = rMethods.scaleInput(currentGamepad1.left_stick_x);
 
-        // Values for drive.
+        PIDController PID_controller = new PIDController(0.1, 0.1, 0.1);
 
-        double leftFrontCorrection = leftFrontPID.calculate(forwardPower * targetRPM, pid.calculateRPM(robot.<DcMotor>get("leftFront")));
-        double leftRearCorrection = rightFrontPID.calculate(forwardPower * targetRPM, pid.calculateRPM(robot.<DcMotor>get("leftRear")));
-        double rightFrontCorrection = leftRearPID.calculate(forwardPower * targetRPM, pid.calculateRPM(robot.<DcMotor>get("rightFront")));
-        double rightRearCorrection = rightRearPID.calculate(forwardPower * targetRPM, pid.calculateRPM(robot.<DcMotor>get("rightRear")));
+        // Values for drive.
+        double leftFrontCorrection = PID_controller.calculate(forwardPower * targetRPM, calculateRPM(robot.<DcMotor>get("leftFront")));
+        double leftRearCorrection = PID_controller.calculate(forwardPower * targetRPM, calculateRPM(robot.<DcMotor>get("leftRear")));
+        double rightFrontCorrection = PID_controller.calculate(forwardPower * targetRPM, calculateRPM(robot.<DcMotor>get("rightFront")));
+        double rightRearCorrection = PID_controller.calculate(forwardPower * targetRPM, calculateRPM(robot.<DcMotor>get("rightRear")));
 
         // Calculate drive power.
         double leftFrontPower = forwardPower + strafePower + turnPower;
@@ -277,6 +269,10 @@ public class TeleOp extends OpMode {
 
         setDriveMotorPowers(leftFrontPower + leftFrontCorrection, leftRearPower + leftRearCorrection,
                 rightFrontPower + rightFrontCorrection, rightRearPower + rightRearCorrection);
+    }
+
+    private double calculateRPM(DcMotor motor) {
+        return (motor.getCurrentPosition() / 537.7) * 60;
     }
 
     private void setDriveMotorPowers(double frontLeftPower, double rearLeftPower, double frontRightPower, double rearRightPower) {

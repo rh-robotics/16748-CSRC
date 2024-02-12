@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "org.firstinspires.ftc.teamcode.TeamCode-mergeDebugResources-20:/values-id/values-id.xml",
+            "map": [
+                {
+                    "source": "/Users/rayneweinstein/.gradle/caches/transforms-3/50303f76687dc0df4a533ebae1a2c12e/transformed/jetified-zxing-android-embedded-4.3.0/res/values-id/values-id.xml",
+                    "from": {
+                        "startLines": "2,3,4,5",
+                        "startColumns": "4,4,4,4",
+                        "startOffsets": "55,114,161,293",
+                        "endColumns": "58,46,131,108",
+                        "endOffsets": "109,156,288,397"
+                    }
+                }
+            ]
+        }
+    ]
+}

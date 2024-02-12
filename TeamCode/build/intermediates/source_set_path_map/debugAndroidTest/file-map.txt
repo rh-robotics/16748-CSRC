@@ -1,0 +1,4 @@
+org.firstinspires.ftc.teamcode.test.TeamCode-androidTest-0 /Users/rayneweinstein/Repos/16748-CSRC/TeamCode/build/generated/res/resValues/androidTest/debug
+org.firstinspires.ftc.teamcode.test.TeamCode-mergeDebugAndroidTestResources-1 /Users/rayneweinstein/Repos/16748-CSRC/TeamCode/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/merged.dir
+org.firstinspires.ftc.teamcode.test.TeamCode-mergeDebugAndroidTestResources-2 /Users/rayneweinstein/Repos/16748-CSRC/TeamCode/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/stripped.dir
+org.firstinspires.ftc.teamcode.test.TeamCode-merged_res-3 /Users/rayneweinstein/Repos/16748-CSRC/TeamCode/build/intermediates/merged_res/debugAndroidTest

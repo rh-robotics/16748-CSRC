@@ -81,6 +81,7 @@ public class HardwareElement<T extends HardwareDevice> {
 
     /** Takes in string formatted "key:value,key:value" and creates HashMap. */
     private HashMap<String, String> createHashMap(String input) {
+        input = input.replace(" ", "");
         String[] pairs = input.split(",");
         HashMap<String, String> inputHashMap = new HashMap<>();
 
