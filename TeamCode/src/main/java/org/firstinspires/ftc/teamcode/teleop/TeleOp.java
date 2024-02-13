@@ -276,17 +276,31 @@ public class TeleOp extends OpMode {
     }
 
     private void setDriveMotorPowers(double frontLeftPower, double rearLeftPower, double frontRightPower, double rearRightPower) {
+
+        double forwardPower = rMethods.scaleInput(currentGamepad1.left_stick_y);
+        double turnPower = rMethods.scaleInput(currentGamepad1.right_stick_x);
+        double strafePower = rMethods.scaleInput(currentGamepad1.left_stick_x);
+
         // Set motor powers within range [-1, 1]
         frontLeftPower = Range.clip(frontLeftPower, -1.0, 1.0);
         frontRightPower = Range.clip(frontRightPower, -1.0, 1.0);
         rearLeftPower = Range.clip(rearLeftPower, -1.0, 1.0);
         rearRightPower = Range.clip(rearRightPower, -1.0, 1.0);
 
-        // Set motor powers
-        robot.<DcMotor>get("leftFront").setPower(frontLeftPower);
-        robot.<DcMotor>get("leftRear").setPower(rearLeftPower);
-        robot.<DcMotor>get("rightFront").setPower(frontRightPower);
-        robot.<DcMotor>get("rightRear").setPower(rearRightPower);
+        if (forwardPower > 0.1 || turnPower > 0.1 || strafePower > 0.1) {
+
+            // Set motor powers
+            robot.<DcMotor>get("leftFront").setPower(frontLeftPower);
+            robot.<DcMotor>get("leftRear").setPower(rearLeftPower);
+            robot.<DcMotor>get("rightFront").setPower(frontRightPower);
+            robot.<DcMotor>get("rightRear").setPower(rearRightPower);
+
+        } else {
+            robot.<DcMotor>get("leftFront").setPower(0);
+            robot.<DcMotor>get("leftRear").setPower(0);
+            robot.<DcMotor>get("rightFront").setPower(0);
+            robot.<DcMotor>get("rightRear").setPower(0);
+        }
     }
 
 
