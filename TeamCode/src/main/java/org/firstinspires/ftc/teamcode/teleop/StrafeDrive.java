@@ -8,12 +8,15 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
+import org.firstinspires.ftc.teamcode.subsystems.robotMethods.RobotMethods;
 
 /**
  * TeleOp OpMode for simply driving with strafing wheels
  */
 @TeleOp(name = "StrafeDriveBasic", group = "Iterative OpMode")
 public class StrafeDrive extends OpMode {
+
+    private RobotMethods robotMethods;
     private final ElapsedTime time = new ElapsedTime();
     private Hardware robot;
     double leftFPower;
@@ -30,6 +33,8 @@ public class StrafeDrive extends OpMode {
         // Tell the driver the Op is initializing.
         telemetry.addData("Status", "Initializing");
 
+        robotMethods = new RobotMethods();
+
         // Do all init stuff.
         robot = new Hardware(hardwareMap, telemetry);
 
@@ -37,7 +42,7 @@ public class StrafeDrive extends OpMode {
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront"));
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear"));
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightRear"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightRear", "setDirection:REVERSE"));
 
         telemetry.addData("Status", "Initialized");
     }
@@ -46,6 +51,7 @@ public class StrafeDrive extends OpMode {
     @Override
     public void init_loop() {
     }
+
 
     // Start() - Runs ONCE when the driver presses play.
     @Override
@@ -56,7 +62,6 @@ public class StrafeDrive extends OpMode {
     // loop() - Runs continuously while the OpMode is active.
     @Override
     public void loop() {
-
         double drive = gamepad1.left_stick_y * 0.8;
         double turn = -gamepad1.left_stick_x * 0.6;
         double strafe = gamepad1.right_stick_x * 0.8;

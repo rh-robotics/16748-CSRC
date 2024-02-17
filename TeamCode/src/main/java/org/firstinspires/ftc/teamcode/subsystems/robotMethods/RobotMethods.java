@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems.robotMethods;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
@@ -17,6 +18,13 @@ public class RobotMethods {
     static int wheelDiameter = 96; // mm
     static double mmPerEncoderTick = (360/wheelEncoderPPR)/360*(wheelDiameter*Math.PI); // 0.56089435511 mm
     static double distanceBetweenWheels = 264; // mm
+
+    // Gamepads
+    public Gamepad currentGamepad1 = new Gamepad();
+    public Gamepad currentGamepad2 = new Gamepad();
+
+    public Gamepad previousActionGamepad1  = new Gamepad();
+    public Gamepad previousActionGamepad2  = new Gamepad();
 
     public static void driveTo(Hardware robot, Context context, double targetX, double targetY,
                                double motorRunPower, double tolerance, Telemetry telemetry) {
@@ -202,7 +210,19 @@ public class RobotMethods {
         return Math.pow(inputValue, expo);
     }
 
+    public boolean motorCloseEnoughPosition(DcMotorEx motor, double tolerance, double position) {
+        return (position - tolerance <= motor.getCurrentPosition()) && (position + tolerance >= motor.getCurrentPosition());
+    }
+
     private double inchesToMM(double inches) {
         return inches*25.4;
+    }
+
+    public void gamepadUpdate(Gamepad gamepad1, Gamepad gamepad2) {
+        previousActionGamepad1.copy(currentGamepad1);
+        previousActionGamepad2.copy(currentGamepad2);
+
+        currentGamepad1.copy(gamepad1);
+        currentGamepad2.copy(gamepad2);
     }
 }
