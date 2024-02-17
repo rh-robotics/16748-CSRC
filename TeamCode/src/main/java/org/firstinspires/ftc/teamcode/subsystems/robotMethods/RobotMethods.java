@@ -14,7 +14,6 @@ import java.util.HashMap;
 import org.firstinspires.ftc.teamcode.subsystems.robotMethods.PID.*;
 
 public class RobotMethods {
-    public PID pid;
     static float wheelEncoderPPR = 537.7f; // PPR
     static int wheelDiameter = 96; // mm
     static double mmPerEncoderTick = (360/wheelEncoderPPR)/360*(wheelDiameter*Math.PI); // 0.56089435511 mm
@@ -209,6 +208,10 @@ public class RobotMethods {
      public double scaleInput(double inputValue) {
         double expo = 2.0; // Adjust For Sensitivity
         return Math.pow(inputValue, expo);
+    }
+
+    public boolean motorCloseEnoughPosition(DcMotorEx motor, double tolerance, double position) {
+        return (position - tolerance <= motor.getCurrentPosition()) && (position + tolerance >= motor.getCurrentPosition());
     }
 
     private double inchesToMM(double inches) {

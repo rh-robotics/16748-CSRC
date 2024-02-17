@@ -22,7 +22,7 @@ public class PID {
      * @param d                  The Derivative Value tuned after P, this value helps reduce oscillation in reaching a target and should result in a smoothed out curve when going to a target. Extremely small and sensitive, typically around 0.001. Re-tune after adjusting I.
      * @param f                  The Feed-forward value, tuned before anything else by increasing until the motor can hold itself against gravity at any position. Only use if you want a motor to hold its position against gravity and never use on locking systems like worm gears (in this case, set to 0)! Value is variable based on necessary motor power, but should be low (under 0.1) to avoid motor overheating and power draw.
      */
-    PID(DcMotorEx motor, double ticks_per_rotation, double p, double i, double d, double f) {
+    public PID(DcMotorEx motor, double ticks_per_rotation, double p, double i, double d, double f) {
         this.motor = motor;
         this.F = f;
         ticks_per_degree = ticks_per_rotation / 360.0;
@@ -66,8 +66,8 @@ public class PID {
     public void moveUsingPID() {
         controller.reset();
         motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        int armPos = motor.getCurrentPosition();
-        double pid = controller.calculate(armPos, target);
+        int Pos = motor.getCurrentPosition();
+        double pid = controller.calculate(Pos, target);
         double ff = Math.cos(Math.toRadians(target / ticks_per_degree)) * F;
         double power = pid + ff;
 
@@ -87,7 +87,7 @@ public class PID {
      *
      * @param tolerance The permissible range of encoder positions relative to the current target (e.g. target of 170 with a range of 5 will accept positions from 165 to 175)
      */
-    public boolean motorCloseEnough(int tolerance) {
+    public boolean motorCloseEnoughTarget(double tolerance) {
         return (target - tolerance <= motor.getCurrentPosition()) && (target + tolerance >= motor.getCurrentPosition());
     }
 }

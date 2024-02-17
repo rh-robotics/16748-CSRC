@@ -4,6 +4,7 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -19,8 +20,19 @@ public class TeleOp extends OpMode {
     private Hardware robot;
     private RobotMethods rMethods = new RobotMethods();
 
+    // PID
+    PID armPID = new PID(robot.<DcMotorEx>get("armJoint"), 537.7, 0.1, 0.1, 0.1, 0.1);
+    PID leftVSPID = new PID(robot.<DcMotorEx>get("leftViperSlide"), 537.7,0.1,0.1,0.1, 0.1);
+    PID rightVSPID = new PID(robot.<DcMotorEx>get("rightViperSlide"), 537.7, 0.1, 0.1, 0.1, 0.1);
+
     // Drive Variables
-    int targetRPM = 200;
+    double leftFPower;
+    double rightFPower;
+    double leftBPower;
+    double rightBPower;
+    double drive;
+    double turn;
+    double strafe;
 
     // Intake Variables
     double intakePower = 0.5;
@@ -42,9 +54,9 @@ public class TeleOp extends OpMode {
     double INTEGRAL = 0.1;
     double DERIVATIVE = 0.1;
 
-    double[] lockPositions = new double[] {0.0, 0.4, 0.8};
-    double[] slidePositions = new double[] {0.0, 1.0};
-    double[] armPositions = new double[] {0.0, 1.0};
+    double[] lockPositions = new double[]{0.0, 0.4, 0.8};
+    double[] slidePositions = new double[]{0.0, 1.0};
+    double[] armPositions = new double[]{0.0, 1.0};
 
     ElapsedTime clawPositionChange = new ElapsedTime();
     ElapsedTime viperSlidePositionChange = new ElapsedTime();
@@ -54,16 +66,14 @@ public class TeleOp extends OpMode {
     Gamepad currentGamepad1 = new Gamepad();
     Gamepad currentGamepad2 = new Gamepad();
 
-    Gamepad previousActionGamepad1  = new Gamepad();
-    Gamepad previousActionGamepad2  = new Gamepad();
+    Gamepad previousActionGamepad1 = new Gamepad();
+    Gamepad previousActionGamepad2 = new Gamepad();
 
     @Override
     public void init() {
         telemetry.addData("Status", "Initializing");
 
         robot = new Hardware(hardwareMap, telemetry);
-
-//        PID = new PIDController(PROPORTIONAL, INTEGRAL, DERIVATIVE);
 
         // Init Servos.
         robot.introduce(new HardwareElement<>(Servo.class, hardwareMap, "clawLock"));
@@ -76,19 +86,18 @@ public class TeleOp extends OpMode {
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeTube"));
 
         // Init DcMotors.
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront", "setDirection:FORWARD, setMode:RUN_USING_ENCODER"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear", "setDirection:FORWARD, setMode:RUN_USING_ENCODER"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront", "setDirection:FORWARD, setMode:RUN_USING_ENCODER"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightRear", "setMode:RUN_USING_ENCODER"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront", "setDirection:FORWARD,setMode:RUN_USING_ENCODER"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear", "setDirection:FORWARD,setMode:RUN_USING_ENCODER"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront", "setDirection:FORWARD,setMode:RUN_USING_ENCODER"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightRear", "setDirection:REVERSE,setMode:RUN_USING_ENCODER"));
 
         // Init arm and Viper Slide DcMotors.
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "armJoint", "setMode:RUN_USING_ENCODER"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftViperSlide", "setMode:RUN_USING_ENCODER"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightViperSlide", "setMode:RUN_USING_ENCODER"));
+        robot.introduce(new HardwareElement<>(DcMotorEx.class, hardwareMap, "armJoint", "setMode:RUN_USING_ENCODER"));
+        robot.introduce(new HardwareElement<>(DcMotorEx.class, hardwareMap, "leftViperSlide", "setMode:RUN_USING_ENCODER"));
+        robot.introduce(new HardwareElement<>(DcMotorEx.class, hardwareMap, "rightViperSlide", "setMode:RUN_USING_ENCODER"));
 
         telemetry.addData("Status", "Initialized");
-
-        listControls();
+        telemetry.addData("Status", "Ready For Play!");
     }
 
     public void start() {
@@ -99,42 +108,68 @@ public class TeleOp extends OpMode {
 
     @Override
     public void loop() {
-        listControls();
+        telemetryUpdate();
         gamepadUpdate();
 
-        // automaticScoring();
+        driving();
+        outerIntakeJoints();
         clawLock();
         viperSlides();
         clawJoint();
         intake();
         arm();
-        outerIntakeJoints();
-        driving();
+        // automaticScoring();
     }
 
-    public void automaticScoring() {
-        // Calling scoring() via left bumper and resetting via left trigger
-        if (gamepad1.dpad_left) {
-            scoring();
-        } else if (gamepad1.y && !scoringATM) {
-            resetPos();
-            telemetry.addData("Scoring Pos", "Reset");
+    // Strafe Drive using sticks on Gamepad 1.
+    public void driving() {
+        double drive = currentGamepad1.left_stick_y * 0.8;
+        double turn = -currentGamepad1.left_stick_x * 0.6;
+        double strafe = currentGamepad1.right_stick_x * 0.8;
+
+        // Calculate drive power.
+        if (drive != 0 || turn != 0) {
+            leftFPower = Range.clip(drive + turn, -1.0, 1.0);
+            rightFPower = Range.clip(drive - turn, -1.0, 1.0);
+            leftBPower = Range.clip(drive + turn, -1.0, 1.0);
+            rightBPower = Range.clip(drive - turn, -1.0, 1.0);
+        } else if (strafe != 0) {
+            leftFPower = -strafe;
+            rightFPower = strafe;
+            leftBPower = strafe;
+            rightBPower = -strafe;
+        } else {
+            leftFPower = 0;
+            rightFPower = 0;
+            leftBPower = 0;
+            rightBPower = 0;
         }
+
+        // Set power to values calculated above.
+        robot.<DcMotor>get("leftFront").setPower(leftFPower);
+        robot.<DcMotor>get("leftRear").setPower(leftBPower);
+        robot.<DcMotor>get("rightFront").setPower(rightFPower);
+        robot.<DcMotor>get("rightRear").setPower(rightBPower);
+
+        telemetry.addData("leftFPower", leftFPower);
+        telemetry.addData("leftBPower", leftBPower);
+        telemetry.addData("rightFPower", rightFPower);
+        telemetry.addData("rightBPower", rightBPower);
     }
 
     public void clawLock() {
         // Move claw via x and y.
-        if (clawPositionChange.time() > 0.25){
+        if (clawPositionChange.time() > 0.25) {
             if (gamepad1.left_bumper) {
-                lockPositionIndex ++;
-                if(lockPositionIndex > 2) {
+                lockPositionIndex++;
+                if (lockPositionIndex > 2) {
                     lockPositionIndex = 2;
                 }
                 robot.<Servo>get("clawLock").setPosition(lockPositions[lockPositionIndex]);
                 clawPositionChange.reset();
             } else if (gamepad1.left_trigger > 0.5) {
-                lockPositionIndex --;
-                if(lockPositionIndex < 0) {
+                lockPositionIndex--;
+                if (lockPositionIndex < 0) {
                     lockPositionIndex = 0;
                 }
                 robot.<Servo>get("clawLock").setPosition(lockPositions[lockPositionIndex]);
@@ -147,7 +182,7 @@ public class TeleOp extends OpMode {
 
     public void viperSlides() {
         // Moving VS to pre-set positions.
-        if (viperSlidePositionChange.time() > 0.5){
+        if (viperSlidePositionChange.time() > 0.5) {
             if (false) { // gamepad1.b
                 if (lockPositionIndex == 1) {
                     lockPositionIndex = 0;
@@ -201,8 +236,7 @@ public class TeleOp extends OpMode {
             robot.<CRServo>get("intakeGeckoWheels").setPower(-0.2);
             robot.<CRServo>get("outerIntakeTube").setPower(-0.5);
             telemetry.addData("Intake", "Running");
-        }
-        else {
+        } else {
             robot.<CRServo>get("intakeTube").setPower(0);
             robot.<CRServo>get("intakeGeckoWheels").setPower(0);
             robot.<CRServo>get("outerIntakeTube").setPower(0);
@@ -215,148 +249,68 @@ public class TeleOp extends OpMode {
     }
 
     public void arm() {
-        // Moving arm to pre-set positions.
-        if (armPositionChange.time() > 0.5){
-//            if (gamepad1.y) {
-//                if (armPositionIndex == 1) {
-//                    armPositionIndex = 0;
-//                } else {
-//                    armPositionIndex = 1;
-//                }
-//
-//                robot.<DcMotor>get("armJoint").setTargetPosition((int) armPositions[armPositionIndex]);
-//                armPositionChange.reset();
-//            }
+        boolean armToggle = false;
+
+        if (currentGamepad1.dpad_left && !previousActionGamepad1.dpad_left) {
+            armToggle = !armToggle;
+        }
+
+        if (armToggle && rMethods.motorCloseEnoughPosition(robot.<DcMotorEx>get("armJoint"), armTolerance, armStartPos)) {
+            armPID.setTarget(armTargetPos);
+            armPID.moveUsingPID();
+        } else if (!armToggle && rMethods.motorCloseEnoughPosition(robot.<DcMotorEx>get("armJoint"), armTolerance, armTargetPos)) {
+            armPID.setTarget(armStartPos);
+            armPID.moveUsingPID();
         }
 
         // Moving arm manually.
-        if (gamepad1.dpad_left) {
-            robot.<DcMotor>get("armJoint").setPower(0.15);
-        } else if (gamepad1.dpad_right) {
-            robot.<DcMotor>get("armJoint").setPower(-0.15);
-        } else {
-            robot.<DcMotor>get("armJoint").setPower(0);
+        if (currentGamepad2.dpad_left) {
+            armPID.incrementTarget(0.5);
+            armPID.moveUsingPID();
+        } else if (currentGamepad2.dpad_right) {
+            armPID.incrementTarget(-0.5);
+            armPID.moveUsingPID();
         }
     }
 
     public void outerIntakeJoints() {
-//        if (gamepad1.dpad_up) {
-//            robot.<CRServo>get("outerIntakeJoint").setPower(-0.25);
-//        } else if (gamepad1.dpad_down) {
-//            robot.<CRServo>get("outerIntakeJoint").setPower(0.25);
-//        }
+        if (gamepad1.dpad_up) {
+           robot.<CRServo>get("outerIntakeJoint").setPower(-0.25);
+        } else if (gamepad1.dpad_down) {
+           robot.<CRServo>get("outerIntakeJoint").setPower(0.25);
+       }
     }
 
-    // Strafe Drive using sticks on Gamepad 1.
-    public void driving() {
-        double forwardPower = rMethods.scaleInput(currentGamepad1.left_stick_y);
-        double turnPower = rMethods.scaleInput(currentGamepad1.right_stick_x);
-        double strafePower = rMethods.scaleInput(currentGamepad1.left_stick_x);
+    // VS Telemetry Updates.
+    public void viperSlideTelemetryUpdate() {
+        telemetry.addData("VS Left Pos", robot.<DcMotor>get("leftViperSlide").getCurrentPosition());
+        telemetry.addData("VS Left Power", robot.<DcMotor>get("leftViperSlide").getPower());
 
-        PIDController PID_controller = new PIDController(0.1, 0.1, 0.1);
-
-        // Values for drive.
-        double leftFrontCorrection = PID_controller.calculate(forwardPower * targetRPM, calculateRPM(robot.<DcMotor>get("leftFront")));
-        double leftRearCorrection = PID_controller.calculate(forwardPower * targetRPM, calculateRPM(robot.<DcMotor>get("leftRear")));
-        double rightFrontCorrection = PID_controller.calculate(forwardPower * targetRPM, calculateRPM(robot.<DcMotor>get("rightFront")));
-        double rightRearCorrection = PID_controller.calculate(forwardPower * targetRPM, calculateRPM(robot.<DcMotor>get("rightRear")));
-
-        // Calculate drive power.
-        double leftFrontPower = forwardPower + strafePower + turnPower;
-        double leftRearPower = forwardPower - strafePower + turnPower;
-        double rightFrontPower = forwardPower - strafePower - turnPower;
-        double rightRearPower = forwardPower + strafePower - turnPower;
-
-        setDriveMotorPowers(leftFrontPower + leftFrontCorrection, leftRearPower + leftRearCorrection,
-                rightFrontPower + rightFrontCorrection, rightRearPower + rightRearCorrection);
+        telemetry.addData("VS Right Pos", robot.<DcMotor>get("rightViperSlide").getCurrentPosition());
+        telemetry.addData("VS Right Power", robot.<DcMotor>get("rightViperSlide").getPower());
     }
 
-    private double calculateRPM(DcMotor motor) {
-        return (motor.getCurrentPosition() / 537.7) * 60;
-    }
-
-    private void setDriveMotorPowers(double frontLeftPower, double rearLeftPower, double frontRightPower, double rearRightPower) {
-
-        double forwardPower = rMethods.scaleInput(currentGamepad1.left_stick_y);
-        double turnPower = rMethods.scaleInput(currentGamepad1.right_stick_x);
-        double strafePower = rMethods.scaleInput(currentGamepad1.left_stick_x);
-
-        // Set motor powers within range [-1, 1]
-        frontLeftPower = Range.clip(frontLeftPower, -1.0, 1.0);
-        frontRightPower = Range.clip(frontRightPower, -1.0, 1.0);
-        rearLeftPower = Range.clip(rearLeftPower, -1.0, 1.0);
-        rearRightPower = Range.clip(rearRightPower, -1.0, 1.0);
-
-        if (forwardPower > 0.1 || turnPower > 0.1 || strafePower > 0.1) {
-
-            // Set motor powers
-            robot.<DcMotor>get("leftFront").setPower(frontLeftPower);
-            robot.<DcMotor>get("leftRear").setPower(rearLeftPower);
-            robot.<DcMotor>get("rightFront").setPower(frontRightPower);
-            robot.<DcMotor>get("rightRear").setPower(rearRightPower);
-
-        } else {
-            robot.<DcMotor>get("leftFront").setPower(0);
-            robot.<DcMotor>get("leftRear").setPower(0);
-            robot.<DcMotor>get("rightFront").setPower(0);
-            robot.<DcMotor>get("rightRear").setPower(0);
+    public void automaticScoring() {
+        // Calling scoring() via left bumper and resetting via left trigger
+        if (gamepad1.dpad_left) {
+            scoring();
+        } else if (gamepad1.y && !scoringATM) {
+            resetPos();
+            telemetry.addData("Scoring Pos", "Reset");
         }
     }
-
 
     // Scoring method, all together like a bowl of chili.
     public void scoring() {
         telemetry.addData("Scoring Status", "Started");
-
         scoringATM = true;
 
-        setViperSlidePos();
-        setArmPos();
-        setJointPos();
+        setViperSlidePos(viperSlideTargetPos);
+        setArmPos(armTargetPos);
+        setJointPos(jointTargetPos);
 
         scoringATM = false;
-
         telemetry.addData("Scoring Status", "Ended");
-    }
-
-    // Setting VS POS.
-    public void setViperSlidePos() {
-        // If this is not true, the rest of the code will not function.
-        assert viperSlideTargetPos >= viperSlideStartPos;
-
-        telemetry.addData("Scoring Status", "Setting VS Pos");
-
-        // Setting ViperSlidePoses based on Targets.
-        while (robot.<DcMotor>get("leftViperSlide").getCurrentPosition() < viperSlideTargetPos || robot.<DcMotor>get("rightViperSlide").getCurrentPosition() < viperSlideTargetPos) {
-            runViperSlidesToPosition(viperSlideTargetPos, 0.4);
-            viperSlideTelemetryUpdate();
-        }
-
-        telemetry.addData("Scoring Status", "VS Pos Set");
-    }
-
-    // Setting Arm Pos.
-    public void setArmPos() {
-        // If this is not true, the rest of the code will not function.
-        assert armTargetPos >= armStartPos;
-
-        telemetry.addData("Scoring Status", "Setting Arm Pos");
-
-        // Setting ArmPos based on Target.
-        while (robot.<DcMotor>get("armJoint").getCurrentPosition() < armTargetPos) {
-            robot.<DcMotor>get("armJoint").setPower(0.6);
-            telemetry.addData("armJoint Pos", robot.<DcMotor>get("armJoint").getCurrentPosition());
-        }
-
-        robot.<DcMotor>get("armJoint").setPower(0);
-        telemetry.addData("Scoring Status", "Arm Pos Set");
-    }
-
-    // Setting Joint Pos.
-    public void setJointPos() {
-        telemetry.addData("Scoring Status", "Setting Joint Pos");
-        robot.<Servo>get("clawJoint").setPosition(jointTargetPos); // Setting JointPos based on Target.
-        telemetry.addData("Scoring Status", "Joint Pos Set");
     }
 
     // Resetting Scoring POS.
@@ -377,13 +331,26 @@ public class TeleOp extends OpMode {
         telemetry.addData("Scoring Status", "Pos Reset");
     }
 
-    // VS Telemetry Updates.
-    public void viperSlideTelemetryUpdate() {
-        telemetry.addData("VS Left Pos", robot.<DcMotor>get("leftViperSlide").getCurrentPosition());
-        telemetry.addData("VS Left Power", robot.<DcMotor>get("leftViperSlide").getPower());
+    // Setting VS POS.
+    public void setViperSlidePos(double targetPos) {
+        boolean increasing = targetPos >= viperSlideStartPos;
+        telemetry.addData("Scoring Status", "Setting VS Pos");
 
-        telemetry.addData("VS Right Pos", robot.<DcMotor>get("rightViperSlide").getCurrentPosition());
-        telemetry.addData("VS Right Power", robot.<DcMotor>get("rightViperSlide").getPower());
+        if (increasing) {
+            while (increasing && (robot.<DcMotor>get("leftViperSlide").getCurrentPosition() < targetPos
+                    || robot.<DcMotor>get("rightViperSlide").getCurrentPosition() < viperSlideTargetPos )) {
+                runViperSlidesToPosition(viperSlideTargetPos, 0.4);
+                viperSlideTelemetryUpdate();
+            }
+        } else {
+            while (robot.<DcMotor>get("leftViperSlide").getCurrentPosition() > viperSlideTargetPos
+                    || robot.<DcMotor>get("rightViperSlide").getCurrentPosition() > viperSlideTargetPos ) {
+                runViperSlidesToPosition(viperSlideTargetPos, -0.4);
+                viperSlideTelemetryUpdate();
+            }
+        }
+
+        // telemetry.addData("Scoring Status", "VS Pos Set");
     }
 
     // VS run Code to Target.
@@ -401,7 +368,27 @@ public class TeleOp extends OpMode {
         }
     }
 
-    public void listControls() {
+    // Setting Arm Pos.
+    public void setArmPos(double targetPos) {
+        // If this is not true, the rest of the code will not function.
+        assert armTargetPos >= armStartPos;
+
+        telemetry.addData("Scoring Status", "Setting Arm Pos");
+
+        armPID.setTarget(targetPos);
+        armPID.moveUsingPID();
+
+        telemetry.addData("Scoring Status", "Arm Pos Set");
+    }
+
+    // Setting Joint Pos.
+    public void setJointPos(double targetPos) {
+        telemetry.addData("Scoring Status", "Setting Joint Pos");
+        robot.<Servo>get("clawJoint").setPosition(targetPos); // Setting JointPos based on Target.
+        telemetry.addData("Scoring Status", "Joint Pos Set");
+    }
+
+    public void telemetryUpdate() {
         telemetry.addLine("Controls:\n" +
                 "         *** \n" +
                 "         * Gamepad 1\n" +
@@ -420,6 +407,7 @@ public class TeleOp extends OpMode {
                 "         * D Pad Right = Arm +\n" +
                 "         * D Pad Up = Outer Intake Down\n" +
                 "         * D Pad Down = Outer Intake Up");
+        telemetry.addData("Scoring Status", scoringATM);
     }
 
     public void gamepadUpdate() {

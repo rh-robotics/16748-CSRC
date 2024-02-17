@@ -42,7 +42,7 @@ public class StrafeDrive extends OpMode {
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront"));
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear"));
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightRear"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightRear", "setDirection:REVERSE"));
 
         telemetry.addData("Status", "Initialized");
     }
@@ -62,7 +62,6 @@ public class StrafeDrive extends OpMode {
     // loop() - Runs continuously while the OpMode is active.
     @Override
     public void loop() {
-
         double drive = gamepad1.left_stick_y * 0.8;
         double turn = -gamepad1.left_stick_x * 0.6;
         double strafe = gamepad1.right_stick_x * 0.8;
