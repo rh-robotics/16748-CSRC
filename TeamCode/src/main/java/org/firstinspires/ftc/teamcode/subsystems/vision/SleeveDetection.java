@@ -99,23 +99,4 @@ public class SleeveDetection extends OpenCvPipeline {
         }
         return input;
     }
-    public int getColor() {
-        int detected = 0;
-        // Gets color specific values
-        redPercent = Core.countNonZero(redMat);
-        bluePercent = Core.countNonZero(blueMat);
-
-        // Calculates the highest amount of pixels being covered on each side
-        double maxPercent = Math.max(redPercent, bluePercent);
-
-        if (maxPercent == redPercent) {
-            detected = 1;
-
-        } else if (maxPercent == bluePercent) {
-            detected = 2;
-        } else {
-            detected = 0;
-        }
-        return(detected);
-    }
 }
