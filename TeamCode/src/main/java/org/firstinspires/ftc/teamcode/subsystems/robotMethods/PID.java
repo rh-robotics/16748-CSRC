@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 /** Initialize a motor as a RobotComponent with its values for PID functionality and extra features */
 public class PID {
-    private final DcMotorEx motor;
+    private final DcMotor motor;
     private final double ticks_per_degree;
     private final double F;
     private final PIDController controller;
@@ -22,7 +22,7 @@ public class PID {
      * @param d                  The Derivative Value tuned after P, this value helps reduce oscillation in reaching a target and should result in a smoothed out curve when going to a target. Extremely small and sensitive, typically around 0.001. Re-tune after adjusting I.
      * @param f                  The Feed-forward value, tuned before anything else by increasing until the motor can hold itself against gravity at any position. Only use if you want a motor to hold its position against gravity and never use on locking systems like worm gears (in this case, set to 0)! Value is variable based on necessary motor power, but should be low (under 0.1) to avoid motor overheating and power draw.
      */
-    public PID(DcMotorEx motor, double ticks_per_rotation, double p, double i, double d, double f) {
+    public PID(DcMotor motor, double ticks_per_rotation, double p, double i, double d, double f) {
         this.motor = motor;
         this.F = f;
         ticks_per_degree = ticks_per_rotation / 360.0;

@@ -1,228 +1,312 @@
 package org.firstinspires.ftc.teamcode.subsystems.robotMethods;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
+import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
 import org.firstinspires.ftc.teamcode.subsystems.stateMachineController.Context;
-import org.firstinspires.ftc.teamcode.subsystems.stateMachineController.Obstacle;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import org.firstinspires.ftc.teamcode.subsystems.robotMethods.PID.*;
 
 public class RobotMethods {
-    static float wheelEncoderPPR = 537.7f; // PPR
-    static int wheelDiameter = 96; // mm
-    static double mmPerEncoderTick = (360/wheelEncoderPPR)/360*(wheelDiameter*Math.PI); // 0.56089435511 mm
-    static double distanceBetweenWheels = 264; // mm
+    private double wheelsCPR = 537.7;
+    private double targetPos = 3;
+    private double motorTolerance = 50; // ticks
+    private double inchesPerRevolution = 38/3;
+    private double armCPR = 1993.6;
 
-    // Gamepads
-    public Gamepad currentGamepad1 = new Gamepad();
-    public Gamepad currentGamepad2 = new Gamepad();
+    private final double armIntakePos = 0; // In revolutions
+    private final double armScoringPos = -0.35;
+    private final double VSIntakePos = 0;
+    private final double VSScoringPos = 0.5;
+    private final double strafeAdjustment = 6/4.5;
+    private final double degreesToCoordinates = 0.8;
 
-    public Gamepad previousActionGamepad1  = new Gamepad();
-    public Gamepad previousActionGamepad2  = new Gamepad();
-
-    public static void driveTo(Hardware robot, Context context, double targetX, double targetY,
-                               double motorRunPower, double tolerance, Telemetry telemetry) {
-        ArrayList<double[]> path = findPath(context, targetX, targetY);
-        for (double[] point : path) {
-            goToPosition(robot, context, point[0], point[1], motorRunPower, tolerance, telemetry);
-        }
-    }
-
-    // TODO: Set up actual pathfinding. (Or at least something that can handle general obstacles
-    //  (eg. backboard).
-    private static ArrayList<double[]> findPath(Context context, double targetX, double targetY) {
-        ArrayList<double[]> path = new ArrayList<>();
-
-        double[] passingLocation = new double[] {300,200}; // Where we pass through "middle".
-
-        // If we're passing through the "middle" of the field.
-        if (context.getY() < 250 && targetY > 250) {
-            path.add(new double[] {300, 200});
-            path.add(new double[] {300, 350});
-        } else if (context.getY() > 250 && targetY < 250) {
-            path.add(new double[] {300, 350});
-            path.add(new double[] {300, 200});
-        }
-
-        path.add(new double[] {targetX, targetY});
-
-        return path;
-    }
-
-    public static void goToPosition(Hardware robot, Context context, double targetX, double targetY,
-                                    double motorRunPower, double tolerance, Telemetry telemetry) {
-        double moveX = targetX - context.getX();
-        double moveY = targetY - context.getY();
-
-        move(robot, context, moveX, moveY, motorRunPower, tolerance, telemetry);
-    }
-
-    public static void turnTo(Hardware robot, Context context, double directionTo, double motorRunPower,
-                              double tolerance, Telemetry telemetry) {
-        double currentDirection = context.getDirection();
-        double degreesToTravel = directionTo - currentDirection;
-
-        turn(robot, context, degreesToTravel, motorRunPower, tolerance, telemetry);
-    }
-
-    private static void move(Hardware robot, Context context, double moveX, double moveY,
-                             double motorRunPower, double tolerance, Telemetry telemetry) {
-        double angleToTarget = 0;
-
-        // Gives counter-clockwise in degrees, west as -180, -180 to 180.
-        angleToTarget = Math.atan2(moveX, moveY) * 180/Math.PI;
-
-        // Flip to make clockwise, add 90 to rotate -90 to north (-90 to 270),
-        // mod 360 to make everything positive.
-        angleToTarget = (90 - angleToTarget) % 360;
-
-        turnTo(robot, context, angleToTarget, motorRunPower, tolerance, telemetry);
-
-        double distanceToTarget = Math.sqrt(Math.pow(moveX, 2) + Math.pow(moveY, 2));
-        runWheelsToPosition(robot, distanceToTarget, motorRunPower, tolerance, telemetry);
-
-        double finalX = context.getX() + moveX;
-        double finalY = context.getY() + moveY;
-        context.setLocation(finalX, finalY);
-    }
-
-    private static void turn(Hardware robot, Context context, double degreesToTravel, double motorRunPower, double tolerance,
-                             Telemetry telemetry) {
-        // Clockwise turn.
-        double circumference = Math.PI * distanceBetweenWheels;
-        double travelDistance = circumference*(degreesToTravel/360);
-
-        runWheelsToPosition(robot, travelDistance, motorRunPower, tolerance, telemetry);
-
-        context.setDirection(context.getDirection()+degreesToTravel);
-    }
-
-    private static void runWheelsToPosition(Hardware robot, double targetPosition, double motorRunPower,
-                                            double tolerance, Telemetry telemetry) {
-        setWheelTargets(robot, targetPosition);
-
-        while(!wheelsInPosition(robot, tolerance)) {
-            updateWheels(telemetry, robot, motorRunPower);
-        }
-
-        stopAndResetWheels(robot);
-    }
-
-    private static void updateWheels(Telemetry telemetry, Hardware robot, double motorRunPower) {
-        updateMotor(telemetry, robot.<DcMotor>get("leftFront"), motorRunPower);
-        updateMotor(telemetry, robot.<DcMotor>get("leftRear"), motorRunPower);
-        updateMotor(telemetry, robot.<DcMotor>get("rightFront"), motorRunPower);
-        updateMotor(telemetry, robot.<DcMotor>get("rightRear"), motorRunPower);
-    }
-
-    private static void setWheelTargets(Hardware robot, double mm) {
-        setTargetPosition(robot.<DcMotor>get("leftFront"), mm);
-        setTargetPosition(robot.<DcMotor>get("leftRear"), mm);
-        setTargetPosition(robot.<DcMotor>get("rightFront"), mm);
-        setTargetPosition(robot.<DcMotor>get("rightRear"), mm);
-    }
-
-    public static void setTargetPosition(DcMotor motor, double mm) {
-        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor.setTargetPosition((int) Math.round(mm/mmPerEncoderTick));
-        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    }
-
-    public static void updateMotor(Telemetry telemetry, DcMotor motor, double motorRunPower) {
-        showMotorStatus(motor, telemetry);
-        updateMotorPower(motor, motorRunPower);
-    }
-
-    private static void updateMotorPower(DcMotor motor, double motorRunPower) {
-        // Is motor in position?
-        if ((motor.getTargetPosition() <= 0 && motor.getCurrentPosition() <= motor.getTargetPosition() ||
-                motor.getTargetPosition() >= 0 && motor.getCurrentPosition() >= motor.getTargetPosition())) {
-            motor.setPower(0);
-        } else if (motor.getPower() == 0) { // If not in position and power is zero, set power.
-            if (motor.getTargetPosition() > 0){
-                motor.setPower(motorRunPower);
-            } else if (motor.getTargetPosition() > 0) {
-                motor.setPower(-motorRunPower);
+    public void move(Hardware robot, Context context, double targetY, double targetX) {
+        if (context.getDirection() != 0 && context.getDirection() != 180) {
+            if (Math.abs(180-context.getDirection()) < Math.abs(0-context.getDirection())) {
+                turnTo(robot, context, 180);
+                context.setDirection(180);
+            } else {
+                turnTo(robot, context, 0);
+                context.setDirection(0);
             }
         }
 
-        // Catch any motors running the wrong way.
-        if (motor.getTargetPosition() < motor.getCurrentPosition() && motor.getCurrentPosition() > 0 ||
-                motor.getTargetPosition() > motor.getCurrentPosition() && motor.getCurrentPosition() < 0) {
-            motor.setPower(-motor.getPower());
-        }
+        moveX(robot, context, (context.getX() - targetX));
+        context = updateContext(context, context.getX() - targetX);
+
+        moveY(robot, context, (context.getX() - targetY));
+        context = updateContext(context, 0, context.getY() - targetY);
     }
 
-    private static void stopAndResetWheels(Hardware robot) {
-        DcMotor motor1 = robot.<DcMotor>get("leftFront");
-        DcMotor motor2 = robot.<DcMotor>get("leftRear");
-        DcMotor motor3 = robot.<DcMotor>get("rightFront");
-        DcMotor motor4 = robot.<DcMotor>get("rightRear");
-
-        motor1.setPower(0);
-        motor2.setPower(0);
-        motor3.setPower(0);
-        motor4.setPower(0);
-
-        motor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motor3.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motor4.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    public Context updateContext(Context context, double xDifference) {
+        context.setLocation(xDifference+context.getX(), context.getY());
+        return context;
     }
 
-    private static void showMotorStatus(DcMotor motor, Telemetry telemetry) {
-        if (motor.getTargetPosition() == motor.getCurrentPosition()) {
-            telemetry.addLine(motor.getDeviceName() + " in Position");
+    public Context updateContext(Context context, double xDifference, double yDifference) {
+        context.setLocation(xDifference + context.getX(), yDifference + context.getY());
+        return context;
+    }
+
+    public Context updateContext(Context context, double xDifference, double yDifference,
+                                 double directionDifference) {
+        context.setLocation(xDifference + context.getX(), yDifference + context.getY(),
+                directionDifference + context.getDirection());
+        return context;
+    }
+
+    public void moveX(Hardware robot, Context context, double x) {
+        if(context.getDirection() == 0) {
+            runWheelsToTarget(robot, strafeAdjustment * -x, x * strafeAdjustment,
+                    x * strafeAdjustment, -x * strafeAdjustment);
+        } else if (context.getDirection() == 180) {
+            x = -x;
+            runWheelsToTarget(robot, strafeAdjustment * -x, x * strafeAdjustment,
+                    x * strafeAdjustment, -x * strafeAdjustment);
+        } else if (Math.abs(180-context.getDirection()) < Math.abs(0-context.getDirection())) {
+            turnTo(robot, context, 180);
+            x = -x;
+            runWheelsToTarget(robot, strafeAdjustment * -x, x * strafeAdjustment,
+                    x * strafeAdjustment, -x * strafeAdjustment);
         } else {
-            telemetry.addLine("Running " + motor.getDeviceName() + " Motor");
-            telemetry.addData(motor.getDeviceName() + " Target Position",
-                    motor.getTargetPosition());
-            telemetry.addData(motor.getDeviceName() + " Current Position",
-                    motor.getTargetPosition());
+            turnTo(robot, context, 0);
+            runWheelsToTarget(robot, strafeAdjustment * -x, x * strafeAdjustment,
+                    x * strafeAdjustment, -x * strafeAdjustment);
         }
     }
 
-    private static boolean wheelsInPosition(Hardware robot, double tolerance) {
-        DcMotor motor1 = robot.<DcMotor>get("leftFront");
-        DcMotor motor2 = robot.<DcMotor>get("leftRear");
-        DcMotor motor3 = robot.<DcMotor>get("rightFront");
-        DcMotor motor4 = robot.<DcMotor>get("rightRear");
-
-        return Math.abs(motor1.getTargetPosition()-motor1.getCurrentPosition()) < tolerance &&
-                Math.abs(motor2.getTargetPosition()-motor2.getCurrentPosition()) < tolerance &&
-                Math.abs(motor3.getTargetPosition()-motor3.getCurrentPosition()) < tolerance &&
-                Math.abs(motor4.getTargetPosition()-motor4.getCurrentPosition()) < tolerance;
+    public void moveY(Hardware robot, Context context, double y) {
+        if(context.getDirection() == 0) {
+            runWheelsToTarget(robot, y);
+        } else if (context.getDirection() == 180) {
+            y = -y;
+            runWheelsToTarget(robot, -y);
+        } else if (Math.abs(180-context.getDirection()) < Math.abs(0-context.getDirection())) {
+            turnTo(robot, context, 180);
+            y = -y;
+            runWheelsToTarget(robot, y);
+        } else {
+            turnTo(robot, context, 0);
+            runWheelsToTarget(robot, y);
+        }
     }
 
-    public static int getWheelDiameter() {
-        return wheelDiameter;
+    public void turnTo(Hardware robot, Context context, double direction) {
+        // Clockwise distance < counter-clockwise distance
+        if ((direction - context.getDirection()) % 360 < (context.getDirection() - direction) % 360) {
+            turn(robot, context.getDirection() - direction);
+        } else {
+            turn(robot, direction - context.getDirection());
+        }
     }
 
-    // Stick Sensitivity
-     public double scaleInput(double inputValue) {
-        double expo = 2.0; // Adjust For Sensitivity
-        return Math.pow(inputValue, expo);
+    public void turn(Hardware robot, double degrees) { // clockwise
+        runWheelsToTarget(robot, -degreesToCoordinates * degrees, -degreesToCoordinates * degrees,
+                degreesToCoordinates * degrees, degreesToCoordinates * degrees);
     }
 
-    public boolean motorCloseEnoughPosition(DcMotorEx motor, double tolerance, double position) {
-        return (position - tolerance <= motor.getCurrentPosition()) && (position + tolerance >= motor.getCurrentPosition());
+    public Hardware init(Telemetry telemetry, HardwareMap hardwareMap) {
+        telemetry.addLine("Initializing");
+
+        Hardware robot;
+        robot = new Hardware(hardwareMap, telemetry);
+
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightRear", "setDirection:REVERSE"));
+
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "armJoint"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftViperSlide"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightViperSlide", "setDirection:REVERSE"));
+
+        telemetry.addLine("Initialized");
+
+        return robot;
     }
 
-    private double inchesToMM(double inches) {
-        return inches*25.4;
+    private void resetWheelEncoders(Hardware robot) {
+        robot.<DcMotor>get("leftRear").setPower(0);
+        robot.<DcMotor>get("leftFront").setPower(0);
+        robot.<DcMotor>get("rightRear").setPower(0);
+        robot.<DcMotor>get("rightFront").setPower(0);
+
+        robot.<DcMotor>get("leftRear").setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.<DcMotor>get("leftRear").setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        robot.<DcMotor>get("leftFront").setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.<DcMotor>get("leftFront").setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        robot.<DcMotor>get("rightRear").setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.<DcMotor>get("rightRear").setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        robot.<DcMotor>get("rightFront").setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.<DcMotor>get("rightFront").setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        robot.<DcMotor>get("leftRear").setTargetPosition(0);
+        robot.<DcMotor>get("leftFront").setTargetPosition(0);
+        robot.<DcMotor>get("rightRear").setTargetPosition(0);
+        robot.<DcMotor>get("rightFront").setTargetPosition(0);
     }
 
-    public void gamepadUpdate(Gamepad gamepad1, Gamepad gamepad2) {
-        previousActionGamepad1.copy(currentGamepad1);
-        previousActionGamepad2.copy(currentGamepad2);
+    private void runMotorsToTargets(Hardware robot) {
+        while (Math.abs(robot.<DcMotor>get("leftRear").getCurrentPosition() - robot.<DcMotor>get("leftRear").getTargetPosition()) > motorTolerance) {
+            setPower(robot.<DcMotor>get("leftRear"));
+            setPower(robot.<DcMotor>get("leftFront"));
+            setPower(robot.<DcMotor>get("rightRear"));
+            setPower(robot.<DcMotor>get("rightFront"));
+        }
+        robot.<DcMotor>get("rightFront").setPower(0);
+        robot.<DcMotor>get("rightRear").setPower(0);
+        robot.<DcMotor>get("leftFront").setPower(0);
+        robot.<DcMotor>get("leftRear").setPower(0);
 
-        currentGamepad1.copy(gamepad1);
-        currentGamepad2.copy(gamepad2);
+        resetWheelEncoders(robot);
+    }
+
+    private void setPower(DcMotor motor) {
+        if (motor.getTargetPosition() < motor.getCurrentPosition()) {
+            motor.setPower(-0.5);
+        } else if (motor.getTargetPosition() > motor.getCurrentPosition()) {
+            motor.setPower(0.5);
+        } else {
+            motor.setPower(0);
+        }
+    }
+
+    public void runWheelsToTarget(Hardware robot, double target) {
+        robot.<DcMotor>get("leftRear").setTargetPosition(wheelsCoordinatesToTicks(target));
+        robot.<DcMotor>get("leftFront").setTargetPosition(wheelsCoordinatesToTicks(target));
+        robot.<DcMotor>get("rightRear").setTargetPosition(wheelsCoordinatesToTicks(target));
+        robot.<DcMotor>get("rightFront").setTargetPosition(-wheelsCoordinatesToTicks(target));
+
+        runMotorsToTargets(robot);
+    }
+
+    public void runWheelsToTarget(Hardware robot, double lrTarget, double lfTarget, double rrTarget, double rfTarget) {
+        robot.<DcMotor>get("leftRear").setTargetPosition(wheelsCoordinatesToTicks(lrTarget));
+        robot.<DcMotor>get("leftFront").setTargetPosition(wheelsCoordinatesToTicks(lfTarget));
+        robot.<DcMotor>get("rightRear").setTargetPosition(wheelsCoordinatesToTicks(rrTarget));
+        robot.<DcMotor>get("rightFront").setTargetPosition(-wheelsCoordinatesToTicks(rfTarget));
+
+        runMotorsToTargets(robot);
+    }
+
+    public void printWheelsTelemetry(Hardware robot, Telemetry telemetry) {
+        telemetry.addData("leftRear Target", robot.<DcMotor>get("leftRear").getTargetPosition());
+        telemetry.addData("leftRear Current", robot.<DcMotor>get("leftRear").getCurrentPosition());
+        telemetry.addData("leftRear Power", robot.<DcMotor>get("leftRear").getPower());
+
+        telemetry.addLine();
+        telemetry.addData("leftFront Target", robot.<DcMotor>get("leftFront").getTargetPosition());
+        telemetry.addData("leftFront Current", robot.<DcMotor>get("leftFront").getCurrentPosition());
+        telemetry.addData("leftFront Power", robot.<DcMotor>get("leftFront").getPower());
+
+        telemetry.addLine();
+        telemetry.addData("rightRear Target", robot.<DcMotor>get("rightRear").getTargetPosition());
+        telemetry.addData("rightRear Current", robot.<DcMotor>get("rightRear").getCurrentPosition());
+        telemetry.addData("rightRear Power", robot.<DcMotor>get("rightRear").getPower());
+
+        telemetry.addLine();
+        telemetry.addData("rightFront Target", robot.<DcMotor>get("rightFront").getTargetPosition());
+        telemetry.addData("rightFront Current", robot.<DcMotor>get("rightFront").getCurrentPosition());
+        telemetry.addData("rightFront Power", robot.<DcMotor>get("rightFront").getPower());
+    }
+
+    private int wheelsCoordinatesToTicks(double revolutions) {
+        return (int) Math.round((revolutions * wheelsCPR) / inchesPerRevolution * ((double) 144 /600));
+    }
+
+    /** Reset motors to initial position here before we run anything else.
+     * This step is necessary because we are using relative encoders, which give encoder information
+     * based on where the motor is started/reset.
+     **/
+    public void start(Hardware robot) {
+        resetWheelEncoders(robot);
+
+        robot.<DcMotor>get("armJoint").setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.<DcMotor>get("armJoint").setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.<DcMotor>get("armJoint").setTargetPosition(0);
+
+        robot.<DcMotor>get("leftViperSlide").setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.<DcMotor>get("leftViperSlide").setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.<DcMotor>get("leftViperSlide").setTargetPosition(0);
+
+        robot.<DcMotor>get("rightViperSlide").setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.<DcMotor>get("rightViperSlide").setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.<DcMotor>get("rightViperSlide").setTargetPosition(0);
+    }
+
+    private void printScoringTelemetry(Telemetry telemetry, Hardware robot) {
+        telemetry.addData("Target Position", robot.<DcMotor>get("armJoint").getTargetPosition());
+        telemetry.addData("Current Position", robot.<DcMotor>get("armJoint").getCurrentPosition());
+        telemetry.addData("Arm Motor Power", robot.<DcMotor>get("armJoint").getPower());
+
+        telemetry.addLine();
+        telemetry.addData("VS Left Target Position", robot.<DcMotor>get("leftViperSlide").getTargetPosition());
+        telemetry.addData("VS Left Current Position", robot.<DcMotor>get("leftViperSlide").getCurrentPosition());
+        telemetry.addData("VS Left Power", robot.<DcMotor>get("leftViperSlide").getPower());
+
+        telemetry.addLine();
+        telemetry.addData("VS Right Target Position", robot.<DcMotor>get("rightViperSlide").getTargetPosition());
+        telemetry.addData("VS Right Current Position", robot.<DcMotor>get("rightViperSlide").getCurrentPosition());
+        telemetry.addData("VS Right Power", robot.<DcMotor>get("rightViperSlide").getPower());
+    }
+
+    public void scoringPosition(Hardware robot) {
+        robot.<DcMotor>get("leftViperSlide").setTargetPosition(revolutionsToTicks(VSScoringPos));
+        robot.<DcMotor>get("rightViperSlide").setTargetPosition(revolutionsToTicks(VSScoringPos));
+
+        robot.<DcMotor>get("leftViperSlide").setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.<DcMotor>get("rightViperSlide").setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        robot.<DcMotor>get("leftViperSlide").setPower(0.5);
+        robot.<DcMotor>get("rightViperSlide").setPower(0.5);
+
+        while (Math.abs(robot.<DcMotor>get("leftViperSlide").getTargetPosition() - robot.<DcMotor>get("leftViperSlide").getCurrentPosition())
+                > Math.abs(VSScoringPos - VSIntakePos) / 2) {}
+
+        robot.<DcMotor>get("armJoint").setTargetPosition(revolutionsToTicks(armScoringPos));
+
+        robot.<DcMotor>get("armJoint").setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.<DcMotor>get("armJoint").setPower(0.5);
+    }
+
+    public void intakePosition(Hardware robot) {
+        robot.<DcMotor>get("armJoint").setTargetPosition(revolutionsToTicks(armIntakePos));
+
+        robot.<DcMotor>get("armJoint").setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.<DcMotor>get("armJoint").setPower(0.5);
+
+
+        robot.<DcMotor>get("leftViperSlide").setTargetPosition(revolutionsToTicks(VSIntakePos));
+        robot.<DcMotor>get("rightViperSlide").setTargetPosition(revolutionsToTicks(VSIntakePos));
+
+        robot.<DcMotor>get("leftViperSlide").setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.<DcMotor>get("rightViperSlide").setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        robot.<DcMotor>get("leftViperSlide").setPower(0.5);
+        robot.<DcMotor>get("rightViperSlide").setPower(0.5);
+    }
+
+    /** Reset motors to initial position here before ending the program. This helps for testing
+     * when we want to run auton multiple times in a row, helps with redundancy for making sure
+     * our encoders are accurate, and also is just convenient to have reset at the end of auton period. **/
+    public void endResetMotors(Hardware robot) {
+        intakePosition(robot);
+
+        while (Math.abs(robot.<DcMotor>get("leftViperSlide").getCurrentPosition() - robot.<DcMotor>get("leftViperSlide").getTargetPosition()) < 5
+                && Math.abs(robot.<DcMotor>get("armJoint").getCurrentPosition() - robot.<DcMotor>get("armJoint").getTargetPosition()) < 5) {}
+    }
+
+    private int revolutionsToTicks(double revolutions) {
+        return (int) Math.round(revolutions * armCPR);
     }
 }

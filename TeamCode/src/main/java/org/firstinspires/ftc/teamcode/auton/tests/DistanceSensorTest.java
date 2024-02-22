@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auton.tests;
+package org.firstinspires.ftc.teamcode.auton.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
