@@ -37,7 +37,7 @@ public class ColorDetectionCamera extends OpMode {
     public void init() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam1 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, webcamName), cameraMonitorViewId);
-        webcam1.setPipeline(new colorDetection());
+        webcam1.setPipeline(new ColorDetection());
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ColorDetectionCamera extends OpMode {
         });
     }
 
-    public class colorDetection extends OpenCvPipeline {
+    public class ColorDetection extends OpenCvPipeline {
         @Override
         public Mat processFrame(Mat input) {
             Mat YCbCr = new Mat();
@@ -104,7 +104,6 @@ public class ColorDetectionCamera extends OpMode {
             boolean isBlueCenter = Core.countNonZero(centerBinaryBlue) > 0;
             boolean isBlueRight = Core.countNonZero(rightBinaryBlue) > 0;
 
-            // 0: None, 1: Left, 2: Center, 3: Right
             if (isRedLeft || isBlueLeft) {
                 propPlaces propPlacement = propPlaces.Left;
             } else if (isRedCenter || isBlueCenter) {
