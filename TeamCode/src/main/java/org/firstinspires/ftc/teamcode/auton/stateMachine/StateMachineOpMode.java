@@ -25,7 +25,7 @@ public class StateMachineOpMode extends OpMode {
     public void init() {
         elapsedTime = new ElapsedTime();
 
-        context = new Context();
+        context = new Context(0);
         context.setRobotParked(true); /* Changed to false on start(). */
 
         context.setPixelsInControl((byte) 0);

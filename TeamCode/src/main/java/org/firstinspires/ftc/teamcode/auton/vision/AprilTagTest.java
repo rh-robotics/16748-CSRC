@@ -57,7 +57,6 @@ public class AprilTagTest extends LinearOpMode {
 
         // Save more CPU resources when camera is no longer needed.
         visionPortal.close();
-
     }
 
     /**
@@ -88,7 +87,7 @@ public class AprilTagTest extends LinearOpMode {
 
         // Set the camera (webcam vs. built-in RC phone camera).
         if (USE_WEBCAM) {
-            builder.setCamera(hardwareMap.get(WebcamName.class, "webcam"));
+            builder.setCamera(hardwareMap.get(WebcamName.class, "webcam1"));
         } else {
             builder.setCamera(BuiltinCameraDirection.BACK);
         }

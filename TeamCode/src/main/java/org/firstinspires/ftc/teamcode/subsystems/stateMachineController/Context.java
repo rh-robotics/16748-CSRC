@@ -6,9 +6,26 @@ public class Context {
     boolean robotParked = false;
     boolean inScoringPosition = false;
     boolean inIntakePosition = false;
+
+    // Blue Back, Blue Front, Right Back, Right Front
+    int startPos = 0;
+    double[][] startLocations = new double[][] {new double[]{50, 450, 270}, new double[]{50, 250, 270},
+            new double[]{550, 50, 90}, new double[]{550, 250, 90}};
+
+    double[][] crossingLocations = new double[][] {new double[]{150, 350}, new double[]{150, 350},
+            new double[]{450, 350}, new double[]{450, 350}};
+
     byte pixelsInControl = 0;
     double[] location = new double[] {-1.0, -1.0, 0};
-    Obstacle[] obstacles = new Obstacle[] {};
+
+    public Context(int startPos) {
+        this.startPos = startPos;
+        setLocation(startLocations[startPos][0], startLocations[startPos][1], startLocations[startPos][2]);
+    }
+
+    public void setStartPos(int startPos) {
+        this.startPos = startPos;
+    }
 
     public void setLocation(double x, double y, double direction) {
         this.location[0] = x;
@@ -83,6 +100,14 @@ public class Context {
 
     public double getDirection() {
         return this.location[2];
+    }
+
+    public double[] getStartPos() {
+        return this.startLocations[startPos];
+    }
+
+    public double[] getCrossingPos() {
+        return this.crossingLocations[startPos];
     }
 
     public void setDirection(double direction) {

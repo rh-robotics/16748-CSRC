@@ -18,9 +18,9 @@ public class ServoTest extends OpMode {
 
     public void loop() {
         if (gamepad1.a)  {
-            testServo.setPosition(0);
+            testServo.setPosition(testServo.getPosition() - 0.25);
         } else if (gamepad1.b) {
-            testServo.setPosition(0.25);
+            testServo.setPosition(testServo.getPosition() + 0.25);
         }
 
         telemetry.addData("Servo Position", testServo.getPosition());

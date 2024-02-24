@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems.stateMachineController;
 
-public class Obstacle {
+public class
+
+
+
+Obstacle {
     // Assuming for now that all obstacles are rectangular.
     double[] walls;
     double[] dialatedWalls;
