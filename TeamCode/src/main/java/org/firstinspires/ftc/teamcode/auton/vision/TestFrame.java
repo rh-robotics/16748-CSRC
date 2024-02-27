@@ -23,7 +23,7 @@ public class TestFrame extends OpMode {
 
         /* Activating the camera monitor view on robot controller phone. */
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam"), cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam1"), cameraMonitorViewId);
 
         /* All img processing happens within the pipeline. */
         testFramePipeline = new TestFramePipeline();

@@ -1,23 +1,28 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.config.variable.;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
 import org.firstinspires.ftc.teamcode.subsystems.robotMethods.PID;
 import org.firstinspires.ftc.teamcode.subsystems.robotMethods.RobotMethods;
 
+@Config
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "OpMode")
 public class TeleOp extends OpMode {
     private Hardware robot;
-    private PID pid;
+
     private RobotMethods rMethods;
     private PIDController leftFrontPID;
     private PIDController leftRearPID;
@@ -25,7 +30,7 @@ public class TeleOp extends OpMode {
     private PIDController rightRearPID;
 
     // Drive Variables
-    int targetRPM = 200;
+    static int targetRPM = 200;
 
     // Intake Variables
     double intakePower = 0.5;
@@ -84,15 +89,18 @@ public class TeleOp extends OpMode {
         robot.introduce(new HardwareElement<>(CRServo.class, hardwareMap, "outerIntakeTube"));
 
         // Init DcMotors.
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront", "setDirection:FORWARD, setMode:RUN_USING_ENCODER"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear", "setDirection:FORWARD, setMode:RUN_USING_ENCODER"));
-        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront", "setDirection:FORWARD, setMode:RUN_USING_ENCODER"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftFront", "setDirection:FORWARD,setMode:RUN_USING_ENCODER"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftRear", "setDirection:FORWARD,setMode:RUN_USING_ENCODER"));
+        robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightFront", "setDirection:FORWARD,setMode:RUN_USING_ENCODER"));
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightRear", "setMode:RUN_USING_ENCODER"));
 
-        // Init arm and Viper Slide DcMotors.
+        // Init arm and Viper Slide DcMotors.w
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "armJoint", "setMode:RUN_USING_ENCODER"));
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "leftViperSlide", "setMode:RUN_USING_ENCODER"));
         robot.introduce(new HardwareElement<>(DcMotor.class, hardwareMap, "rightViperSlide", "setMode:RUN_USING_ENCODER"));
+
+        // Init Sensors
+        robot.introduce(new HardwareElement<>(DistanceSensor.class, hardwareMap, "clawDistanceSensor"));
 
         telemetry.addData("Status", "Initialized");
 
@@ -149,6 +157,11 @@ public class TeleOp extends OpMode {
                 clawPositionChange.reset();
             }
         }
+
+        if (4.6 > robot.<DistanceSensor>get("clawDistanceSensor").getDistance(DistanceUnit.CM)) {
+            lockPositionIndex++;
+        }
+
         telemetry.addData("claw lock position", robot.<Servo>get("clawLock").getPosition());
         telemetry.addData("claw lock index", lockPositionIndex);
     }
