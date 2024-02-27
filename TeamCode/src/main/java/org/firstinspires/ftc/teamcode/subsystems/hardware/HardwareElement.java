@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.openftc.easyopencv.OpenCvCamera;
+
 import java.util.HashMap;
 
 /** Creates Objects to store hardware elements and initializers.
