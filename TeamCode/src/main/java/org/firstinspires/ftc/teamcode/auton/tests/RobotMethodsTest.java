@@ -26,9 +26,10 @@ public class RobotMethodsTest extends OpMode {
     RobotMethods robotMethods;
 
     final double strafeAdjustment = 6/4.5;
-    double targetPos = 100;
+    double targetPos = 90;
 
-    double adjustment = 1;
+    double leftAdjustment = 1;
+    double rightAdjustment = 1;
 
     @Override
     public void init() {
@@ -46,14 +47,20 @@ public class RobotMethodsTest extends OpMode {
     public void loop() {
         gamepadUpdate();
 
-        targetPos = 100;
         if (currentGamepad1.left_trigger > 0.5 && previousActionGamepad1.left_trigger < 0.5) {
-            adjustment += 0.005;
+            leftAdjustment += 0.05;
         } else if (currentGamepad1.right_trigger > 0.5 && previousActionGamepad1.right_trigger < 0.5) {
-            adjustment -= 0.005;
+            leftAdjustment -= 0.05;
         }
-        telemetry.addData("Adjustment", adjustment);
-        targetPos *= adjustment;
+
+        if (currentGamepad1.left_bumper && previousActionGamepad1.left_bumper) {
+            rightAdjustment += 0.05;
+        } else if (currentGamepad1.right_bumper && previousActionGamepad1.right_bumper) {
+            rightAdjustment -= 0.05;
+        }
+
+        telemetry.addData("Left Adjustment", leftAdjustment);
+        telemetry.addData("Right Adjustment", rightAdjustment);
 
         if (currentGamepad1.y) {
             robotMethods.runWheelsToTarget(robot, targetPos);
@@ -73,10 +80,11 @@ public class RobotMethodsTest extends OpMode {
         }
 
         if (currentGamepad1.dpad_left) {
-            robotMethods.turn(robot, -90);
+            robotMethods.turn(robot, -90 * leftAdjustment);
         } else if (currentGamepad1.dpad_right) {
-            robotMethods.turn(robot, 90);
+            robotMethods.turn(robot, 90 * rightAdjustment);
         }
+        
 
         if (currentGamepad1.a && currentGamepad1.back && currentGamepad1.b) {
             telemetry.addLine("Ending Opmode...");

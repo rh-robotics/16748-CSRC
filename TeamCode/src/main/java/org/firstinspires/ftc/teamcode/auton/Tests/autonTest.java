@@ -45,38 +45,56 @@ public class autonTest extends OpMode {
         robotMethods.start(robot);
 
         // Left front blue
-//        robotMethods.outerIntakeUp(robot);
-//        context = robotMethods.moveX(robot, context,130);
-//        robotMethods.rest(0.25);
-//
-//        robotMethods.turn(robot, -90);
-//        context.setDirection(context.getDirection() - 90);
-//
-//        robotMethods.rest(0.25);
-//        context = robotMethods.moveY(robot, context,85);
-//        robotMethods.outerIntakeDown(robot);
-//        robotMethods.flushPixel(robot);
-//        robotMethods.outerIntakeUp(robot);
-//        context = robotMethods.moveY(robot, context,85);
-        // Middle front blue
-
-        // Right front blue
-
-        // Left front red
         robotMethods.outerIntakeUp(robot);
         context = robotMethods.moveX(robot, context,130);
         robotMethods.rest(0.25);
 
-        robotMethods.turn(robot, 145);
-        context.setDirection(context.getDirection() + 145);
-        robotMethods.rest(.25);
+        robotMethods.turnTo(robot, context, 0);
 
-        context = robotMethods.moveX(robot, context,60);
         robotMethods.rest(0.25);
+        context = robotMethods.moveY(robot, context,85);
+        robotMethods.outerIntakeDown(robot);
+        robotMethods.flushPixel(robot);
+        robotMethods.outerIntakeUp(robot);
+        context = robotMethods.moveY(robot, context,85);
+        // Middle front blue
+
+//        // Right front blue
+//        robotMethods.outerIntakeUp(robot);
+//        context = robotMethods.moveX(robot, context,130);
+//        robotMethods.rest(3);
+//
+//        robotMethods.turnTo(robot, context, 0);
+//        robotMethods.rest(3);
+//
+//        context = robotMethods.moveX(robot, context,80);
+//        robotMethods.rest(3);
+//
+//        robotMethods.outerIntakeDown(robot);
+//        robotMethods.flushPixel(robot);
+//        robotMethods.outerIntakeUp(robot);
+//
+//        context = robotMethods.moveY(robot, context,120);
+//        robotMethods.rest(3);
+
+        // Left front red
+        robotMethods.outerIntakeUp(robot);
+        context = robotMethods.moveX(robot, context,130);
+        robotMethods.rest(3);
+
+        robotMethods.turnTo(robot, context, 0);
+        robotMethods.rest(3);
+
+        context = robotMethods.moveX(robot, context,80);
+        robotMethods.rest(3);
 
         robotMethods.outerIntakeDown(robot);
         robotMethods.flushPixel(robot);
         robotMethods.outerIntakeUp(robot);
+
+        context = robotMethods.moveY(robot, context,120);
+        robotMethods.rest(3);
+
 //        context = robotMethods.moveY(robot, context,85);
 //        // Middle front red
 
