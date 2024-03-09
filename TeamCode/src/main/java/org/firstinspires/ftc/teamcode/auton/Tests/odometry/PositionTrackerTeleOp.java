@@ -2,8 +2,10 @@ package org.firstinspires.ftc.teamcode.auton.Tests.odometry;
 
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+@Autonomous(name="Position Tracker TeleOp")
 public class PositionTrackerTeleOp extends LinearOpMode {
 
     private MotorEx leftEncoder, rightEncoder, perpEncoder;
@@ -18,9 +20,9 @@ public class PositionTrackerTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        leftEncoder = new MotorEx(hardwareMap, "left odometer");
-        rightEncoder = new MotorEx(hardwareMap, "right odometer");
-        perpEncoder = new MotorEx(hardwareMap, "center odometer");
+        leftEncoder = new MotorEx(hardwareMap, "rightRear");
+        rightEncoder = new MotorEx(hardwareMap, "leftFront");
+        perpEncoder = new MotorEx(hardwareMap, "leftRear");
 
         leftEncoder.setDistancePerPulse(DISTANCE_PER_PULSE);
         rightEncoder.setDistancePerPulse(DISTANCE_PER_PULSE);
