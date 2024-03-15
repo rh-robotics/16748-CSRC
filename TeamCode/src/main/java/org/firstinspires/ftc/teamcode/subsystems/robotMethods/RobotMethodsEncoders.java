@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.subsystems.hardware.Hardware;
 import org.firstinspires.ftc.teamcode.subsystems.hardware.HardwareElement;
 import org.firstinspires.ftc.teamcode.subsystems.stateMachineController.Context;
 
-public class RobotMethodsEncoders {
+public class RobotMethods {
     private double wheelsCPR = 537.7;
     private double targetPos = 3;
     private double motorTolerance = 50; // ticks

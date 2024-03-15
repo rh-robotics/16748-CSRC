@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.roadrunner.drive.SampleMecanumDrive;
@@ -15,24 +16,25 @@ import org.firstinspires.ftc.teamcode.subsystems.roadrunner.drive.SampleMecanumD
  * This is a simple routine to test translational drive capabilities.
  */
 @Config
-@Autonomous(group = "drive")
-public class StrafeTest extends LinearOpMode {
+@Autonomous(group = "OpMode Example")
+public class OpModeExample extends OpMode {
     public static double DISTANCE = 12; // in
+    SampleMecanumDrive drive;
+    Trajectory trajectory;
 
     @Override
-    public void runOpMode() throws InterruptedException {
-        Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
+    public void init() {
+        telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        drive = new SampleMecanumDrive(hardwareMap);
 
-        Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
-                .strafeRight(DISTANCE)
+        trajectory = drive.trajectoryBuilder(new Pose2d())
+                .forward(DISTANCE)
                 .build();
+    }
 
-        waitForStart();
-
-        if (isStopRequested()) return;
-
+    @Override
+    public void start() {
         drive.followTrajectory(trajectory);
 
         Pose2d poseEstimate = drive.getPoseEstimate();
@@ -40,7 +42,8 @@ public class StrafeTest extends LinearOpMode {
         telemetry.addData("finalY", poseEstimate.getY());
         telemetry.addData("finalHeading", poseEstimate.getHeading());
         telemetry.update();
-
-        while (!isStopRequested() && opModeIsActive()) ;
     }
+
+    @Override
+    public void loop() {}
 }
