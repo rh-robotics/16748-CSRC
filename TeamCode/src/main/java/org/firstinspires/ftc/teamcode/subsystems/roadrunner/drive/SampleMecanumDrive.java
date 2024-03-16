@@ -31,12 +31,16 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
@@ -70,6 +74,22 @@ public class SampleMecanumDrive extends MecanumDrive {
     private final DcMotorEx leftRear;
     private final DcMotorEx rightRear;
     private final DcMotorEx rightFront;
+    public final DcMotorEx rightViperSlide;
+    public final DcMotorEx leftViperSlide;
+    public final DcMotorEx armJoint;
+
+    public final CRServo intakeGeckoWheels;
+    public final CRServo intakeTube;
+    public final CRServo outerIntakeTube;
+
+    public final Servo clawLock;
+    public final Servo clawJoint;
+    public final Servo outerIntakeJoint;
+
+    public final DistanceSensor clawDistanceSensor;
+    private final ColorSensor intakeColorSensor;
+    public final ColorSensor rampColorSensor;
+
     private final List<DcMotorEx> motors;
 
     private final IMU imu;
@@ -98,14 +118,39 @@ public class SampleMecanumDrive extends MecanumDrive {
                 DriveConstants.LOGO_FACING_DIR, DriveConstants.USB_FACING_DIR));
         imu.initialize(parameters);
 
+//         Init Servos
+        clawLock = hardwareMap.get(Servo.class, "clawLock");
+        clawJoint = hardwareMap.get(Servo.class, "clawJoint");
+        outerIntakeJoint = hardwareMap.get(Servo.class, "outerIntakeJoint");
+
+        // Init CR Servos.
+        intakeGeckoWheels = hardwareMap.get(CRServo.class, "intakeGeckoWheels");
+        intakeTube = hardwareMap.get(CRServo.class, "intakeTube");
+        outerIntakeTube = hardwareMap.get(CRServo.class, "outerIntakeTube");
+
+        // Init DcMotors.
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
 
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        // Init arm and Viper Slide DcMotors.
+        armJoint = hardwareMap.get(DcMotorEx.class, "armJoint");
+        leftViperSlide = hardwareMap.get(DcMotorEx.class, "leftViperSlide");
+        rightViperSlide = hardwareMap.get(DcMotorEx.class, "rightViperSlide");
 
+        armJoint.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        leftViperSlide.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        rightViperSlide.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        rightViperSlide.setDirection(DcMotorEx.Direction.REVERSE);
+
+        // Init Sensors
+        clawDistanceSensor = hardwareMap.get(DistanceSensor.class, "clawDistanceSensor");
+        rampColorSensor = hardwareMap.get(ColorSensor.class, "rampColorSensor");
+        intakeColorSensor = hardwareMap.get(ColorSensor.class, "intakeColorSensor");
+
+        leftFront.setDirection(DcMotorEx.Direction.REVERSE);
+        leftRear.setDirection(DcMotorEx.Direction.REVERSE);
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
